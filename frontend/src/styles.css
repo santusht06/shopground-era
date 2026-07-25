@@ -1,0 +1,216 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ShopGround Era — Production-Grade Light Theme Design System (cloud.sharexpress.in)
+ * 80% neutral, 15% crisp surface cards (#FFFFFF), 5% primary accent (#5E6AD2).
+ */
+@theme {
+  --font-sans: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+  --color-bg-primary: var(--background);
+  --color-bg-secondary: var(--secondary-bg);
+  --color-bg-card: var(--card);
+  --color-border-primary: var(--border);
+  --color-text-primary: var(--primary-text);
+  --color-text-secondary: var(--secondary-text);
+  --color-text-muted: var(--muted-text);
+  --color-accent-purple: var(--accent);
+  
+  --color-status-success: var(--success);
+  --color-status-warning: var(--warning);
+  --color-status-danger: var(--danger);
+  --color-status-info: var(--info);
+  
+  --shadow-sm: var(--shadow-sm-val);
+  --shadow-md: var(--shadow-md-val);
+  --shadow-lg: var(--shadow-lg-val);
+  --shadow-2xl: var(--shadow-2xl-val);
+
+  /* Aliases for UI components */
+  --color-background: var(--background);
+  --color-foreground: var(--primary-text);
+  --color-card: var(--card);
+  --color-card-foreground: var(--primary-text);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--primary-text);
+  --color-primary: var(--primary-text);
+  --color-primary-foreground: var(--background);
+  --color-secondary: var(--secondary-bg);
+  --color-secondary-foreground: var(--secondary-text);
+  --color-muted: var(--secondary-bg);
+  --color-muted-foreground: var(--muted-text);
+  --color-accent: var(--accent);
+  --color-accent-foreground: #FFFFFF;
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #FFFFFF;
+  --color-border: var(--border);
+}
+
+:root {
+  /* cloud.sharexpress.in Linear Light Theme Tokens */
+  --background: #F4F5F8;
+  --secondary-bg: #F4F5F8;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --surface: #FAFAFA;
+  --surface-elevated: #F4F5F8;
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --primary-text: #0F172A;
+  --secondary-text: #4B5563;
+  --muted-text: #6B7280;
+  --accent: #5E6AD2;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #3B82F6;
+
+  --shadow-val: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm-val: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md-val: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg-val: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  --shadow-2xl-val: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body, #root {
+    min-height: 100%;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--primary-text);
+    font-family: var(--font-sans);
+    letter-spacing: -0.015em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.022em;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    color: var(--color-foreground);
+  }
+  /* Slim custom scrollbars */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-foreground) 12%, transparent);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-foreground) 22%, transparent);
+    background-clip: content-box;
+  }
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--color-foreground) 8%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+@keyframes laser-beam {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@utility laser-glow-horizontal {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(94, 106, 210, 0.6), transparent);
+    animation: laser-beam 5s infinite linear;
+  }
+}
+
+@utility linear-shimmer-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(400px circle at var(--x, 0) var(--y, 0), rgba(94, 106, 210, 0.08), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+.glass-effect {
+  backdrop-filter: blur(12px) saturate(190%);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.linear-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+}
+.linear-btn-primary:hover {
+  background-color: #4f5bc4;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(94, 106, 210, 0.25);
+}
+
+.linear-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: var(--primary-text);
+  border: 1px solid var(--border);
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+}
+.linear-btn-secondary:hover {
+  background-color: var(--surface);
+  border-color: var(--border-strong);
+}
+
+.glimmer-card {
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glimmer-card:hover {
+  border-color: rgba(94, 106, 210, 0.4) !important;
+  box-shadow: 0 12px 30px -6px rgba(94, 106, 210, 0.14);
+  transform: translateY(-3px);
+}
