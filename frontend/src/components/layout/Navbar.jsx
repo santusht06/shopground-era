@@ -8,7 +8,6 @@ import {
     ShoppingBag,
     Sparkles,
     Package,
-    User,
     ChevronRight,
     X,
     MapPin,
@@ -18,7 +17,6 @@ import {
     Armchair,
     Watch,
     Utensils,
-    Flame,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -40,11 +38,8 @@ export default function Navbar() {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [selectedCatFilter, setSelectedCatFilter] = useState('All');
 
-    const isStoreActive = location.pathname === '/';
-    const isOrdersActive = location.pathname === '/orders';
     const isProfileActive = location.pathname === '/profile';
 
-    // Mega Nav Categories
     const megaCategories = [
         { id: 'All', label: 'All Items', icon: Package },
         { id: 'Electronics', label: 'Electronics', icon: Headphones },
@@ -54,7 +49,6 @@ export default function Navbar() {
         { id: 'Home & Kitchen', label: 'Home & Kitchen', icon: Utensils },
     ];
 
-    // Live search results preview
     const searchPreviewResults = searchQuery.trim()
         ? products.filter(p => {
             const matchesCat = selectedCatFilter === 'All' || p.category === selectedCatFilter;
@@ -84,14 +78,14 @@ export default function Navbar() {
     };
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-[#E5E7EB] bg-white/90 backdrop-blur-md transition-all shadow-2xs">
+        <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-2xs">
             
-            {/* Top Delivery Location Bar */}
-            <div className="bg-[#0F172A] text-xs text-slate-300 py-1.5 px-4 flex items-center justify-between font-medium border-b border-slate-800">
+            {/* Delivery Location Top Bar */}
+            <div className="bg-[#090D16] text-xs text-slate-300 py-1.5 px-4 flex items-center justify-between font-medium border-b border-slate-800">
                 <div className="flex items-center gap-2 max-w-7xl mx-auto w-full px-2">
-                    <MapPin className="w-3.5 h-3.5 text-[#5E6AD2]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#6366F1]" />
                     <span>Deliver to <strong className="text-white font-bold">San Francisco 94107</strong></span>
-                    <span className="text-slate-500 font-normal hidden sm:inline">— Express 24h Shipping Available</span>
+                    <span className="text-slate-500 font-normal hidden sm:inline">— Express 24h Delivery Available</span>
                 </div>
 
                 <div className="hidden md:flex items-center gap-4 text-slate-400 text-[11px]">
@@ -103,27 +97,27 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Main Header */}
+            {/* Main Navigation Header */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
                 
                 {/* Brand Logo */}
-                <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-                    <div className="w-9 h-9 rounded-xl bg-[#5E6AD2] text-white flex items-center justify-center font-extrabold text-lg shadow-sm group-hover:scale-105 transition-transform">
+                <Link to="/" className="flex items-center gap-3 group shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#4F46E5] to-[#6366F1] text-white flex items-center justify-center font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform">
                         S
                     </div>
                     <div>
-                        <span className="text-lg font-extrabold tracking-tight text-[#0F172A]">ShopGround</span>
-                        <span className="text-[10px] font-extrabold text-[#5E6AD2] block -mt-1 tracking-wider uppercase">STORE</span>
+                        <span className="text-xl font-extrabold tracking-tight text-[#0F172A] font-heading">ShopGround</span>
+                        <span className="text-[10px] font-extrabold text-[#4F46E5] block -mt-1 tracking-widest uppercase">ENTERPRISE</span>
                     </div>
                 </Link>
 
                 {/* Integrated Category Dropdown Search Bar */}
                 <div className="flex-1 max-w-xl hidden md:block relative">
-                    <div className="flex items-center border border-[#E5E7EB] rounded-xl bg-[#F4F5F8] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#5E6AD2] transition-all overflow-hidden shadow-2xs">
+                    <div className="flex items-center border border-slate-200 rounded-xl bg-[#FAFAFC] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#4F46E5]/20 focus-within:border-[#4F46E5] transition-all overflow-hidden shadow-2xs">
                         <select
                             value={selectedCatFilter}
                             onChange={(e) => setSelectedCatFilter(e.target.value)}
-                            className="bg-transparent text-xs font-semibold text-slate-700 px-3 py-2 border-r border-[#E5E7EB] focus:outline-none cursor-pointer"
+                            className="bg-transparent text-xs font-semibold text-slate-700 px-3 py-2 border-r border-slate-200 focus:outline-none cursor-pointer font-sans"
                         >
                             <option value="All">All Categories</option>
                             <option value="Electronics">Electronics</option>
@@ -141,7 +135,7 @@ export default function Navbar() {
                                 onChange={handleSearchChange}
                                 onFocus={() => setIsSearchFocused(true)}
                                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                                className="pl-3 pr-8 bg-transparent border-none text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-9"
+                                className="pl-3 pr-8 bg-transparent border-none text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-9 font-sans"
                             />
                             {searchQuery && (
                                 <button
@@ -153,15 +147,15 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        <button className="bg-[#5E6AD2] text-white px-4 h-9 flex items-center justify-center hover:bg-[#4f5bc4] transition-colors cursor-pointer">
+                        <button className="bg-gradient-to-r from-[#4F46E5] to-[#6366F1] text-white px-4 h-9 flex items-center justify-center hover:opacity-95 transition-opacity cursor-pointer">
                             <Search className="w-4 h-4" />
                         </button>
                     </div>
 
                     {/* Instant Search Results Dropdown Preview */}
                     {isSearchFocused && searchPreviewResults.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-xl shadow-2xl p-2 z-50 animate-in fade-in duration-150">
-                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 py-1">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in duration-150">
+                            <div className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">
                                 Matching Products ({searchPreviewResults.length})
                             </div>
                             <div className="space-y-1">
@@ -169,12 +163,12 @@ export default function Navbar() {
                                     <div
                                         key={item.id}
                                         onClick={() => handleProductSelect(item.id)}
-                                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#F4F5F8] cursor-pointer transition-colors"
+                                        className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#FAFAFC] cursor-pointer transition-colors"
                                     >
-                                        <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded-md bg-slate-100" />
+                                        <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded-lg bg-slate-100" />
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-xs font-bold text-slate-900 truncate">{item.name}</p>
-                                            <p className="text-[11px] text-[#5E6AD2] font-semibold">${item.price.toFixed(2)}</p>
+                                            <p className="text-xs font-bold text-slate-900 truncate font-heading">{item.name}</p>
+                                            <p className="text-[11px] text-[#4F46E5] font-extrabold">${item.price.toFixed(2)}</p>
                                         </div>
                                         <ChevronRight className="w-4 h-4 text-slate-300" />
                                     </div>
@@ -186,12 +180,11 @@ export default function Navbar() {
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-3">
-                    {/* Wishlist Link */}
                     <Link
                         to="/profile"
-                        className="relative p-2 rounded-lg text-slate-600 hover:bg-[#F4F5F8] transition-colors hidden sm:flex items-center gap-1"
+                        className="relative p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors hidden sm:flex items-center gap-1.5"
                     >
-                        <Heart className="w-4 h-4 text-slate-600" />
+                        <Heart className="w-4.5 h-4.5 text-slate-600" />
                         <span className="text-xs font-semibold text-slate-700 hidden lg:inline">Wishlist</span>
                         {wishlist.length > 0 && (
                             <Badge variant="default" className="bg-rose-500 text-white text-[10px] h-4 min-w-[16px] px-1 rounded-full justify-center">
@@ -200,13 +193,12 @@ export default function Navbar() {
                         )}
                     </Link>
 
-                    {/* Profile Link */}
                     <Link
                         to="/profile"
-                        className={`flex items-center gap-2 p-1 pl-2 pr-3 rounded-full border transition-colors ${
+                        className={`flex items-center gap-2 p-1 pl-2 pr-3 rounded-full border transition-all ${
                             isProfileActive
-                                ? 'border-[#5E6AD2] bg-[#F4F5F8] text-[#5E6AD2]'
-                                : 'border-[#E5E7EB] bg-white text-slate-700 hover:bg-[#F4F5F8]'
+                                ? 'border-[#4F46E5] bg-[#4F46E5]/10 text-[#4F46E5]'
+                                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                         }`}
                     >
                         <img
@@ -217,17 +209,14 @@ export default function Navbar() {
                         <span className="text-xs font-semibold hidden md:inline">{user?.name?.split(' ')[0]}</span>
                     </Link>
 
-                    {/* Cart Trigger */}
                     <Button
                         onClick={() => dispatch(toggleCartDrawer(true))}
-                        variant="outline"
-                        size="sm"
-                        className="relative border-[#E5E7EB] bg-white hover:bg-[#F4F5F8] text-[#0F172A] gap-2 font-semibold shadow-2xs"
+                        className="gradient-btn-primary text-xs font-bold h-9 px-4 rounded-xl gap-2 cursor-pointer"
                     >
-                        <ShoppingBag className="w-4 h-4 text-[#5E6AD2]" />
-                        <span className="hidden sm:inline">Bag</span>
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>Bag</span>
                         {totalCartCount > 0 && (
-                            <Badge variant="default" className="bg-[#5E6AD2] text-white text-xs h-5 min-w-[20px] px-1.5 rounded-full justify-center animate-bounce">
+                            <Badge variant="default" className="bg-white text-[#4F46E5] font-extrabold text-[11px] h-5 min-w-[20px] px-1.5 rounded-full justify-center shadow-xs">
                                 {totalCartCount}
                             </Badge>
                         )}
@@ -236,7 +225,7 @@ export default function Navbar() {
             </div>
 
             {/* Mega Category Navigation Bar */}
-            <div className="bg-[#F4F5F8] border-t border-[#E5E7EB] overflow-x-auto scrollbar-none">
+            <div className="bg-[#FAFAFC] border-t border-slate-200/80 overflow-x-auto scrollbar-none">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 py-1.5">
                     {megaCategories.map((cat) => {
                         const Icon = cat.icon;
@@ -245,10 +234,10 @@ export default function Navbar() {
                             <button
                                 key={cat.id}
                                 onClick={() => handleMegaCatClick(cat.id)}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                                     isSelected
-                                        ? 'bg-white text-[#5E6AD2] shadow-2xs border border-[#E5E7EB]'
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                                        ? 'bg-white text-[#4F46E5] shadow-xs border border-slate-200/80'
+                                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                                 }`}
                             >
                                 <Icon className="w-3.5 h-3.5" />
