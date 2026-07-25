@@ -7,9 +7,8 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
 
-    # Security & JWT Tokens (Sharexpress Authentication)
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "shopground_era_super_secret_jwt_key_998877")
-    ALGORITHM: str = "HS256"
+    # Security & Asymmetric JWT RS256 Tokens (Sharexpress Authentication)
+    ALGORITHM: str = "RS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
