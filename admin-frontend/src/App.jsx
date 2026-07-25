@@ -5,7 +5,11 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import DashboardOverview from '@/components/admin/DashboardOverview';
 import ProductManagement from '@/components/admin/ProductManagement';
 import OrderManagement from '@/components/admin/OrderManagement';
-import CustomerManagement from '@/components/admin/CustomerManagement';
+import SchedulingView from '@/components/admin/SchedulingView';
+import LogisticsView from '@/components/admin/LogisticsView';
+import RbacView from '@/components/admin/RbacView';
+import AnalyticsView from '@/components/admin/AnalyticsView';
+import AuditLogsView from '@/components/admin/AuditLogsView';
 import SettingsView from '@/components/admin/SettingsView';
 
 export default function App() {
@@ -13,7 +17,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex bg-[#F4F5F8] text-[#0F172A]">
-      {/* Sidebar */}
+      {/* Sidebar Navigation */}
       <AdminSidebar />
 
       {/* Main Content Area */}
@@ -24,7 +28,11 @@ export default function App() {
           {activeTab === 'dashboard' && <DashboardOverview />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'orders' && <OrderManagement />}
-          {activeTab === 'customers' && <CustomerManagement />}
+          {activeTab === 'scheduling' && <SchedulingView />}
+          {activeTab === 'logistics' && <LogisticsView />}
+          {activeTab === 'rbac' && <RbacView />}
+          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'audit' && <AuditLogsView />}
           {activeTab === 'settings' && <SettingsView />}
         </main>
       </div>

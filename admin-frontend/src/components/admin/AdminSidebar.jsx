@@ -5,23 +5,27 @@ import {
     LayoutDashboard,
     Package,
     ShoppingBag,
-    Users,
-    Settings,
+    Calendar,
+    Truck,
     Shield,
-    Sparkles,
-    ExternalLink,
+    BarChart3,
+    FileText,
+    Settings,
 } from 'lucide-react';
 
 export default function AdminSidebar() {
     const dispatch = useDispatch();
-    const activeTab = useSelector((state) => state.admin.activeTab);
+    const { activeTab, currentRole } = useSelector((state) => state.admin);
 
     const navItems = [
-        { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
-        { id: 'products', label: 'Product Inventory', icon: Package },
-        { id: 'orders', label: 'Order Management', icon: ShoppingBag },
-        { id: 'customers', label: 'Customer Directory', icon: Users },
-        { id: 'settings', label: 'System & CORS Settings', icon: Settings },
+        { id: 'dashboard', label: 'Control Center', icon: LayoutDashboard },
+        { id: 'products', label: 'Inventory & Variants', icon: Package },
+        { id: 'orders', label: 'Order Fulfillment', icon: ShoppingBag },
+        { id: 'scheduling', label: 'Flash Sales & Campaigns', icon: Calendar },
+        { id: 'logistics', label: 'Logistics & Returns', icon: Truck },
+        { id: 'rbac', label: 'RBAC & Permissions', icon: Shield },
+        { id: 'analytics', label: 'Financial Analytics', icon: BarChart3 },
+        { id: 'audit', label: 'Audit Logs & Settings', icon: FileText },
     ];
 
     return (
@@ -33,9 +37,15 @@ export default function AdminSidebar() {
                         A
                     </div>
                     <div>
-                        <span className="text-base font-extrabold text-[#0F172A] block leading-tight">Admin Portal</span>
+                        <span className="text-base font-extrabold text-[#0F172A] block leading-tight">Amazon-Grade Portal</span>
                         <span className="text-[10px] font-semibold text-[#5E6AD2] uppercase tracking-wider block">admin.myapp.com</span>
                     </div>
+                </div>
+
+                {/* Role Badge Pill */}
+                <div className="bg-[#F4F5F8] p-2.5 rounded-xl border border-[#E5E7EB] text-xs">
+                    <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Active Role</span>
+                    <span className="font-extrabold text-[#5E6AD2]">{currentRole}</span>
                 </div>
 
                 {/* Nav Links */}
@@ -47,7 +57,7 @@ export default function AdminSidebar() {
                             <button
                                 key={item.id}
                                 onClick={() => dispatch(setActiveTab(item.id))}
-                                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                                     isActive
                                         ? 'bg-[#5E6AD2] text-white shadow-xs'
                                         : 'text-slate-600 hover:bg-[#F4F5F8] hover:text-slate-900'
@@ -64,9 +74,9 @@ export default function AdminSidebar() {
             {/* Footer Status */}
             <div className="p-6 border-t border-[#E5E7EB] bg-[#F4F5F8] space-y-2">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Backend Status</span>
+                    <span>MongoDB & Redis</span>
                     <span className="text-emerald-600 font-bold flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Online
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> 1.2ms
                     </span>
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono truncate">
