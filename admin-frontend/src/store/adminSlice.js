@@ -78,6 +78,11 @@ const initialOrders = [
     }
 ];
 
+const initialCustomers = [
+    { id: 'usr-001', name: 'Lorem Customer', email: 'customer@shopground.era', role: 'VIP Customer', ordersCount: 2, totalSpent: 385.49 },
+    { id: 'usr-002', name: 'Jane Doe', email: 'jane@shopground.era', role: 'Customer', ordersCount: 1, totalSpent: 135.50 }
+];
+
 const initialCampaigns = [
     {
         id: 'cmp-1',
@@ -126,10 +131,11 @@ const adminSlice = createSlice({
         availableRoles: ['Super Admin', 'Store Manager', 'Catalog Specialist', 'Fulfillment Agent', 'Support Agent'],
         products: initialProducts,
         orders: initialOrders,
+        customers: initialCustomers,
         campaigns: initialCampaigns,
         returnRequests: initialReturnRequests,
         auditLogs: initialAuditLogs,
-        activeTab: 'dashboard', // 'dashboard' | 'products' | 'orders' | 'scheduling' | 'logistics' | 'rbac' | 'analytics' | 'settings'
+        activeTab: 'dashboard',
         apiEndpoint: 'http://localhost:8000/api/v1',
         backendCorsDomain: 'admin.myapp.com',
     },

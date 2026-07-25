@@ -1,14 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { DollarSign, ShoppingBag, Package, Users, TrendingUp, ArrowUpRight, Flame, AlertCircle } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, ArrowUpRight, AlertCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 export default function DashboardOverview() {
-    const { products, orders, customers } = useSelector((state) => state.admin);
+    const adminState = useSelector((state) => state.admin) || {};
+    const products = adminState.products || [];
+    const orders = adminState.orders || [];
+    const customers = adminState.customers || [];
 
-    const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
-    const lowStockProducts = products.filter(p => p.stock <= 10);
+    const totalRevenue = orders.reduce((acc, order) => acc + (order.total || 0), 0);
+    const lowStockProducts = products.filter(p => (p.stock || 0) <= 10);
 
     return (
         <div className="space-y-8">
