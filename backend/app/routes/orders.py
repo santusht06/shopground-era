@@ -1,60 +1,99 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from typing import List
-import random
 from datetime import datetime
-from app.models.order import OrderCreate, OrderResponse
+from app.models.order import OrderCreate, OrderInDB, OrderStatusUpdate, OrderStatus
 from app.core.database import get_database
+from app.services.queue import enqueue_email_task
 
-router = APIRouter(prefix="/orders", tags=["Orders"])
+router = APIRouter(prefix="/orders", tags=["Order Fulfillment"])
 
-# Fallback orders list in memory
-orders_store = [
+DEMO_ORDERS = [
     {
-        "id": "ORD-89241",
-        "date": "2026-07-24",
+        "_id": "ORD-89241",
+        "date": "2026-07-25",
         "total": 249.99,
         "status": "Processing",
-        "itemsCount": 1,
-        "items": [{"name": "Lorem Apex Headphones", "qty": 1, "price": 249.99}],
-        "shippingAddress": "124 Lorem Avenue, Suite 400, San Francisco, CA"
+        "courier": "FedEx Express",
+        "awb_number": "AWB-99824102",
+        "warehouse": "Warehouse Alpha (US-West)",
+        "customer": "Lorem Customer",
+        "email": "customer@shopground.era",
+        "shipping_address": "124 Lorem Avenue, San Francisco, CA 94107",
+        "items": [{"name": "Lorem Apex Headphones", "qty": 1, "price": 249.99}]
     }
 ]
 
-@router.get("", response_model=List[OrderResponse])
+@router.get("", response_model=List[OrderInDB])
 async def list_orders():
+    """
+    Retrieve list of orders for customer profile and admin fulfillment center.
+    """
     db = get_database()
-    if db is not None:
-        try:
-            orders = []
-            cursor = db["orders"].find()
-            async for doc in cursor:
-                doc["_id"] = str(doc.get("_id", ""))
-                orders.append(doc)
-            if orders:
-                return orders
-        except Exception:
-            pass
-    return orders_store
+    if db:
+        cursor = db.orders.find({})
+        orders = await cursor.to_list(length=100)
+        if orders:
+            for o in orders:
+                o["_id"] = str(o["_id"])
+            return orders
 
-@router.post("", response_model=OrderResponse)
+    return DEMO_ORDERS
+
+@router.post("", response_model=OrderInDB, status_code=status.HTTP_201_CREATED)
 async def create_order(order_data: OrderCreate):
-    order_id = f"ORD-{random.randint(10000, 99999)}"
-    new_order = {
-        "id": order_id,
-        "date": datetime.now().strftime("%Y-%m-%d"),
-        "total": order_data.total,
-        "status": "Processing",
-        "itemsCount": len(order_data.items),
-        "items": [item.model_dump() for item in order_data.items],
-        "shippingAddress": order_data.shippingAddress,
-    }
-
+    """
+    Submit a new customer purchase order and enqueue an order confirmation receipt via Redis Email Queue.
+    """
     db = get_database()
-    if db is not None:
-        try:
-            await db["orders"].insert_one(dict(new_order))
-        except Exception:
-            pass
+    order_id = f"ORD-{datetime.utcnow().strftime('%H%M%S')}"
 
-    orders_store.insert(0, new_order)
-    return new_order
+    order_dict = order_data.dict()
+    order_dict["_id"] = order_id
+    order_dict["date"] = datetime.utcnow().strftime("%Y-%m-%d")
+    order_dict["status"] = OrderStatus.PROCESSING.value
+    order_dict["courier"] = "FedEx Express"
+    order_dict["awb_number"] = f"AWB-{datetime.utcnow().strftime('%S%M%H')}"
+    order_dict["warehouse"] = "Warehouse Alpha (US-West)"
+
+    if db:
+        await db.orders.insert_one(order_dict)
+
+    # Enqueue Redis task for Order Receipt Email Dispatch
+    await enqueue_email_task(
+        to_email=order_data.email,
+        subject=f"Order Receipt #{order_id} — ShopGround Era",
+        template="order_confirmation",
+        context={"order_id": order_id, "total": order_data.total}
+    )
+
+    return order_dict
+
+@router.patch("/{order_id}/status", response_model=OrderInDB)
+async def update_order_status(order_id: str, status_data: OrderStatusUpdate):
+    """
+    Update order fulfillment status, courier partner, or AWB tracking number.
+    """
+    db = get_database()
+    if db:
+        update_fields = {"status": status_data.status.value}
+        if status_data.courier:
+            update_fields["courier"] = status_data.courier
+        if status_data.awb_number:
+            update_fields["awb_number"] = status_data.awb_number
+
+        await db.orders.update_one({"_id": order_id}, {"$set": update_fields})
+        order = await db.orders.find_one({"_id": order_id})
+        if order:
+            order["_id"] = str(order["_id"])
+            return order
+
+    for o in DEMO_ORDERS:
+        if o["_id"] == order_id:
+            o["status"] = status_data.status.value
+            if status_data.courier:
+                o["courier"] = status_data.courier
+            if status_data.awb_number:
+                o["awb_number"] = status_data.awb_number
+            return o
+
+    raise HTTPException(status_code=404, detail=f"Order {order_id} not found.")

@@ -1,27 +1,29 @@
 import redis.asyncio as aioredis
-import logging
 from app.core.config import settings
 
-logger = logging.getLogger(__name__)
-
-class RedisManager:
-    redis: aioredis.Redis = None
-
-redis_manager = RedisManager()
+redis_client: aioredis.Redis = None
 
 async def connect_to_redis():
+    """Initialize Redis async client."""
+    global redis_client
     try:
-        redis_manager.redis = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
-        await redis_manager.redis.ping()
-        logger.info("Connected to Redis successfully.")
+        redis_client = aioredis.from_url(
+            settings.REDIS_URL,
+            encoding="utf-[#0F172A]",
+            decode_responses=True
+        )
+        await redis_client.ping()
+        print(" Connected to Redis successfully.")
     except Exception as e:
-        logger.warning(f"Could not connect to Redis at {settings.REDIS_URL}: {e}")
-        redis_manager.redis = None
+        print(f" Redis Connection Warning: {e}. Falling back to in-memory mocks if Redis is offline.")
 
 async def close_redis_connection():
-    if redis_manager.redis:
-        await redis_manager.redis.close()
-        logger.info("Redis connection closed.")
+    """Shutdown Redis client connection."""
+    global redis_client
+    if redis_client:
+        await redis_client.close()
+        print(" Redis connection closed.")
 
-def get_redis():
-    return redis_manager.redis
+def get_redis_client() -> aioredis.Redis:
+    """Return active Redis client instance."""
+    return redis_client

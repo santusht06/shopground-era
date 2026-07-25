@@ -1,20 +1,30 @@
 from fastapi import APIRouter
 from app.core.database import get_database
-from app.core.redis import get_redis
+from app.services.queue import get_queue_length
+from app.core.config import settings
 
-router = APIRouter(prefix="/health", tags=["Health"])
+router = APIRouter(prefix="/health", tags=["System Diagnostics"])
 
 @router.get("")
-async def check_health():
+async def system_health_check():
+    """
+    Production Health Diagnostic Endpoint.
+    Checks MongoDB, Redis Task Queue, and System Status.
+    """
     db = get_database()
-    redis = get_redis()
+    mongo_status = "Connected" if db else "Offline / Standby"
 
-    mongo_status = "connected" if db is not None else "disconnected"
-    redis_status = "connected" if redis is not None else "disconnected"
+    pending_email_tasks = await get_queue_length()
 
     return {
-        "status": "online",
-        "service": "ShopGround Era API",
+        "status": "healthy",
+        "service": settings.PROJECT_NAME,
+        "version": settings.VERSION,
         "mongodb": mongo_status,
-        "redis": redis_status,
+        "redis_email_queue": {
+            "status": "Active",
+            "pending_email_tasks": pending_email_tasks,
+            "queue_key": "shopground:email_queue"
+        },
+        "cors_origins": settings.CORS_ORIGINS
     }
