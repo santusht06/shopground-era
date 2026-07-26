@@ -9,6 +9,10 @@ from app.routes.products import router as products_router
 from app.routes.orders import router as orders_router
 from app.routes.cart import router as cart_router
 from app.routes.categories import router as categories_router
+from app.routes.payments import router as payments_router
+from app.routes.logistics import router as logistics_router
+from app.routes.inventory import router as inventory_router
+from app.routes.analytics import router as analytics_router
 from app.routes.health import router as health_router
 
 app = FastAPI(
@@ -45,12 +49,16 @@ app.include_router(products_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(cart_router, prefix=settings.API_V1_STR)
 app.include_router(categories_router, prefix=settings.API_V1_STR)
+app.include_router(payments_router, prefix=settings.API_V1_STR)
+app.include_router(logistics_router, prefix=settings.API_V1_STR)
+app.include_router(inventory_router, prefix=settings.API_V1_STR)
+app.include_router(analytics_router, prefix=settings.API_V1_STR)
 app.include_router(health_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to ShopGround Era FastAPI Engine",
+        "message": "Welcome to ShopGround Era Enterprise FastAPI Engine",
         "docs": "/docs",
         "health": f"{settings.API_V1_STR}/health"
     }
