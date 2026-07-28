@@ -2,90 +2,85 @@ import React from 'react';
 
 const AMAZON_URL = 'https://www.amazon.com/dp/B0H915VTB1';
 
-// Official Amazon.com Wordmark Logo SVG with Orange Smile Arrow
-export const AmazonLogo = ({ className = 'h-5 w-auto', variant = 'light' }) => (
-  <svg
-    viewBox="0 0 400 120"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    aria-label="Amazon.com"
-  >
-    <g fill={variant === 'dark' ? '#0F1111' : '#FFFFFF'}>
-      <path d="M47.1 63.8c0 3.3.4 6 1.1 8.1.8 2.1 1.8 4.4 3.2 6.8.5.8.7 1.7.7 2.5 0 1.1-.7 2.2-2 3.2l-6.8 4.5c-1 .7-1.9 1-2.8 1-1.1 0-2.2-.5-3.2-1.6a33.4 33.4 0 0 1-3.9-5.1c-2.4 3.7-5.4 6.6-9.1 8.7-3.7 2.1-7.8 3.1-12.4 3.1-4.7 0-8.4-1.3-11.2-3.9-2.8-2.6-4.2-6.1-4.2-10.4 0-4.6 1.6-8.3 4.9-11.2 3.3-2.9 7.7-4.3 13.2-4.3 1.9 0 3.8.1 5.8.4 2 .3 4.1.8 6.4 1.3v-4c0-4.2-.9-7.1-2.6-8.9-1.8-1.7-4.9-2.6-9.2-2.6-2 0-4 .2-6.1.8-2.1.5-4.1 1.2-6.1 2.1-.9.4-1.6.7-2 .8-.4.1-.7.2-1 0-.8 0-1.3-.6-1.3-1.9v-5.6c0-1 .1-1.7.4-2.1.3-.4.9-.8 1.9-1.3 2.7-1.3 5.7-2.3 9-3 3.3-.7 6.6-1.1 9.9-1.1 7 0 12.2 1.6 15.5 4.8 3.3 3.2 4.9 8 4.9 14.5v20.1zm-18.8 7.1c1.8 0 3.7-.3 5.6-1 1.9-.7 3.7-1.8 5.2-3.5.9-1 1.6-2.2 1.9-3.5.4-1.3.6-2.9.6-4.7v-2.3c-1.7-.5-3.3-.9-5-1.1-1.7-.2-3.4-.3-5.1-.3-3.6 0-6.2.7-7.9 2.2-1.7 1.4-2.6 3.5-2.6 6.2 0 2.5.7 4.4 2 5.8 1.3 1.5 3.1 2.2 5.3 2.2zm43-30.8c-1.1 0-1.8-.2-2.3-.6-.5-.4-.9-1.3-1.3-2.5l-4-15.6c-.2-.7-.4-1.5-.6-2.6 0-1 .5-1.6 1.6-1.6h6.4c1.1 0 1.9.2 2.3.6.5.4.8 1.3 1.1 2.5l7.7 30.5 7.2-30.5c.3-1.3.6-2.1 1.1-2.5.5-.4 1.3-.6 2.4-.6h5.2c1.1 0 1.9.2 2.4.6.5.4.8 1.3 1.1 2.5l7.3 30.9 8-30.9c.3-1.3.7-2.1 1.1-2.5.5-.4 1.3-.6 2.3-.6h6.1c1 0 1.6.5 1.6 1.6 0 .3-.1.6-.1 1-.0.3-.2.8-.5 1.6l-11.3 31.9c-.3 1.3-.7 2.1-1.2 2.5-.5.4-1.3.6-2.3.6h-5.6c-1.1 0-1.9-.2-2.4-.6-.5-.4-.8-1.3-1.1-2.6l-7.1-29.8-7.1 29.8c-.3 1.3-.7 2.1-1.1 2.6-.5.4-1.3.6-2.4.6h-5.6zm70.8.9c-3.4 0-6.7.4-10 1.1-3.3.7-6.3 1.7-9 3-.9.4-1.5.9-1.9 1.3-.3.4-.4 1.1-.4 2.1v5.6c0 1.3.4 1.9 1.3 1.9.3.2.6.1 1-.0.4-.1 1.1-.4 2-.8 2-.9 4-1.6 6.1-2.1 2.1-.6 4.1-.8 6.1-.8 4.3 0 7.4.9 9.2 2.6 1.8 1.8 2.6 4.7 2.6 8.9v4c-2.3-.5-4.4-1-6.4-1.3-2-.3-3.9-.4-5.8-.4-5.5 0-9.9 1.4-13.2 4.3-3.3 2.9-4.9 6.6-4.9 11.2 0 4.3 1.4 7.8 4.2 10.4 2.8 2.6 6.5 3.9 11.2 3.9 4.6 0 8.7-1 12.4-3.1 3.7-2.1 6.7-5 9.1-8.7a33.4 33.4 0 0 1 3.9 5.1c1 1.1 2.1 1.6 3.2 1.6.9 0 1.8-.3 2.8-1l6.8-4.5c1.3-1 2-2.1 2-3.2 0-.8-.2-1.7-.7-2.5-1.4-2.4-2.4-4.7-3.2-6.8-.7-2.1-1.1-4.8-1.1-8.1v-20.1c0-6.5-1.6-11.3-4.9-14.5-3.3-3.2-8.5-4.8-15.5-4.8zm9.5 30c0 1.8-.2 3.4-.6 4.7-.3 1.3-1 2.5-1.9 3.5-1.5 1.7-3.3 2.8-5.2 3.5-1.9.7-3.8 1-5.6 1-2.2 0-4-.7-5.3-2.2-1.3-1.4-2-3.3-2-5.8 0-2.7.9-4.8 2.6-6.2 1.7-1.5 4.3-2.2 7.9-2.2 1.7 0 3.4.1 5.1.3 1.7.2 3.3.6 5 1.1v2.3zm19.4-7.5c0-1.8.6-3.2 1.8-4.3 1.2-1.1 2.8-1.6 4.8-1.6 2 0 3.5.5 4.7 1.6 1.2 1.1 1.8 2.5 1.8 4.3 0 1.8-.6 3.3-1.8 4.4-1.2 1.1-2.7 1.6-4.7 1.6-2 0-3.6-.5-4.8-1.6-1.2-1.1-1.8-2.6-1.8-4.4zm1.1 21.6c0-1.1.2-1.9.7-2.5.5-.6 1.3-.9 2.5-1l24.4-17.7-24.4-17.7c-1.2-.1-2-.4-2.5-1-.5-.6-.7-1.4-.7-2.5v-3.7c0-1.1.5-1.7 1.6-1.7.5 0 1 .1 1.5.4.5.3 1.1.7 1.8 1.2l26.7 19.4c1.1.8 1.6 1.8 1.6 3.1 0 1.3-.5 2.3-1.6 3.1l-26.7 19.4c-.7.5-1.3.9-1.8 1.2-.5.3-1 .4-1.5.4-1.1 0-1.6-.6-1.6-1.7v-3.7zm49.1-14.1c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4 0c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4 0c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 2.3 0 4.3.5 6 1.5 1.7 1 3.1 2.3 4.2 4.1l.6-4.6c.1-.4.3-.7.7-.9.4-.2.8-.3 1.4-.3h6c.9 0 1.5.3 1.9.9.4.6.4 1.4.1 2.5l-4.5 31.9c-.3 1.9-1.2 2.8-2.6 2.8h-5.6c-.9 0-1.5-.3-1.9-.9-.4-.6-.4-1.4-.1-2.5l1.6-11.2c-1.1 1.8-2.5 3.1-4.2 4.1-1.7 1-3.7 1.5-6 1.5-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5z"/>
-      <path d="M309.8 69.8c0-2.3 1.8-4.1 4.1-4.1s4.1 1.8 4.1 4.1-1.8 4.1-4.1 4.1-4.1-1.8-4.1-4.1zm22.4-1.2c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4.9c-1.1 0-1.8-.2-2.3-.6-.5-.4-.9-1.3-1.3-2.5l-4-15.6c-.2-.7-.4-1.5-.6-2.6 0-1 .5-1.6 1.6-1.6h6.4c1.1 0 1.9.2 2.3.6.5.4.8 1.3 1.1 2.5l7.7 30.5 7.2-30.5c.3-1.3.6-2.1 1.1-2.5.5-.4 1.3-.6 2.4-.6h5.2c1.1 0 1.9.2 2.4.6.5.4.8 1.3 1.1 2.5l7.3 30.9 8-30.9c.3-1.3.7-2.1 1.1-2.5.5-.4 1.3-.6 2.3-.6h6.1c1 0 1.6.5 1.6 1.6 0 .3-.1.6-.1 1-.0.3-.2.8-.5 1.6l-11.3 31.9c-.3 1.3-.7 2.1-1.2 2.5-.5.4-1.3.6-2.3.6h-5.6c-1.1 0-1.9-.2-2.4-.6-.5-.4-.8-1.3-1.1-2.6l-7.1-29.8-7.1 29.8c-.3 1.3-.7 2.1-1.1 2.6-.5.4-1.3.6-2.4.6h-5.6z"/>
-    </g>
-    {/* Orange Smile Arrow */}
-    <path fill="#FF9900" d="M19.1 94.6c32.7 24.1 79.9 36.8 120.7 36.8 57.1 0 108.5-21.1 147.4-56.2 3.1-2.8.4-6.5-3.4-4.4-41.9 24.4-93.7 39.1-147.4 39.1-36.1 0-77.9-10.4-113.6-30.8-5.5-3.2-10.1 2.9-3.7 15.5zm270.8-16.5c-4.1-5.3-27.4-2.5-37.9-1.2-3.2.4-3.6-2.3-.9-4.4 18.6-13 49-9.2 52.6-4.9 3.6 4.4-.9 34.9-18.3 49.4-2.7 2.3-5.2 1-4.0-1.9 3.9-9.7 12.6-31.7 8.5-37.0z"/>
-  </svg>
-);
-
 const ExternalArrow = () => (
-  <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 8h10M9 4l4 4-4 4"/>
-  </svg>
+    <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 8h10M9 4l4 4-4 4" />
+    </svg>
 );
 
-// 1. NAVBAR PILL
+// 1. NAVBAR PILL — compact amber outline pill
 export function AmazonPill() {
-  return (
-    <a
-      href={AMAZON_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hidden sm:inline-flex items-center gap-2 h-10 px-3.5 rounded-xl border border-[#FF9900]/40 bg-[#FF9900]/10 hover:bg-[#FF9900] transition-all duration-200 cursor-pointer group"
-      aria-label="Buy on Amazon"
-    >
-      <span className="text-white group-hover:text-[#0F1111] transition-colors flex items-center">
-        <AmazonLogo className="h-4.5 w-auto" variant="light" />
-      </span>
-      <ExternalArrow />
-    </a>
-  );
+    return (
+        <a
+            href={AMAZON_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-2.5 h-10 px-3.5 rounded-xl border border-[#FF9900]/40 bg-[#FF9900]/10 hover:bg-[#FF9900] transition-all duration-200 cursor-pointer group"
+            aria-label="Buy on Amazon"
+        >
+            <img
+                src="/amazon-logo.svg"
+                alt="Amazon"
+                className="h-4 w-auto brightness-0 invert group-hover:brightness-0 group-hover:invert-0 transition-all duration-200"
+            />
+            <ExternalArrow />
+        </a>
+    );
 }
 
-// 2. HERO BUTTON
+// 2. HERO BUTTON — solid amber with white logo
 export function AmazonHeroButton() {
-  return (
-    <a
-      href={AMAZON_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-3 h-13 px-7 rounded-xl bg-[#FF9900] hover:bg-[#E59400] active:bg-[#CC8400] text-[#0F1111] font-black text-sm transition-all duration-200 cursor-pointer shadow-[0_0_28px_rgba(255,153,0,0.45)] hover:shadow-[0_0_40px_rgba(255,153,0,0.65)] group select-none"
-      aria-label="Buy on Amazon"
-    >
-      <span className="flex items-center">
-        <AmazonLogo className="h-5 w-auto" variant="dark" />
-      </span>
-      <span className="opacity-30">|</span>
-      <span className="font-extrabold tracking-wide text-xs uppercase">Buy Now</span>
-      <ExternalArrow />
-    </a>
-  );
+    return (
+        <a
+            href={AMAZON_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 h-13 px-7 rounded-xl bg-[#FF9900] hover:bg-[#E59400] active:bg-[#CC8400] transition-all duration-200 cursor-pointer shadow-[0_0_28px_rgba(255,153,0,0.45)] hover:shadow-[0_0_40px_rgba(255,153,0,0.65)] select-none"
+            aria-label="Buy on Amazon"
+        >
+            {/* On amber bg, logo should be dark (#0F1111) — remove invert */}
+            <img
+                src="/amazon-logo.svg"
+                alt="Amazon"
+                className="h-5 w-auto brightness-0"
+            />
+            <span className="h-4 w-px bg-black/25" />
+            <span className="font-black text-[#0F1111] text-xs uppercase tracking-wide whitespace-nowrap">Buy Now</span>
+            <span className="text-[#0F1111]">
+                <ExternalArrow />
+            </span>
+        </a>
+    );
 }
 
-// 3. PRODUCT DETAIL CARD
+// 3. PRODUCT DETAIL CARD — dark glass card with logo
 export function AmazonCardButton() {
-  return (
-    <a
-      href={AMAZON_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-[#FF9900]/15 via-[#FF9900]/8 to-transparent border border-[#FF9900]/35 hover:border-[#FF9900]/80 hover:from-[#FF9900]/25 hover:via-[#FF9900]/15 transition-all duration-250 cursor-pointer group"
-      aria-label="Buy on Amazon"
-    >
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-3">
-          <AmazonLogo className="h-5.5 w-auto" variant="light" />
-          <span className="h-4 w-px bg-white/20" />
-          <span className="text-white font-black text-sm tracking-wide uppercase">Official Store</span>
-        </div>
-        <p className="text-slate-400 text-[11px] font-medium">
-          Fast Prime Shipping · Official Manufacturer Direct Listing
-        </p>
-      </div>
-      <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#FF9900]/20 border border-[#FF9900]/40 group-hover:bg-[#FF9900] group-hover:border-transparent text-[#FF9900] group-hover:text-[#0F1111] transition-all duration-200">
-        <ExternalArrow />
-      </span>
-    </a>
-  );
+    return (
+        <a
+            href={AMAZON_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-[#FF9900]/15 via-[#FF9900]/8 to-transparent border border-[#FF9900]/35 hover:border-[#FF9900]/80 hover:from-[#FF9900]/25 hover:via-[#FF9900]/15 transition-all duration-250 cursor-pointer group"
+            aria-label="Buy on Amazon"
+        >
+            <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-3">
+                    {/* White logo on dark bg */}
+                    <img
+                        src="/amazon-logo.svg"
+                        alt="Amazon"
+                        className="h-5 w-auto brightness-0 invert"
+                    />
+                    <span className="h-4 w-px bg-white/20" />
+                    <span className="text-white font-black text-sm tracking-wide uppercase">Official Store</span>
+                </div>
+                <p className="text-slate-400 text-[11px] font-medium">
+                    Fast Prime Shipping · Official Manufacturer Direct Listing
+                </p>
+            </div>
+            <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#FF9900]/20 border border-[#FF9900]/40 group-hover:bg-[#FF9900] group-hover:border-transparent text-[#FF9900] group-hover:text-[#0F1111] transition-all duration-200">
+                <ExternalArrow />
+            </span>
+        </a>
+    );
 }
