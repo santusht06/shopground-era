@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/services/apiClient';
-import { ArrowRight, Send, ChevronLeft, ChevronRight, ShoppingBag, ExternalLink } from 'lucide-react';
+import { ArrowRight, Send, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HeroSkeleton } from '@/components/ui/skeleton';
+import { AmazonHeroButton } from '@/components/ui/AmazonBuyButton';
 
 const FALLBACK_SLIDES = [
     {
@@ -129,30 +130,21 @@ const HeroBanner = memo(function HeroBanner() {
                             </div>
 
                             <div className="flex flex-wrap items-center gap-3 pt-2">
-                                <a
-                                    href="https://www.amazon.com/dp/B0H915VTB1"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-slate-950 font-black text-sm h-13 px-7 rounded-xl transition-all cursor-pointer shadow-[0_0_25px_rgba(255,153,0,0.35)]"
-                                >
-                                    <ShoppingBag className="w-4 h-4 fill-slate-950" />
-                                    <span>Buy on Amazon</span>
-                                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                                </a>
+                                <AmazonHeroButton />
 
                                 <Button
                                     onClick={handleInquire}
                                     className="gradient-btn-orange font-black text-sm h-13 px-7 rounded-xl gap-2 cursor-pointer"
                                 >
                                     <Send className="w-4 h-4" />
-                                    Get OEM Quote — ${product?.price || '249.99'}
+                                    Get OEM Quote
                                 </Button>
                                 <Button
                                     onClick={handleDetail}
                                     variant="ghost"
                                     className="text-slate-300 hover:text-white text-sm font-bold h-13 px-4 gap-2 cursor-pointer"
                                 >
-                                    Specs
+                                    Full Specs
                                     <ArrowRight className="w-4 h-4 text-[#F27E24]" />
                                 </Button>
                             </div>

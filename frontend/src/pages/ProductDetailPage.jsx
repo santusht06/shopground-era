@@ -6,6 +6,7 @@ import apiClient from '@/services/apiClient';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import { ProductDetailSkeleton } from '@/components/ui/skeleton';
+import { AmazonCardButton } from '@/components/ui/AmazonBuyButton';
 import {
     Star, Check, ChevronRight, Share2, Shield, Truck,
     RotateCcw, Zap, Headphones, Building, Send, Database, ExternalLink,
@@ -207,17 +208,8 @@ export default function ProductDetailPage() {
 
                     {/* Quantity Selector & Add To Cart CTAs */}
                     <div className="space-y-3 pt-1">
-                        {/* Direct Amazon Buy Button */}
-                        <a
-                            href="https://www.amazon.com/dp/B0H915VTB1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-3 bg-[#FF9900] hover:bg-[#E68A00] text-slate-950 font-black text-base h-14 rounded-2xl w-full transition-all cursor-pointer shadow-[0_0_30px_rgba(255,153,0,0.4)]"
-                        >
-                            <ShoppingBag className="w-5 h-5 fill-slate-950" />
-                            <span>Buy Directly on Amazon (ASIN: B0H915VTB1)</span>
-                            <ExternalLink className="w-4 h-4 opacity-80" />
-                        </a>
+                        {/* Amazon Direct Purchase — card variant */}
+                        <AmazonCardButton />
 
                         <div className="flex items-center gap-3">
                             <div className="flex items-center bg-[#0C0C12] border border-white/10 rounded-2xl p-1">
