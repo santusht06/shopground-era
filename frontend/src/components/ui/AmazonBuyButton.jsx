@@ -1,59 +1,49 @@
 import React from 'react';
 
-/**
- * AmazonBuyButton — Premium, production-grade "Buy on Amazon" CTA.
- * Uses official Amazon brand colors and wordmark SVG.
- *
- * Variants:
- *   "pill"  — compact, for navbars / inline usage
- *   "card"  — full-width card with subtitle + arrow
- *   "ghost" — minimal outline style for secondary placement
- */
 const AMAZON_URL = 'https://www.amazon.com/dp/B0H915VTB1';
 
-// Official Amazon logotype SVG (wordmark + smile arrow)
-const AmazonWordmark = ({ className = 'h-4' }) => (
+// Official Amazon.com Wordmark Logo SVG with Orange Smile Arrow
+export const AmazonLogo = ({ className = 'h-5 w-auto', variant = 'light' }) => (
   <svg
-    viewBox="0 0 102 31"
+    viewBox="0 0 400 120"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
-    aria-label="Amazon"
-    fill="currentColor"
+    aria-label="Amazon.com"
   >
-    {/* amazon wordmark */}
-    <path d="M5.87 12.06c0 .55.06 1 .17 1.35.13.35.3.73.54 1.14.09.14.12.28.12.41 0 .18-.11.36-.34.54l-1.13.75c-.16.11-.32.16-.47.16-.18 0-.36-.09-.54-.26a5.57 5.57 0 0 1-.65-.85 13.9 13.9 0 0 1-.56-1.07C1.83 15.61.9 16.3-.2 16.3c-.78 0-1.4-.22-1.86-.65-.46-.43-.7-1.01-.7-1.73 0-.76.27-1.38.82-1.86.55-.48 1.28-.72 2.2-.72.31 0 .63.02.97.07.34.05.69.13 1.06.22v-.67c0-.7-.15-1.19-.44-1.48-.3-.29-.81-.43-1.54-.43-.33 0-.67.04-1.02.13-.35.09-.69.2-1.02.35-.15.07-.27.11-.34.13a.6.6 0 0 1-.16.03c-.14 0-.21-.1-.21-.31V8.6c0-.16.02-.28.07-.35.05-.07.15-.14.31-.21a6.3 6.3 0 0 1 1.25-.36 6.3 6.3 0 0 1 1.54-.18c1.17 0 2.03.27 2.58.8.54.53.82 1.34.82 2.42v3.34zm-3.14 1.18c.3 0 .61-.05.94-.16.33-.11.62-.31.87-.59.15-.17.26-.36.32-.58.06-.22.1-.48.1-.79v-.38a7.53 7.53 0 0 0-.84-.16 7.04 7.04 0 0 0-.85-.05c-.6 0-1.04.12-1.33.36-.29.24-.43.58-.43 1.03 0 .42.11.74.32.96.21.22.51.36.9.36zm7.16.97c-.18 0-.3-.03-.38-.1-.08-.07-.15-.21-.21-.41L7.54 8.38a1.9 1.9 0 0 1-.1-.44c0-.17.09-.27.26-.27h1.06c.19 0 .32.03.39.1.08.07.14.21.19.41l1.29 5.09 1.2-5.09c.05-.21.1-.34.18-.41.08-.07.22-.1.4-.1h.87c.19 0 .32.03.4.1.08.07.14.21.18.41l1.21 5.15 1.33-5.15c.05-.21.12-.34.19-.41.08-.07.21-.1.39-.1h1.01c.17 0 .26.09.26.27 0 .05-.01.1-.02.16-.02.06-.04.14-.08.27l-1.88 5.32c-.05.21-.12.34-.2.41-.08.07-.21.1-.39.1h-.93c-.19 0-.32-.03-.4-.1-.08-.07-.14-.21-.19-.43l-1.19-4.97-1.18 4.96c-.06.21-.12.35-.19.43-.08.07-.22.1-.4.1h-.94zm10.29.19c-.56 0-1.12-.06-1.66-.19-.54-.13-.96-.27-1.24-.43-.18-.1-.3-.21-.34-.31a.79.79 0 0 1-.06-.31v-.52c0-.21.08-.32.23-.32.06 0 .12.01.18.03.06.02.15.06.25.1.34.15.71.27 1.1.35.4.08.79.12 1.19.12.63 0 1.12-.11 1.46-.34.34-.23.52-.56.52-.99 0-.29-.09-.53-.28-.72-.19-.19-.54-.36-1.06-.52l-1.52-.47c-.77-.24-1.34-.59-1.7-1.06a2.58 2.58 0 0 1-.54-1.58c0-.46.1-.86.3-1.21.2-.35.47-.65.81-.89.34-.25.72-.43 1.17-.56.45-.13.92-.19 1.42-.19.25 0 .51.01.76.05.26.03.5.08.73.13.22.05.43.11.63.18.2.07.35.14.46.21.16.1.27.2.33.31.06.11.09.25.09.43v.48c0 .21-.08.32-.23.32-.08 0-.21-.04-.38-.13a4.6 4.6 0 0 0-1.94-.4c-.57 0-1.02.09-1.33.28-.31.19-.47.48-.47.89 0 .29.1.53.31.73.21.2.6.4 1.16.57l1.49.47c.76.24 1.31.57 1.65 1.01.34.44.5.94.5 1.51 0 .47-.1.89-.29 1.26-.19.37-.46.69-.8.96-.34.27-.74.47-1.21.61-.49.15-1 .22-1.54.22zm3.86 2.81c-3.5 2.58-8.57 3.95-12.94 3.95-6.12 0-11.63-2.26-15.8-6.02-.33-.3-.04-.7.36-.47 4.49 2.61 10.05 4.19 15.8 4.19 3.87 0 8.13-.8 12.04-2.47.59-.25 1.08.39.54.82zm1.54-1.76c-.44-.57-2.94-.27-4.06-.13-.34.04-.39-.25-.09-.47 1.99-1.4 5.25-.99 5.63-.53.38.47-.1 3.74-1.96 5.3-.29.24-.56.11-.43-.2.42-1.04 1.35-3.39.91-3.97z"/>
+    <g fill={variant === 'dark' ? '#0F1111' : '#FFFFFF'}>
+      <path d="M47.1 63.8c0 3.3.4 6 1.1 8.1.8 2.1 1.8 4.4 3.2 6.8.5.8.7 1.7.7 2.5 0 1.1-.7 2.2-2 3.2l-6.8 4.5c-1 .7-1.9 1-2.8 1-1.1 0-2.2-.5-3.2-1.6a33.4 33.4 0 0 1-3.9-5.1c-2.4 3.7-5.4 6.6-9.1 8.7-3.7 2.1-7.8 3.1-12.4 3.1-4.7 0-8.4-1.3-11.2-3.9-2.8-2.6-4.2-6.1-4.2-10.4 0-4.6 1.6-8.3 4.9-11.2 3.3-2.9 7.7-4.3 13.2-4.3 1.9 0 3.8.1 5.8.4 2 .3 4.1.8 6.4 1.3v-4c0-4.2-.9-7.1-2.6-8.9-1.8-1.7-4.9-2.6-9.2-2.6-2 0-4 .2-6.1.8-2.1.5-4.1 1.2-6.1 2.1-.9.4-1.6.7-2 .8-.4.1-.7.2-1 0-.8 0-1.3-.6-1.3-1.9v-5.6c0-1 .1-1.7.4-2.1.3-.4.9-.8 1.9-1.3 2.7-1.3 5.7-2.3 9-3 3.3-.7 6.6-1.1 9.9-1.1 7 0 12.2 1.6 15.5 4.8 3.3 3.2 4.9 8 4.9 14.5v20.1zm-18.8 7.1c1.8 0 3.7-.3 5.6-1 1.9-.7 3.7-1.8 5.2-3.5.9-1 1.6-2.2 1.9-3.5.4-1.3.6-2.9.6-4.7v-2.3c-1.7-.5-3.3-.9-5-1.1-1.7-.2-3.4-.3-5.1-.3-3.6 0-6.2.7-7.9 2.2-1.7 1.4-2.6 3.5-2.6 6.2 0 2.5.7 4.4 2 5.8 1.3 1.5 3.1 2.2 5.3 2.2zm43-30.8c-1.1 0-1.8-.2-2.3-.6-.5-.4-.9-1.3-1.3-2.5l-4-15.6c-.2-.7-.4-1.5-.6-2.6 0-1 .5-1.6 1.6-1.6h6.4c1.1 0 1.9.2 2.3.6.5.4.8 1.3 1.1 2.5l7.7 30.5 7.2-30.5c.3-1.3.6-2.1 1.1-2.5.5-.4 1.3-.6 2.4-.6h5.2c1.1 0 1.9.2 2.4.6.5.4.8 1.3 1.1 2.5l7.3 30.9 8-30.9c.3-1.3.7-2.1 1.1-2.5.5-.4 1.3-.6 2.3-.6h6.1c1 0 1.6.5 1.6 1.6 0 .3-.1.6-.1 1-.0.3-.2.8-.5 1.6l-11.3 31.9c-.3 1.3-.7 2.1-1.2 2.5-.5.4-1.3.6-2.3.6h-5.6c-1.1 0-1.9-.2-2.4-.6-.5-.4-.8-1.3-1.1-2.6l-7.1-29.8-7.1 29.8c-.3 1.3-.7 2.1-1.1 2.6-.5.4-1.3.6-2.4.6h-5.6zm70.8.9c-3.4 0-6.7.4-10 1.1-3.3.7-6.3 1.7-9 3-.9.4-1.5.9-1.9 1.3-.3.4-.4 1.1-.4 2.1v5.6c0 1.3.4 1.9 1.3 1.9.3.2.6.1 1-.0.4-.1 1.1-.4 2-.8 2-.9 4-1.6 6.1-2.1 2.1-.6 4.1-.8 6.1-.8 4.3 0 7.4.9 9.2 2.6 1.8 1.8 2.6 4.7 2.6 8.9v4c-2.3-.5-4.4-1-6.4-1.3-2-.3-3.9-.4-5.8-.4-5.5 0-9.9 1.4-13.2 4.3-3.3 2.9-4.9 6.6-4.9 11.2 0 4.3 1.4 7.8 4.2 10.4 2.8 2.6 6.5 3.9 11.2 3.9 4.6 0 8.7-1 12.4-3.1 3.7-2.1 6.7-5 9.1-8.7a33.4 33.4 0 0 1 3.9 5.1c1 1.1 2.1 1.6 3.2 1.6.9 0 1.8-.3 2.8-1l6.8-4.5c1.3-1 2-2.1 2-3.2 0-.8-.2-1.7-.7-2.5-1.4-2.4-2.4-4.7-3.2-6.8-.7-2.1-1.1-4.8-1.1-8.1v-20.1c0-6.5-1.6-11.3-4.9-14.5-3.3-3.2-8.5-4.8-15.5-4.8zm9.5 30c0 1.8-.2 3.4-.6 4.7-.3 1.3-1 2.5-1.9 3.5-1.5 1.7-3.3 2.8-5.2 3.5-1.9.7-3.8 1-5.6 1-2.2 0-4-.7-5.3-2.2-1.3-1.4-2-3.3-2-5.8 0-2.7.9-4.8 2.6-6.2 1.7-1.5 4.3-2.2 7.9-2.2 1.7 0 3.4.1 5.1.3 1.7.2 3.3.6 5 1.1v2.3zm19.4-7.5c0-1.8.6-3.2 1.8-4.3 1.2-1.1 2.8-1.6 4.8-1.6 2 0 3.5.5 4.7 1.6 1.2 1.1 1.8 2.5 1.8 4.3 0 1.8-.6 3.3-1.8 4.4-1.2 1.1-2.7 1.6-4.7 1.6-2 0-3.6-.5-4.8-1.6-1.2-1.1-1.8-2.6-1.8-4.4zm1.1 21.6c0-1.1.2-1.9.7-2.5.5-.6 1.3-.9 2.5-1l24.4-17.7-24.4-17.7c-1.2-.1-2-.4-2.5-1-.5-.6-.7-1.4-.7-2.5v-3.7c0-1.1.5-1.7 1.6-1.7.5 0 1 .1 1.5.4.5.3 1.1.7 1.8 1.2l26.7 19.4c1.1.8 1.6 1.8 1.6 3.1 0 1.3-.5 2.3-1.6 3.1l-26.7 19.4c-.7.5-1.3.9-1.8 1.2-.5.3-1 .4-1.5.4-1.1 0-1.6-.6-1.6-1.7v-3.7zm49.1-14.1c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4 0c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4 0c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 2.3 0 4.3.5 6 1.5 1.7 1 3.1 2.3 4.2 4.1l.6-4.6c.1-.4.3-.7.7-.9.4-.2.8-.3 1.4-.3h6c.9 0 1.5.3 1.9.9.4.6.4 1.4.1 2.5l-4.5 31.9c-.3 1.9-1.2 2.8-2.6 2.8h-5.6c-.9 0-1.5-.3-1.9-.9-.4-.6-.4-1.4-.1-2.5l1.6-11.2c-1.1 1.8-2.5 3.1-4.2 4.1-1.7 1-3.7 1.5-6 1.5-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5z"/>
+      <path d="M309.8 69.8c0-2.3 1.8-4.1 4.1-4.1s4.1 1.8 4.1 4.1-1.8 4.1-4.1 4.1-4.1-1.8-4.1-4.1zm22.4-1.2c0-4.6 1.2-8.3 3.6-11.1 2.4-2.8 5.8-4.2 10.2-4.2 4.4 0 7.8 1.4 10.2 4.2 2.4 2.8 3.6 6.5 3.6 11.1 0 4.6-1.2 8.3-3.6 11.1-2.4 2.8-5.8 4.2-10.2 4.2-4.4 0-7.8-1.4-10.2-4.2-2.4-2.8-3.6-6.5-3.6-11.1zm8.2 0c0 3.3.6 5.8 1.8 7.5 1.2 1.7 2.5 2.5 4.2 2.5 1.7 0 3-.8 4.2-2.5 1.2-1.7 1.8-4.2 1.8-7.5 0-3.3-.6-5.8-1.8-7.5-1.2-1.7-2.5-2.5-4.2-2.5-1.7 0-3 .8-4.2 2.5-1.2 1.7-1.8 4.2-1.8 7.5zm27.4.9c-1.1 0-1.8-.2-2.3-.6-.5-.4-.9-1.3-1.3-2.5l-4-15.6c-.2-.7-.4-1.5-.6-2.6 0-1 .5-1.6 1.6-1.6h6.4c1.1 0 1.9.2 2.3.6.5.4.8 1.3 1.1 2.5l7.7 30.5 7.2-30.5c.3-1.3.6-2.1 1.1-2.5.5-.4 1.3-.6 2.4-.6h5.2c1.1 0 1.9.2 2.4.6.5.4.8 1.3 1.1 2.5l7.3 30.9 8-30.9c.3-1.3.7-2.1 1.1-2.5.5-.4 1.3-.6 2.3-.6h6.1c1 0 1.6.5 1.6 1.6 0 .3-.1.6-.1 1-.0.3-.2.8-.5 1.6l-11.3 31.9c-.3 1.3-.7 2.1-1.2 2.5-.5.4-1.3.6-2.3.6h-5.6c-1.1 0-1.9-.2-2.4-.6-.5-.4-.8-1.3-1.1-2.6l-7.1-29.8-7.1 29.8c-.3 1.3-.7 2.1-1.1 2.6-.5.4-1.3.6-2.4.6h-5.6z"/>
+    </g>
+    {/* Orange Smile Arrow */}
+    <path fill="#FF9900" d="M19.1 94.6c32.7 24.1 79.9 36.8 120.7 36.8 57.1 0 108.5-21.1 147.4-56.2 3.1-2.8.4-6.5-3.4-4.4-41.9 24.4-93.7 39.1-147.4 39.1-36.1 0-77.9-10.4-113.6-30.8-5.5-3.2-10.1 2.9-3.7 15.5zm270.8-16.5c-4.1-5.3-27.4-2.5-37.9-1.2-3.2.4-3.6-2.3-.9-4.4 18.6-13 49-9.2 52.6-4.9 3.6 4.4-.9 34.9-18.3 49.4-2.7 2.3-5.2 1-4.0-1.9 3.9-9.7 12.6-31.7 8.5-37.0z"/>
   </svg>
 );
 
-// Arrow icon for card variant
-const ArrowIcon = () => (
+const ExternalArrow = () => (
   <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 8h10M9 4l4 4-4 4"/>
   </svg>
 );
 
-// ─── PILL ────────────────────────────────────────────────────────────────────
-// Compact button for Navbar — amber outline pill that fills on hover
+// 1. NAVBAR PILL
 export function AmazonPill() {
   return (
     <a
       href={AMAZON_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="hidden sm:inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-[#FF9900]/40 bg-[#FF9900]/8 hover:bg-[#FF9900] text-[#FF9900] hover:text-[#0F1111] transition-all duration-200 cursor-pointer group"
+      className="hidden sm:inline-flex items-center gap-2 h-10 px-3.5 rounded-xl border border-[#FF9900]/40 bg-[#FF9900]/10 hover:bg-[#FF9900] transition-all duration-200 cursor-pointer group"
       aria-label="Buy on Amazon"
     >
-      {/* Amazon logo shifts color with group */}
-      <span className="text-[#FF9900] group-hover:text-[#0F1111] transition-colors">
-        <AmazonWordmark className="h-3.5 w-auto" />
+      <span className="text-white group-hover:text-[#0F1111] transition-colors flex items-center">
+        <AmazonLogo className="h-4.5 w-auto" variant="light" />
       </span>
-      <span className="text-xs font-black tracking-tight whitespace-nowrap">Buy Now</span>
+      <ExternalArrow />
     </a>
   );
 }
 
-// ─── HERO ────────────────────────────────────────────────────────────────────
-// Solid amber "Buy on amazon" block for Hero Banner
+// 2. HERO BUTTON
 export function AmazonHeroButton() {
   return (
     <a
@@ -63,40 +53,38 @@ export function AmazonHeroButton() {
       className="inline-flex items-center gap-3 h-13 px-7 rounded-xl bg-[#FF9900] hover:bg-[#E59400] active:bg-[#CC8400] text-[#0F1111] font-black text-sm transition-all duration-200 cursor-pointer shadow-[0_0_28px_rgba(255,153,0,0.45)] hover:shadow-[0_0_40px_rgba(255,153,0,0.65)] group select-none"
       aria-label="Buy on Amazon"
     >
-      <AmazonWordmark className="h-4 w-auto text-[#0F1111]" />
-      <span className="opacity-40">|</span>
-      <span className="whitespace-nowrap">Buy Now</span>
-      <ArrowIcon />
+      <span className="flex items-center">
+        <AmazonLogo className="h-5 w-auto" variant="dark" />
+      </span>
+      <span className="opacity-30">|</span>
+      <span className="font-extrabold tracking-wide text-xs uppercase">Buy Now</span>
+      <ExternalArrow />
     </a>
   );
 }
 
-// ─── CARD ────────────────────────────────────────────────────────────────────
-// Full-width card for Product Detail Page — premium dark card with Amazon badge
+// 3. PRODUCT DETAIL CARD
 export function AmazonCardButton() {
   return (
     <a
       href={AMAZON_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-[#FF9900]/12 via-[#FF9900]/8 to-transparent border border-[#FF9900]/30 hover:border-[#FF9900]/70 hover:from-[#FF9900]/20 hover:via-[#FF9900]/12 transition-all duration-250 cursor-pointer group"
+      className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-gradient-to-r from-[#FF9900]/15 via-[#FF9900]/8 to-transparent border border-[#FF9900]/35 hover:border-[#FF9900]/80 hover:from-[#FF9900]/25 hover:via-[#FF9900]/15 transition-all duration-250 cursor-pointer group"
       aria-label="Buy on Amazon"
     >
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2.5">
-          {/* Amazon logo in amber */}
-          <span className="text-[#FF9900]">
-            <AmazonWordmark className="h-5 w-auto" />
-          </span>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-3">
+          <AmazonLogo className="h-5.5 w-auto" variant="light" />
           <span className="h-4 w-px bg-white/20" />
-          <span className="text-white font-black text-sm tracking-tight">Buy Now</span>
+          <span className="text-white font-black text-sm tracking-wide uppercase">Official Store</span>
         </div>
         <p className="text-slate-400 text-[11px] font-medium">
-          Prime delivery available · Sold &amp; fulfilled by Amazon
+          Fast Prime Shipping · Official Manufacturer Direct Listing
         </p>
       </div>
-      <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#FF9900]/15 border border-[#FF9900]/30 group-hover:bg-[#FF9900] group-hover:border-transparent text-[#FF9900] group-hover:text-[#0F1111] transition-all duration-200">
-        <ArrowIcon />
+      <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#FF9900]/20 border border-[#FF9900]/40 group-hover:bg-[#FF9900] group-hover:border-transparent text-[#FF9900] group-hover:text-[#0F1111] transition-all duration-200">
+        <ExternalArrow />
       </span>
     </a>
   );

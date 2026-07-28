@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
-import LiveSSEBanner from '@/components/ecommerce/LiveSSEBanner';
 import HomePage from '@/pages/HomePage';
 import ProductDetailPage from '@/pages/ProductDetailPage';
 import Footer from '@/components/layout/Footer';
@@ -14,9 +13,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-[#050507] text-[#F8FAFC]">
-        {/* Real-time Server-Sent Events (SSE) Live Stream Ticker */}
-        <LiveSSEBanner />
-
         {/* Single Product Portfolio Navbar */}
         <Navbar />
 
