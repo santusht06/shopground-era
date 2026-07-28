@@ -5,45 +5,37 @@ from app.core.database import get_database
 
 router = APIRouter(prefix="/products", tags=["Product Catalog"])
 
-# Initial fallback catalog if database is empty
-DEMO_PRODUCTS = [
-    {
-        "_id": "prod-101",
-        "name": "Lorem Apex Headphones",
-        "subtitle": "Wireless Active Noise Cancelling Audio",
-        "description": "High-fidelity audio engineered with active noise cancellation and 30-hour battery life.",
-        "price": 249.99,
-        "original_price": 299.99,
-        "category": "Electronics",
-        "brand": "Apex Audio",
-        "stock": 18,
-        "rating": 4.9,
-        "reviews_count": 128,
-        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
-        "specs": ["Bluetooth 5.3", "30-Hour Battery", "Active ANC"],
-        "variants": [{"sku": "HD-BLK", "color": "Midnight Black", "stock": 10, "price": 249.99}],
-        "is_new": True,
-        "status": "Active"
-    },
-    {
-        "_id": "prod-102",
-        "name": "Ipsum Minimalist Chronograph",
-        "subtitle": "Brushed Stainless Steel Timepiece",
-        "description": "Minimalist sapphire crystal chronograph with genuine leather strap.",
-        "price": 189.00,
-        "original_price": 220.00,
-        "category": "Accessories",
-        "brand": "Chrono Craft",
-        "stock": 12,
-        "rating": 4.8,
-        "reviews_count": 94,
-        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
-        "specs": ["Sapphire Crystal", "50m Water Resistance"],
-        "variants": [],
-        "is_new": False,
-        "status": "Active"
-    }
-]
+# Amazon ASIN B0H915VTB1 — Primary Catalog Item
+AMAZON_PRODUCT_B0H915VTB1 = {
+    "_id": "B0H915VTB1",
+    "name": "Apex Pro Wireless Active Noise Cancelling Headphones",
+    "subtitle": "ASIN: B0H915VTB1 — Premium Studio Grade Audio",
+    "description": "High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions.",
+    "price": 249.99,
+    "original_price": 299.99,
+    "category": "Electronics",
+    "brand": "Apex Audio",
+    "stock": 24,
+    "rating": 4.9,
+    "reviews_count": 128,
+    "image": "/images/product/main.png",
+    "images": [
+        "/images/product/main.png",
+        "/images/product/angle.png",
+        "/images/product/feature.png",
+        "/images/product/banner1.png",
+        "/images/product/banner2.png"
+    ],
+    "specs": ["Bluetooth 5.3", "30-Hour Battery", "Active ANC", "Custom Acoustic Drivers", "ASIN: B0H915VTB1"],
+    "variants": [
+        {"sku": "B0H915VTB1-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
+        {"sku": "B0H915VTB1-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
+    ],
+    "is_new": True,
+    "status": "Active"
+}
+
+DEMO_PRODUCTS = [AMAZON_PRODUCT_B0H915VTB1]
 
 @router.get("", response_model=List[ProductInDB])
 async def list_products(
@@ -51,7 +43,7 @@ async def list_products(
     search: Optional[str] = Query(None, description="Search term in title or description")
 ):
     """
-    Retrieve product catalog with optional search and category filters.
+    Retrieve product catalog starting exclusively with Amazon product B0H915VTB1.
     """
     db = get_database()
     if db:
@@ -82,7 +74,7 @@ async def list_products(
 @router.get("/{product_id}", response_model=ProductInDB)
 async def get_product(product_id: str):
     """
-    Retrieve single product details by ID.
+    Retrieve single product details by ID or ASIN B0H915VTB1.
     """
     db = get_database()
     if db:
@@ -92,10 +84,11 @@ async def get_product(product_id: str):
             return product
 
     for p in DEMO_PRODUCTS:
-        if p["_id"] == product_id:
+        if p["_id"] == product_id or product_id.upper() == "B0H915VTB1":
             return p
 
-    raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
+    # Return primary Amazon product if ID not found
+    return AMAZON_PRODUCT_B0H915VTB1
 
 @router.post("", response_model=ProductInDB, status_code=status.HTTP_201_CREATED)
 async def create_product(product_data: ProductCreate):
@@ -104,7 +97,7 @@ async def create_product(product_data: ProductCreate):
     """
     db = get_database()
     product_dict = product_data.dict()
-    product_dict["_id"] = f"prod-{int(status.HTTP_201_CREATED)}"
+    product_dict["_id"] = f"B0H915VTB1-{int(status.HTTP_201_CREATED)}"
 
     if db:
         res = await db.products.insert_one(product_dict)

@@ -23,7 +23,7 @@ export default function HeroBanner() {
     }, []);
 
     const handleShopNow = () => {
-        document.getElementById('product-catalog')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/product/B0H915VTB1');
     };
 
     return (
@@ -43,34 +43,34 @@ export default function HeroBanner() {
                             <div className="flex flex-wrap items-center gap-2">
                                 <Badge className="bg-[#5E6AD2] text-white text-xs font-extrabold px-3 py-1 uppercase tracking-wider flex items-center gap-1">
                                     <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-pulse" />
-                                    Big Billion Festival Sale
+                                    Amazon Prime Special Deal
                                 </Badge>
-                                <span className="text-xs text-slate-400 font-medium">Up to 50% Off Top Tech & Fashion</span>
+                                <span className="text-xs text-slate-400 font-medium">ASIN: B0H915VTB1 — In Stock</span>
                             </div>
 
-                            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-none text-white">
-                                Flagship Tech & <br />
-                                <span className="text-[#5E6AD2]">Curated Lifestyle.</span>
+                            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-none text-white font-heading">
+                                Apex Pro ANC <br />
+                                <span className="text-[#5E6AD2]">Headphones.</span>
                             </h1>
 
                             <p className="text-sm text-slate-300 max-w-xl leading-relaxed">
-                                Experience high-performance wireless audio, ergonomic workspace furniture, and luxury accessories with Flipkart Assured dispatch.
+                                High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour battery life, and plush memory foam ear cushions (ASIN: B0H915VTB1).
                             </p>
 
                             {/* Actions & Countdown Pill */}
                             <div className="flex flex-wrap items-center gap-4 pt-2">
                                 <Button
                                     onClick={handleShopNow}
-                                    className="bg-[#5E6AD2] hover:bg-[#4f5bc4] text-white font-extrabold text-sm h-11 px-6 rounded-xl gap-2 shadow-lg cursor-pointer"
+                                    className="gradient-btn-primary font-extrabold text-sm h-11 px-6 rounded-xl gap-2 shadow-lg cursor-pointer"
                                 >
-                                    <span>Shop Festival Deals</span>
+                                    <span>Buy Now ($249.99)</span>
                                     <ArrowRight className="w-4 h-4" />
                                 </Button>
 
                                 {/* Live Timer */}
                                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 text-xs">
                                     <Clock className="w-4 h-4 text-amber-400" />
-                                    <span className="text-slate-300 font-medium">Ends in:</span>
+                                    <span className="text-slate-300 font-medium">Flash Sale:</span>
                                     <span className="font-mono font-extrabold text-amber-400">
                                         {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
                                     </span>
@@ -79,17 +79,17 @@ export default function HeroBanner() {
                         </div>
 
                         {/* Right Preview Image */}
-                        <div className="lg:col-span-5 relative">
-                            <div className="relative aspect-4/3 rounded-2xl overflow-hidden border border-white/20 shadow-2xl group">
+                        <div className="lg:col-span-5 relative cursor-pointer" onClick={handleShopNow}>
+                            <div className="relative aspect-4/3 rounded-2xl overflow-hidden border border-white/20 shadow-2xl group bg-white/5">
                                 <img
-                                    src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
-                                    alt="Hero Feature"
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    src="/images/product/main.png"
+                                    alt="Apex Pro Headphones ASIN B0H915VTB1"
+                                    className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">
                                     <div>
-                                        <Badge className="bg-emerald-500 text-white text-[10px] font-bold">Featured Deal</Badge>
-                                        <p className="text-sm font-extrabold text-white">Lorem Apex Headphones</p>
+                                        <Badge className="bg-emerald-500 text-white text-[10px] font-bold">Featured Product</Badge>
+                                        <p className="text-sm font-extrabold text-white">Apex Pro Wireless ANC Headphones</p>
                                         <p className="text-xs text-emerald-400 font-bold">$249.99 <span className="text-slate-400 line-through text-[11px] font-normal">$299.99</span></p>
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@ export default function HeroBanner() {
                             <CreditCard className="w-4 h-4 text-[#5E6AD2]" />
                             <span><strong>Bank Discount:</strong> 10% Instant Discount on HDFC & ICICI Cards</span>
                         </div>
-                        <span className="text-[11px] text-slate-400 font-mono">Use Coupon Code: <strong className="text-white font-bold">LOREM10</strong></span>
+                        <span className="text-[11px] text-slate-400 font-mono">Use Coupon Code: <strong className="text-white font-bold">APEX16</strong></span>
                     </div>
 
                 </div>
