@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import apiClient from '@/services/apiClient';
 import HeroBanner from '@/components/ecommerce/HeroBanner';
 import BrandStrip from '@/components/ecommerce/BrandStrip';
-import DealsCarousel from '@/components/ecommerce/DealsCarousel';
+import WholesaleTiers from '@/components/ecommerce/WholesaleTiers';
 import AcousticFeatures from '@/components/ecommerce/AcousticFeatures';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
@@ -47,8 +47,8 @@ export default function HomePage() {
             {/* 2. Startup Metrics & Live Trust Strip */}
             <BrandStrip />
 
-            {/* 3. Limited Time Flash Offers Sliding Deals Carousel */}
-            <DealsCarousel />
+            {/* 3. Direct Factory Supply & Wholesale Volume Tiers */}
+            <WholesaleTiers />
 
             {/* 4. Driver & Acoustic Innovation Section */}
             <AcousticFeatures product={product} />
