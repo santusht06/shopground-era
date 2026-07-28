@@ -104,8 +104,18 @@ export default function Navbar() {
                     })}
                 </nav>
 
-                {/* Right Action: Shopping Bag & Direct Inquiry CTAs */}
-                <div className="flex items-center gap-3">
+                {/* Right Action: Shopping Bag, Amazon & Direct Inquiry CTAs */}
+                <div className="flex items-center gap-2.5">
+                    <a
+                        href="https://www.amazon.com/dp/B0H915VTB1"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hidden sm:inline-flex items-center gap-1.5 bg-[#FF9900]/15 hover:bg-[#FF9900] text-[#FF9900] hover:text-slate-950 border border-[#FF9900]/40 text-xs font-black h-10 px-3.5 rounded-xl transition-all cursor-pointer"
+                    >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                        <span>Amazon Store</span>
+                    </a>
+
                     <Button
                         onClick={() => dispatch(toggleCartDrawer(true))}
                         variant="outline"

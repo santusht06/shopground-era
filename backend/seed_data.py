@@ -31,6 +31,7 @@ PRODUCT = {
     "_id": "66a87f12bc09a123456789ab",
     "id": "66a87f12bc09a123456789ab",
     "asin": "B0H915VTB1",
+    "amazon_url": "https://www.amazon.com/dp/B0H915VTB1",
     "name": "GroundEra Anti-Vibration Pads with Leveling Shim & Mini Level",
     "model_number": "GE-PADS-800",
     "manufacturer": "GroundEra Hardware Corp.",
