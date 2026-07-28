@@ -92,7 +92,7 @@ export default function InquiryForm({ productId = '66a87f12bc09a123456789ab', pr
                             Interested in {productName}?
                         </h2>
                         <p className="text-sm text-slate-400 leading-relaxed font-normal">
-                            Submit your details below. Your inquiry will be logged directly into our database and routed immediately to our sales management team (<span className="font-bold text-[#F27E24]">santushtkotai1221@gmail.com</span>).
+                            Submit your details below. Your inquiry will be logged directly into our database and routed immediately to our sales management team (<span className="font-bold text-[#F27E24]">info@shopgroundera.com</span>).
                         </p>
                     </div>
 
@@ -238,7 +238,7 @@ export default function InquiryForm({ productId = '66a87f12bc09a123456789ab', pr
                         <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-2 text-xs text-slate-400">
                                 <ShieldCheck className="w-4 h-4 text-[#F27E24]" />
-                                <span>SSL Encrypted — Dispatches immediately to santushtkotai1221@gmail.com</span>
+                                <span>SSL Encrypted — Dispatches immediately to info@shopgroundera.com</span>
                             </div>
 
                             <Button

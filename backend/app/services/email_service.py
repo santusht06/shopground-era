@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 
-RECIPIENT_EMAIL = os.getenv("NOTIFY_EMAIL", "santushtkotai1221@gmail.com")
+RECIPIENT_EMAIL = os.getenv("NOTIFY_EMAIL", "info@shopgroundera.com")
 
 def render_inquiry_email_html(inquiry: dict) -> str:
     """

@@ -58,9 +58,9 @@ export default function Footer() {
                     {/* CONTACT */}
                     <div className="md:col-span-4 space-y-4">
                         <h4 className="font-black text-white text-xs uppercase tracking-widest mb-4 font-heading">Contact Sales</h4>
-                        <a href="mailto:employee.sales@shopground.era" className="flex items-center gap-2 text-slate-200 font-medium hover:text-[#F27E24] transition-colors">
+                        <a href="mailto:info@shopgroundera.com" className="flex items-center gap-2 text-slate-200 font-medium hover:text-[#F27E24] transition-colors">
                             <Mail className="w-3.5 h-3.5 text-[#F27E24] shrink-0" />
-                            employee.sales@shopground.era
+                            info@shopgroundera.com
                         </a>
                         <a href="tel:+18005550000" className="flex items-center gap-2 text-slate-300 hover:text-[#F27E24] transition-colors">
                             <Phone className="w-3.5 h-3.5 text-[#F27E24] shrink-0" />
