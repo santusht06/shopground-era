@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     # Redis Database & Queue Connection
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+    # Cloudinary Media Storage & Transformation Engine
+    CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME", "shopground")
+    CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "892410385928174")
+    CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "shopground_demo_secret_key_889900")
+
     # Production CORS Allowed Origins
     CORS_ORIGINS: List[str] = [
         "http://localhost:5173",

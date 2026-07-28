@@ -13,6 +13,7 @@ from app.routes.payments import router as payments_router
 from app.routes.logistics import router as logistics_router
 from app.routes.inventory import router as inventory_router
 from app.routes.analytics import router as analytics_router
+from app.routes.media import router as media_router
 from app.routes.health import router as health_router
 
 app = FastAPI(
@@ -53,6 +54,7 @@ app.include_router(payments_router, prefix=settings.API_V1_STR)
 app.include_router(logistics_router, prefix=settings.API_V1_STR)
 app.include_router(inventory_router, prefix=settings.API_V1_STR)
 app.include_router(analytics_router, prefix=settings.API_V1_STR)
+app.include_router(media_router, prefix=settings.API_V1_STR)
 app.include_router(health_router, prefix=settings.API_V1_STR)
 
 @app.get("/")

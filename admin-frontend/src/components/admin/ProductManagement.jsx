@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addProduct, deleteProduct } from '@/store/adminSlice';
-import { Plus, Trash2, Search, Filter, Package, Flame, CheckCircle } from 'lucide-react';
+import { uploadImageToCloudinary } from '@/services/cloudinaryService';
+import { Plus, Trash2, Search, Filter, Package, Flame, CheckCircle, UploadCloud, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +15,7 @@ export default function ProductManagement() {
     const [search, setSearch] = useState('');
     const [selectedCat, setSelectedCat] = useState('All');
     const [showModal, setShowModal] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     const [newProduct, setNewProduct] = useState({
         name: '',
@@ -30,6 +32,21 @@ export default function ProductManagement() {
         const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.id.toLowerCase().includes(search.toLowerCase());
         return matchesCat && matchesSearch;
     });
+
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingImage(true);
+        try {
+            const uploadedMedia = await uploadImageToCloudinary(file, 'shopground/products');
+            setNewProduct(prev => ({ ...prev, image: uploadedMedia.url }));
+        } catch (error) {
+            console.error('Failed to upload image to Cloudinary:', error);
+        } finally {
+            setUploadingImage(false);
+        }
+    };
 
     const handleCreateProduct = (e) => {
         e.preventDefault();
@@ -57,97 +74,102 @@ export default function ProductManagement() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-[#0F172A]">Product Inventory Center</h1>
-                    <p className="text-xs text-[#6B7280]">Manage catalog items, pricing, and stock levels across categories.</p>
+                    <p className="text-xs text-[#6B7280]">Manage catalog items, pricing, Cloudinary media assets, and stock levels.</p>
                 </div>
                 <Button
                     onClick={() => setShowModal(true)}
-                    className="bg-[#5E6AD2] hover:bg-[#4f5bc4] text-white text-xs font-semibold gap-1.5 cursor-pointer shadow-xs"
+                    className="gradient-btn-primary font-bold text-xs flex items-center gap-2 rounded-xl px-4 py-2"
                 >
-                    <Plus className="w-4 h-4" /> Add New Product
+                    <Plus className="w-4 h-4" /> Add Product
                 </Button>
             </div>
 
-            {/* Filters Toolbar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-xl border border-[#E5E7EB] shadow-xs">
-                <div className="relative w-full sm:w-72">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input
-                        placeholder="Search product title or ID..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="pl-9 text-xs bg-[#F4F5F8] border-[#E5E7EB] h-9"
-                    />
-                </div>
-
-                <div className="flex items-center gap-2 self-end sm:self-auto text-xs">
-                    <span className="text-slate-500 font-semibold">Category:</span>
-                    <select
-                        value={selectedCat}
-                        onChange={(e) => setSelectedCat(e.target.value)}
-                        className="bg-[#F4F5F8] border border-[#E5E7EB] rounded-lg text-xs py-1.5 px-3 font-semibold text-slate-800 focus:ring-1 focus:ring-[#5E6AD2]"
-                    >
-                        <option value="All">All Categories</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Furniture">Furniture</option>
-                        <option value="Accessories">Accessories</option>
-                        <option value="Home & Kitchen">Home & Kitchen</option>
-                    </select>
-                </div>
-            </div>
-
-            {/* Inventory Data Table */}
-            <Card className="bg-white border-[#E5E7EB] shadow-xs">
-                <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                            <thead className="bg-[#F4F5F8] text-slate-500 font-semibold border-b border-[#E5E7EB]">
-                                <tr>
-                                    <th className="py-3.5 px-6">Product Details</th>
-                                    <th className="py-3.5 px-6">Category</th>
-                                    <th className="py-3.5 px-6">Price ($)</th>
-                                    <th className="py-3.5 px-6">Stock Status</th>
-                                    <th className="py-3.5 px-6">Availability</th>
-                                    <th className="py-3.5 px-6 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {filteredProducts.map((product) => (
-                                    <tr key={product.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="py-3.5 px-6 flex items-center gap-3">
-                                            <img src={product.image} alt={product.name} className="w-10 h-10 object-cover rounded-lg bg-slate-100" />
-                                            <div>
-                                                <p className="font-bold text-slate-900">{product.name}</p>
-                                                <p className="text-[10px] text-slate-400 font-mono">{product.id}</p>
-                                            </div>
-                                        </td>
-                                        <td className="py-3.5 px-6 font-medium text-slate-600">{product.category}</td>
-                                        <td className="py-3.5 px-6 font-extrabold text-[#0F172A]">${product.price.toFixed(2)}</td>
-                                        <td className="py-3.5 px-6 font-semibold text-slate-700">
-                                            {product.stock <= 10 ? (
-                                                <span className="text-amber-600 font-bold flex items-center gap-1">
-                                                    <Flame className="w-3.5 h-3.5" /> Low ({product.stock})
-                                                </span>
-                                            ) : (
-                                                <span>{product.stock} units</span>
-                                            )}
-                                        </td>
-                                        <td className="py-3.5 px-6">
-                                            <Badge variant="success" className="text-[10px]">Active</Badge>
-                                        </td>
-                                        <td className="py-3.5 px-6 text-right">
-                                            <button
-                                                onClick={() => dispatch(deleteProduct(product.id))}
-                                                className="text-slate-400 hover:text-rose-600 transition-colors p-1 cursor-pointer"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+            {/* Filter & Search Bar */}
+            <Card className="border border-[#E5E7EB]">
+                <CardContent className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="relative w-full md:w-80">
+                        <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                        <Input
+                            placeholder="Search by title or ID..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="pl-9 text-xs"
+                        />
                     </div>
+
+                    <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
+                        {['All', 'Electronics', 'Fashion', 'Furniture', 'Accessories'].map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setSelectedCat(cat)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                                    selectedCat === cat
+                                        ? 'bg-[#5E6AD2] text-white'
+                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Product Grid Table */}
+            <Card className="border border-[#E5E7EB]">
+                <CardContent className="p-0 overflow-x-auto">
+                    <table className="w-full text-left text-xs text-slate-600">
+                        <thead className="bg-[#F8FAFC] border-b border-[#E5E7EB] text-slate-700 font-bold uppercase text-[10px]">
+                            <tr>
+                                <th className="p-4">Product Info</th>
+                                <th className="p-4">Category</th>
+                                <th className="p-4">Price</th>
+                                <th className="p-4">Stock</th>
+                                <th className="p-4">Status</th>
+                                <th className="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#E5E7EB]">
+                            {filteredProducts.map((product) => (
+                                <tr key={product.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="p-4 flex items-center gap-3">
+                                        <img
+                                            src={product.image}
+                                            alt={product.name}
+                                            className="w-10 h-10 rounded-lg object-cover border border-slate-200"
+                                        />
+                                        <div>
+                                            <span className="font-bold text-[#0F172A] block">{product.name}</span>
+                                            <span className="text-[10px] text-slate-400">{product.id}</span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 font-medium text-slate-700">{product.category}</td>
+                                    <td className="p-4 font-bold text-[#5E6AD2]">${product.price.toFixed(2)}</td>
+                                    <td className="p-4">
+                                        <Badge
+                                            variant={product.stock <= 5 ? 'warning' : 'outline'}
+                                            className="text-[10px]"
+                                        >
+                                            {product.stock} in stock
+                                        </Badge>
+                                    </td>
+                                    <td className="p-4">
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                            <CheckCircle className="w-3 h-3" /> {product.status || 'Active'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <button
+                                            onClick={() => dispatch(deleteProduct(product.id))}
+                                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </CardContent>
             </Card>
 
@@ -198,13 +220,31 @@ export default function ProductManagement() {
                             </div>
 
                             <div>
-                                <label className="font-semibold text-slate-700">Image URL</label>
-                                <Input
-                                    placeholder="https://images.unsplash.com/photo-..."
-                                    value={newProduct.image}
-                                    onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
-                                    className="text-xs mt-1"
-                                />
+                                <label className="font-semibold text-slate-700">Product Image (Cloudinary Upload)</label>
+                                <div className="mt-1 flex items-center gap-2">
+                                    <Input
+                                        placeholder="https://res.cloudinary.com/..."
+                                        value={newProduct.image}
+                                        onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                                        className="text-xs flex-1"
+                                    />
+                                    <label className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg text-xs flex items-center gap-1.5 border border-slate-200 transition-colors">
+                                        {uploadingImage ? (
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        ) : (
+                                            <UploadCloud className="w-3.5 h-3.5 text-[#5E6AD2]" />
+                                        )}
+                                        <span>{uploadingImage ? 'Uploading...' : 'Upload'}</span>
+                                        <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                                    </label>
+                                </div>
+                                {newProduct.image && (
+                                    <img
+                                        src={newProduct.image}
+                                        alt="Preview"
+                                        className="mt-2 w-16 h-16 rounded-lg object-cover border border-slate-200"
+                                    />
+                                )}
                             </div>
 
                             <div className="pt-3 flex justify-end gap-2">
