@@ -20,9 +20,9 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
     # Cloudinary Media Storage & Transformation Engine
-    CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME", "shopground")
-    CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "892410385928174")
-    CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "shopground_demo_secret_key_889900")
+    CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME", "dnay8iqz3")
+    CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "178889896179956")
+    CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "6YArsC09_d_rsmE3_gWappI02mw")
 
     # Production CORS Allowed Origins
     CORS_ORIGINS: List[str] = [

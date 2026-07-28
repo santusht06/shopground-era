@@ -56,6 +56,6 @@ export function getOptimizedCloudinaryUrl(publicId, width = 600, height = 600, c
     return publicId;
   }
 
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'shopground';
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dnay8iqz3';
   return `https://res.cloudinary.com/${cloudName}/image/upload/w_${width},h_${height},c_${crop},f_auto,q_auto/${publicId}`;
 }
