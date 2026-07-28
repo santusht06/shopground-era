@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleCartDrawer } from '@/store/slices/cartSlice';
-import { ShieldCheck, Sparkles, Send, FileText, Image as ImageIcon, Layers, ShoppingBag } from 'lucide-react';
+import { Send, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export default function Navbar() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
     const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    const [activeSection, setActiveSection] = useState('overview');
+
+    useEffect(() => {
+        const sectionIds = [
+            { id: 'product-overview', name: 'overview' },
+            { id: 'wholesale-section', name: 'wholesale' },
+            { id: 'gallery-section', name: 'gallery' },
+            { id: 'tech-specs-section', name: 'specs' },
+            { id: 'inquiry-form-section', name: 'inquiry' },
+        ];
+
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY + 140;
+            for (let i = sectionIds.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sectionIds[i].id);
+                if (el) {
+                    const top = el.offsetTop;
+                    if (scrollPosition >= top) {
+                        setActiveSection(sectionIds[i].name);
+                        break;
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const scrollToSection = (id) => {
         const handleScroll = () => {
@@ -30,8 +59,16 @@ export default function Navbar() {
         }
     };
 
+    const NAV_ITEMS = [
+        { label: 'Overview', id: 'product-overview', name: 'overview' },
+        { label: 'Wholesale Tiers', id: 'wholesale-section', name: 'wholesale' },
+        { label: 'Features & Gallery', id: 'gallery-section', name: 'gallery' },
+        { label: 'Technical Specs', id: 'tech-specs-section', name: 'specs' },
+        { label: 'Get a Quote', id: 'inquiry-form-section', name: 'inquiry' },
+    ];
+
     return (
-        <header className="sticky top-0 z-50 w-full glass-header">
+        <header className="sticky top-0 z-50 w-full glass-header transition-all duration-300">
             {/* Main Navigation Header */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
                 
@@ -44,38 +81,27 @@ export default function Navbar() {
                     />
                 </Link>
 
-                {/* Quick Section Navigation Links */}
-                <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-slate-300">
-                    <button
-                        onClick={() => scrollToSection('product-overview')}
-                        className="hover:text-[#F27E24] transition-colors cursor-pointer text-slate-300 hover:scale-105 transform"
-                    >
-                        Explore
-                    </button>
-                    <button
-                        onClick={() => scrollToSection('product-overview')}
-                        className="hover:text-[#F27E24] transition-colors cursor-pointer text-slate-300 hover:scale-105 transform"
-                    >
-                        Product Overview
-                    </button>
-                    <button
-                        onClick={() => scrollToSection('gallery-section')}
-                        className="hover:text-[#F27E24] transition-colors cursor-pointer text-slate-300 hover:scale-105 transform"
-                    >
-                        Features & Gallery
-                    </button>
-                    <button
-                        onClick={() => scrollToSection('tech-specs-section')}
-                        className="hover:text-[#F27E24] transition-colors cursor-pointer text-slate-300 hover:scale-105 transform"
-                    >
-                        Technical Specs
-                    </button>
-                    <button
-                        onClick={() => scrollToSection('inquiry-form-section')}
-                        className="hover:text-[#F27E24] transition-colors cursor-pointer text-slate-300 hover:scale-105 transform"
-                    >
-                        Get a Quote
-                    </button>
+                {/* Quick Section Navigation Links with Scroll Spy Active Effect */}
+                <nav className="hidden md:flex items-center gap-2 text-xs font-bold">
+                    {NAV_ITEMS.map((item) => {
+                        const isActive = activeSection === item.name;
+                        return (
+                            <button
+                                key={item.name}
+                                onClick={() => scrollToSection(item.id)}
+                                className={`px-3.5 py-1.5 rounded-full transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
+                                    isActive
+                                        ? 'bg-[#F27E24]/15 text-[#F27E24] border border-[#F27E24]/35 font-extrabold shadow-[0_0_12px_rgba(242,126,36,0.25)] scale-105'
+                                        : 'text-slate-300 hover:text-[#F27E24] hover:bg-white/5 font-semibold'
+                                }`}
+                            >
+                                {isActive && (
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#F27E24] animate-pulse" />
+                                )}
+                                <span>{item.label}</span>
+                            </button>
+                        );
+                    })}
                 </nav>
 
                 {/* Right Action: Shopping Bag & Direct Inquiry CTAs */}

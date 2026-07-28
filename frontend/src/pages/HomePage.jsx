@@ -48,7 +48,9 @@ export default function HomePage() {
             <BrandStrip />
 
             {/* 3. Direct Factory Supply & Wholesale Volume Tiers */}
-            <WholesaleTiers />
+            <div id="wholesale-section">
+                <WholesaleTiers />
+            </div>
 
             {/* 4. Driver & Acoustic Innovation Section */}
             <AcousticFeatures product={product} />
