@@ -6,7 +6,7 @@ import WholesaleTiers from '@/components/ecommerce/WholesaleTiers';
 import AcousticFeatures from '@/components/ecommerce/AcousticFeatures';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
-import { Loader2 } from 'lucide-react';
+import { HeroSkeleton } from '@/components/ui/skeleton';
 
 export default function HomePage() {
     const [product, setProduct] = useState(null);
@@ -29,12 +29,7 @@ export default function HomePage() {
     }, []);
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-[#050507] flex items-center justify-center gap-3 text-slate-400 py-32">
-                <Loader2 className="w-6 h-6 animate-spin text-[#F27E24]" />
-                <span className="text-base font-bold font-heading tracking-wide">Loading ShopGround Era…</span>
-            </div>
-        );
+        return <HeroSkeleton />;
     }
 
     return (

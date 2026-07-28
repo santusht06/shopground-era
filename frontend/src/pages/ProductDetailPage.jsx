@@ -5,9 +5,10 @@ import { addToCart } from '@/store/slices/cartSlice';
 import apiClient from '@/services/apiClient';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
+import { ProductDetailSkeleton } from '@/components/ui/skeleton';
 import {
     Star, Check, ChevronRight, Share2, Shield, Truck,
-    RotateCcw, Zap, Headphones, Building, Send, Loader2, Database,
+    RotateCcw, Zap, Headphones, Building, Send, Database,
     ShoppingBag, Layers, VolumeX, CheckCircle2, Sliders, ArrowRight, Activity
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -80,12 +81,7 @@ export default function ProductDetailPage() {
     };
 
     if (fetching) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-28 flex items-center justify-center gap-3 text-slate-400">
-                <Loader2 className="w-6 h-6 animate-spin text-[#F27E24]" />
-                <span className="text-sm font-semibold tracking-wide">Fetching deep product data from MongoDB database…</span>
-            </div>
-        );
+        return <ProductDetailSkeleton />;
     }
 
     if (error || !product) {
