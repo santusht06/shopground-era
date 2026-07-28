@@ -1,68 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addToCart } from '@/store/slices/cartSlice';
-import { toggleWishlist } from '@/store/slices/authSlice';
+import apiClient from '@/services/apiClient';
+import InquiryForm from '@/components/ecommerce/InquiryForm';
+import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import {
-    Star,
-    ShoppingBag,
-    CheckCircle,
-    ArrowLeft,
-    Truck,
-    Shield,
-    RotateCcw,
-    Share2,
-    Check,
-    ChevronRight,
-    Heart,
-    Flame,
-    FileText,
-    MessageSquare,
-    Zap,
+    Star, Check, ChevronRight, Share2, Shield, Truck,
+    RotateCcw, Zap, Headphones, Building, Send, Loader2, Database,
+    ShoppingBag, Layers, VolumeX, CheckCircle2, Sliders, ArrowRight, Activity
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import ProductCard from '@/components/ecommerce/ProductCard';
 
 export default function ProductDetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const products = useSelector((state) => state.products.items);
-    const wishlist = useSelector((state) => state.auth.wishlist);
-
-    const product = products.find((p) => p.id === id) || products[0];
-    const isWishlisted = wishlist.some((item) => item?.id === product?.id);
-
-    const galleryImages = product.images && product.images.length > 0 ? product.images : [
-        '/images/product/main.png',
-        '/images/product/angle.png',
-        '/images/product/feature.png',
-        '/images/product/banner1.png',
-        '/images/product/banner2.png'
-    ];
-
-    const [selectedImage, setSelectedImage] = useState(galleryImages[0]);
-    const [quantity, setQuantity] = useState(1);
-    const [addedSuccess, setAddedSuccess] = useState(false);
+    const [product, setProduct] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [copiedLink, setCopiedLink] = useState(false);
-    const [activeTab, setActiveTab] = useState('overview');
+    const [fetching, setFetching] = useState(true);
+    const [error, setError] = useState(null);
+
+    // E-Commerce Quantity & Tab State
+    const [quantity, setQuantity] = useState(1);
+    const [activeTab, setActiveTab] = useState('mechanics'); // 'mechanics' | 'installation' | 'compatibility' | 'reviews'
+    const [addedFeedback, setAddedFeedback] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (galleryImages && galleryImages.length > 0) {
-            setSelectedImage(galleryImages[0]);
-        }
+        const fetchProductData = async () => {
+            setFetching(true);
+            setError(null);
+            try {
+                // Fetch dynamically from MongoDB API by ID (e.g. 66a87f12bc09a123456789ab)
+                const res = await apiClient.get(`/products/${id || '66a87f12bc09a123456789ab'}`);
+                setProduct(res.data);
+                if (res.data?.images?.length) {
+                    setSelectedImage(res.data.images[0]);
+                } else if (res.data?.image) {
+                    setSelectedImage(res.data.image);
+                }
+            } catch (err) {
+                console.error(`Failed to load product '${id}' from MongoDB:`, err);
+                setError(err.response?.data?.detail || `Product ID '${id}' was not found in MongoDB database.`);
+            } finally {
+                setFetching(false);
+            }
+        };
+
+        fetchProductData();
     }, [id]);
-
-    if (!product) return null;
-
-    const handleAddToCart = () => {
-        dispatch(addToCart({ ...product, quantity }));
-        setAddedSuccess(true);
-        setTimeout(() => setAddedSuccess(false), 2000);
-    };
 
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -70,135 +60,169 @@ export default function ProductDetailPage() {
         setTimeout(() => setCopiedLink(false), 2000);
     };
 
+    const handleInquireScroll = () => {
+        document.getElementById('inquiry-form-section')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleAddToCart = () => {
+        if (!product) return;
+        const mongoId = product._id || product.id || '66a87f12bc09a123456789ab';
+        dispatch(addToCart({
+            id: mongoId,
+            name: product.name,
+            price: product.price || 249.99,
+            quantity: quantity,
+            image: selectedImage || product.image || "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_main.png",
+            category: 'Anti-Vibration Hardware',
+        }));
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 2500);
+    };
+
+    if (fetching) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-28 flex items-center justify-center gap-3 text-slate-400">
+                <Loader2 className="w-6 h-6 animate-spin text-[#F27E24]" />
+                <span className="text-sm font-semibold tracking-wide">Fetching deep product data from MongoDB database…</span>
+            </div>
+        );
+    }
+
+    if (error || !product) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#F27E24]/10 border border-[#F27E24]/30 text-[#F27E24] flex items-center justify-center mx-auto">
+                    <Database className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-black text-white font-heading">Product Not Found in Database</h2>
+                <p className="text-sm text-slate-400 max-w-md mx-auto">{error || `No record found in MongoDB for ID "${id}".`}</p>
+                <Button onClick={() => navigate('/')} className="gradient-btn-orange font-bold text-white">
+                    Return to Main Portfolio
+                </Button>
+            </div>
+        );
+    }
+
+    const galleryImages = product.images?.length ? product.images : [
+        "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_main.png",
+        "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_angle.png",
+        "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_case.png",
+        "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_banner1.png"
+    ];
+    const mongoId = product._id || product.id || '66a87f12bc09a123456789ab';
+    const originalPrice = product.originalPrice || product.original_price || product.wholesale_mrp || 299.99;
+
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-            
-            {/* Breadcrumb Header */}
-            <div className="flex items-center justify-between text-xs text-slate-500 border-b border-[#E5E7EB] pb-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 bg-[#050507] text-[#F8FAFC]">
+
+            {/* Breadcrumb & Database Verification Bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-400 border-b border-white/10 pb-4 gap-3">
                 <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
-                    <Link to="/" className="hover:text-[#5E6AD2] font-medium transition-colors">
-                        Home
-                    </Link>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                    <Link to="/" className="hover:text-[#5E6AD2] font-medium transition-colors">
-                        {product.category}
-                    </Link>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                    <span className="font-semibold text-slate-900 truncate max-w-[200px] sm:max-w-none">
-                        {product.name}
-                    </span>
+                    <Link to="/" className="hover:text-[#F27E24] font-medium text-slate-300">All Products</Link>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                    <span className="font-bold text-white truncate max-w-xs">{product.name}</span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        onClick={() => dispatch(toggleWishlist(product))}
-                        variant="outline"
-                        size="sm"
-                        className={`text-xs gap-1.5 border-[#E5E7EB] bg-white ${isWishlisted ? 'text-rose-500' : 'text-slate-700'}`}
-                    >
-                        <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-rose-500' : ''}`} />
-                        <span>{isWishlisted ? 'Saved to Wishlist' : 'Save to Wishlist'}</span>
-                    </Button>
-
-                    <Button
-                        onClick={handleShare}
-                        variant="outline"
-                        size="sm"
-                        className="text-xs gap-1.5 border-[#E5E7EB] bg-white text-slate-700 hover:bg-[#F4F5F8]"
-                    >
-                        {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
-                        <span>{copiedLink ? 'Link Copied!' : 'Share Page'}</span>
-                    </Button>
-                </div>
+                <Button
+                    onClick={handleShare}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs gap-1.5 border-white/10 bg-[#0C0C12] text-slate-200 hover:border-white/20 h-8"
+                >
+                    {copiedLink ? <Check className="w-3.5 h-3.5 text-[#F27E24]" /> : <Share2 className="w-3.5 h-3.5 text-[#F27E24]" />}
+                    {copiedLink ? 'Copied!' : 'Share'}
+                </Button>
             </div>
 
-            {/* Main Product Display Section */}
+            {/* Main Product Split Box */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                
-                {/* Left Column: Multi-Angle High-Res Gallery */}
+
+                {/* Left: Cloudinary High-Res Media Gallery */}
                 <div className="lg:col-span-7 space-y-4">
-                    <div className="relative aspect-4/3 bg-slate-900/5 rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden group">
-                        <img
-                            src={selectedImage}
-                            alt={product.name}
-                            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-                        />
+                    <div className="relative aspect-4/3 bg-[#0C0C12] rounded-3xl border border-white/10 overflow-hidden group shadow-2xl orange-glow-border">
+                        {selectedImage && (
+                            <img
+                                src={selectedImage}
+                                alt={product.name}
+                                className="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
+                            />
+                        )}
                         <div className="absolute top-4 left-4 flex flex-col gap-2">
-                            <Badge className="bg-[#5E6AD2] text-white text-xs font-extrabold uppercase tracking-wider">
-                                Amazon ASIN: B0H915VTB1
+                            <Badge className="bg-[#F27E24] text-white text-xs font-black uppercase tracking-wider shadow-lg">
+                                Cloudinary CDN Media Verified
                             </Badge>
-                            {product.originalPrice > product.price && (
-                                <Badge variant="success" className="text-xs font-extrabold uppercase tracking-wider">
-                                    Save ${(product.originalPrice - product.price).toFixed(0)}
-                                </Badge>
-                            )}
                         </div>
                     </div>
 
-                    {/* Image Thumbnails Carousel */}
-                    <div className="grid grid-cols-5 gap-3">
-                        {galleryImages.map((img, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setSelectedImage(img)}
-                                className={`relative aspect-square rounded-xl border-2 overflow-hidden bg-white p-1 transition-all cursor-pointer ${
-                                    selectedImage === img ? 'border-[#5E6AD2] ring-2 ring-[#5E6AD2]/20 scale-105' : 'border-slate-200 hover:border-slate-300'
-                                }`}
-                            >
-                                <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
-                            </button>
-                        ))}
-                    </div>
+                    {/* Thumbnail Strip */}
+                    {galleryImages.length > 1 && (
+                        <div className="grid grid-cols-4 gap-3">
+                            {galleryImages.map((img, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setSelectedImage(img)}
+                                    className={`aspect-square rounded-2xl border-2 overflow-hidden bg-[#0C0C12] p-2 transition-all cursor-pointer ${
+                                        selectedImage === img
+                                            ? 'border-[#F27E24] shadow-[0_0_12px_rgba(242,126,36,0.6)] scale-105'
+                                            : 'border-white/10 opacity-70 hover:opacity-100 hover:border-white/30'
+                                    }`}
+                                >
+                                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
-                {/* Right Column: Buy Box & Product Info */}
+                {/* Right: Detailed Specification Summary & E-Commerce Order Box */}
                 <div className="lg:col-span-5 space-y-6">
                     <div>
-                        <div className="flex items-center gap-1.5 text-amber-500 font-semibold text-xs mb-2">
-                            <Star className="w-4 h-4 fill-amber-400" />
-                            <span>{product.rating}</span>
-                            <span className="text-slate-400 font-normal">({product.reviewsCount} verified customer reviews)</span>
-                        </div>
-                        
-                        <h1 className="text-3xl font-extrabold text-[#0F172A] leading-tight tracking-tight font-heading">
+                        <h1 className="text-3xl sm:text-4xl font-black text-white leading-tight font-heading">
                             {product.name}
                         </h1>
-
-                        <p className="text-sm font-semibold text-[#5E6AD2] mt-1">{product.subtitle}</p>
+                        <p className="text-sm font-bold text-[#F27E24] mt-1.5">{product.subtitle || "Heavy-Duty Acoustic Elastomer Anti-Vibration Pads"}</p>
                     </div>
 
-                    {/* Price Card & Stock Urgency */}
-                    <div className="p-4 bg-white border border-[#E5E7EB] rounded-2xl shadow-xs space-y-3">
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                        {product.long_description || product.description || "Industrial-grade elastomer acoustic isolation engineered with high-traction honeycomb grips, stackable leveling shims, and an 800 LB load capacity."}
+                    </p>
+
+                    {/* Price & Stock Box */}
+                    <div className="p-5 bg-[#0C0C12] border border-white/10 rounded-2xl shadow-xl space-y-3 orange-glow-border">
                         <div className="flex items-center justify-between">
                             <div>
-                                <span className="text-xs text-slate-400 block font-medium">Special Online Price</span>
+                                <span className="text-xs text-slate-400 block font-medium">Sample / Direct Order Price</span>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-extrabold text-[#0F172A]">${product.price.toFixed(2)}</span>
-                                    {product.originalPrice > product.price && (
-                                        <span className="text-sm text-slate-400 line-through font-medium">${product.originalPrice.toFixed(2)}</span>
+                                    <span className="text-3xl font-black text-white font-mono">
+                                        ${product.price?.toFixed(2)}
+                                    </span>
+                                    {originalPrice > product.price && (
+                                        <span className="text-sm text-slate-500 line-through font-normal font-mono">
+                                            ${originalPrice?.toFixed(2)}
+                                        </span>
                                     )}
                                 </div>
                             </div>
-                            <Badge variant="outline" className="text-emerald-700 bg-emerald-50 border-emerald-200 text-xs px-2.5 py-1 font-bold">
-                                In Stock ({product.stock} units)
+                            <Badge variant="outline" className="text-[#F27E24] bg-[#F27E24]/10 border-[#F27E24]/30 text-xs px-3 py-1 font-extrabold">
+                                Stock: {product.stock || 1500} Units
                             </Badge>
                         </div>
                     </div>
 
-                    {/* Actions & Quantity Selector */}
-                    <div className="border-t border-[#E5E7EB] pt-6 space-y-4">
+                    {/* Quantity Selector & Add To Cart CTAs */}
+                    <div className="space-y-3 pt-1">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center border border-[#E5E7EB] rounded-lg bg-white h-11">
+                            <div className="flex items-center bg-[#0C0C12] border border-white/10 rounded-2xl p-1">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="px-3.5 py-1 text-base font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
+                                    className="w-10 h-10 rounded-xl bg-black/60 text-white font-bold text-base hover:bg-[#F27E24] transition-colors cursor-pointer"
                                 >
                                     -
                                 </button>
-                                <span className="px-4 text-sm font-bold text-slate-900">{quantity}</span>
+                                <span className="w-12 text-center font-mono font-bold text-sm text-white">{quantity}</span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="px-3.5 py-1 text-base font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
+                                    className="w-10 h-10 rounded-xl bg-black/60 text-white font-bold text-base hover:bg-[#F27E24] transition-colors cursor-pointer"
                                 >
                                     +
                                 </button>
@@ -206,91 +230,195 @@ export default function ProductDetailPage() {
 
                             <Button
                                 onClick={handleAddToCart}
-                                className="gradient-btn-primary font-bold text-sm h-11 flex-1 rounded-xl gap-2 cursor-pointer shadow-md"
+                                className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-extrabold text-sm h-12 rounded-2xl gap-2 cursor-pointer transition-all"
                             >
-                                {addedSuccess ? <Check className="w-4 h-4 text-emerald-400" /> : <ShoppingBag className="w-4 h-4" />}
-                                <span>{addedSuccess ? 'Added to Cart!' : 'Add to Shopping Cart'}</span>
+                                <ShoppingBag className="w-4 h-4 text-[#F27E24]" />
+                                <span>{addedFeedback ? '✓ Added to Bag!' : 'Add to Inquiry Bag'}</span>
                             </Button>
                         </div>
+
+                        <Button
+                            onClick={handleInquireScroll}
+                            className="gradient-btn-orange font-black text-sm h-13 rounded-2xl w-full gap-2 shadow-xl cursor-pointer"
+                        >
+                            <Send className="w-4 h-4" />
+                            <span>Submit Direct Inquiry to Sales Representative</span>
+                        </Button>
+                        <p className="text-[11px] text-center text-slate-400">
+                            Submissions dispatch directly to <strong className="text-[#F27E24]">employee.sales@shopground.era</strong>
+                        </p>
                     </div>
 
                     {/* Trust Badges */}
-                    <div className="grid grid-cols-3 gap-3 pt-2 text-center text-[11px] text-slate-600 font-medium border-t border-[#E5E7EB]">
-                        <div className="p-2 rounded-xl bg-[#FAFAFC] border border-slate-100 flex flex-col items-center gap-1">
-                            <Truck className="w-4 h-4 text-[#5E6AD2]" />
-                            <span>Express Delivery</span>
+                    <div className="grid grid-cols-3 gap-3 text-center text-[11px] text-slate-300 font-medium border-t border-white/10 pt-5">
+                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
+                            <Truck className="w-4 h-4 text-[#F27E24]" />
+                            <span>Express Shipping</span>
                         </div>
-                        <div className="p-2 rounded-xl bg-[#FAFAFC] border border-slate-100 flex flex-col items-center gap-1">
-                            <Shield className="w-4 h-4 text-[#5E6AD2]" />
-                            <span>1 Year Warranty</span>
+                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
+                            <Shield className="w-4 h-4 text-[#F27E24]" />
+                            <span>2 Year Warranty</span>
                         </div>
-                        <div className="p-2 rounded-xl bg-[#FAFAFC] border border-slate-100 flex flex-col items-center gap-1">
-                            <RotateCcw className="w-4 h-4 text-[#5E6AD2]" />
-                            <span>30 Days Return</span>
+                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
+                            <Building className="w-4 h-4 text-[#F27E24]" />
+                            <span>OEM Support</span>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            {/* Specifications & Features Tabs */}
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-6">
-                <div className="flex border-b border-slate-200 gap-6 text-sm font-bold text-slate-500">
+            {/* DEEP PRODUCT DESCRIPTION & TECHNICAL BREAKDOWN TABS */}
+            <div className="bg-[#0C0C12] border border-white/10 rounded-3xl p-6 sm:p-10 space-y-8 shadow-[0_10px_30px_rgba(0,0,0,0.8)] orange-glow-border">
+                
+                {/* Tab Controls */}
+                <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-4">
                     <button
-                        onClick={() => setActiveTab('overview')}
-                        className={`pb-3 border-b-2 transition-colors cursor-pointer ${
-                            activeTab === 'overview' ? 'border-[#5E6AD2] text-[#5E6AD2]' : 'border-transparent hover:text-slate-800'
+                        onClick={() => setActiveTab('mechanics')}
+                        className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
+                            activeTab === 'mechanics'
+                                ? 'bg-[#F27E24] text-white shadow-[0_0_15px_rgba(242,126,36,0.5)]'
+                                : 'bg-white/5 text-slate-300 hover:bg-white/10'
                         }`}
                     >
-                        Product Description & Features
+                        <Activity className="w-4 h-4" /> Acoustic Damping Mechanics
                     </button>
+
                     <button
-                        onClick={() => setActiveTab('specs')}
-                        className={`pb-3 border-b-2 transition-colors cursor-pointer ${
-                            activeTab === 'specs' ? 'border-[#5E6AD2] text-[#5E6AD2]' : 'border-transparent hover:text-slate-800'
+                        onClick={() => setActiveTab('installation')}
+                        className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
+                            activeTab === 'installation'
+                                ? 'bg-[#F27E24] text-white shadow-[0_0_15px_rgba(242,126,36,0.5)]'
+                                : 'bg-white/5 text-slate-300 hover:bg-white/10'
                         }`}
                     >
-                        Technical Specifications
+                        <Layers className="w-4 h-4" /> Stackable & Leveling Guide
+                    </button>
+
+                    <button
+                        onClick={() => setActiveTab('compatibility')}
+                        className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
+                            activeTab === 'compatibility'
+                                ? 'bg-[#F27E24] text-white shadow-[0_0_15px_rgba(242,126,36,0.5)]'
+                                : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                        }`}
+                    >
+                        <Zap className="w-4 h-4" /> Universal Appliance Compatibility
                     </button>
                 </div>
 
-                {activeTab === 'overview' && (
-                    <div className="space-y-4 text-xs text-slate-600 leading-relaxed">
-                        <p>{product.description}</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            {product.specs?.map((spec, i) => (
-                                <div key={i} className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 font-semibold text-slate-800">
-                                    <Zap className="w-4 h-4 text-[#5E6AD2]" />
-                                    <span>{spec}</span>
-                                </div>
-                            ))}
+                {/* TAB 1: ACOUSTIC DAMPING MECHANICS */}
+                {activeTab === 'mechanics' && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in duration-300">
+                        <div className="bg-[#08080D] p-5 rounded-2xl border border-white/10 space-y-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#F27E24]/10 text-[#F27E24] flex items-center justify-center font-bold">
+                                <VolumeX className="w-5 h-5" />
+                            </div>
+                            <h4 className="text-base font-black text-white font-heading">High-Density Elastomer</h4>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                                Formulated with industrial-grade thermoplastic rubber compound that dissipates low-frequency kinetic energy and motor vibration before it transfers to floor structures.
+                            </p>
+                        </div>
+
+                        <div className="bg-[#08080D] p-5 rounded-2xl border border-white/10 space-y-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#F27E24]/10 text-[#F27E24] flex items-center justify-center font-bold">
+                                <Layers className="w-5 h-5" />
+                            </div>
+                            <h4 className="text-base font-black text-white font-heading">Micro-Honeycomb Vacuum Grip</h4>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                                Microscopic suction cups integrated into the bottom surface create an active vacuum seal against hardwood, tile, and concrete to stop appliance walking completely.
+                            </p>
+                        </div>
+
+                        <div className="bg-[#08080D] p-5 rounded-2xl border border-white/10 space-y-3">
+                            <div className="w-10 h-10 rounded-xl bg-[#F27E24]/10 text-[#F27E24] flex items-center justify-center font-bold">
+                                <Shield className="w-5 h-5" />
+                            </div>
+                            <h4 className="text-base font-black text-white font-heading">800 LB Structural Limit</h4>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                                Tested under extreme static compression to support up to 800 lbs across a 4-pad set without permanent deformation or cracking.
+                            </p>
                         </div>
                     </div>
                 )}
 
-                {activeTab === 'specs' && (
-                    <table className="w-full text-xs text-left text-slate-600">
-                        <tbody className="divide-y divide-slate-100">
-                            <tr>
-                                <td className="py-2.5 font-bold text-slate-900 w-1/3">Amazon ASIN</td>
-                                <td className="py-2.5 font-mono text-[#5E6AD2]">B0H915VTB1</td>
-                            </tr>
-                            <tr>
-                                <td className="py-2.5 font-bold text-slate-900">Active Noise Cancellation</td>
-                                <td className="py-2.5">Hybrid Active ANC (up to 38dB reduction)</td>
-                            </tr>
-                            <tr>
-                                <td className="py-2.5 font-bold text-slate-900">Battery Playtime</td>
-                                <td className="py-2.5">30 Hours (ANC On) / 45 Hours (ANC Off)</td>
-                            </tr>
-                            <tr>
-                                <td className="py-2.5 font-bold text-slate-900">Connectivity</td>
-                                <td className="py-2.5">Bluetooth 5.3 + 3.5mm Aux Cable</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {/* TAB 2: STACKABLE & LEVELING GUIDE */}
+                {activeTab === 'installation' && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                        <h3 className="text-lg font-black text-white font-heading">4-Step Precision Leveling Procedure</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="bg-[#08080D] p-4 rounded-2xl border border-white/10 space-y-2">
+                                <span className="text-xs font-mono font-bold text-[#F27E24]">STEP 01</span>
+                                <h4 className="text-xs font-bold text-white">Clean Contact Surface</h4>
+                                <p className="text-[11px] text-slate-400">Wipe clean dirt or moisture underneath appliance feet for maximum traction.</p>
+                            </div>
+                            <div className="bg-[#08080D] p-4 rounded-2xl border border-white/10 space-y-2">
+                                <span className="text-xs font-mono font-bold text-[#F27E24]">STEP 02</span>
+                                <h4 className="text-xs font-bold text-white">Position Main Elastomer Pad</h4>
+                                <p className="text-[11px] text-slate-400">Slide each anti-vibration pad under all 4 corners of the washing machine or equipment.</p>
+                            </div>
+                            <div className="bg-[#08080D] p-4 rounded-2xl border border-white/10 space-y-2">
+                                <span className="text-xs font-mono font-bold text-[#F27E24]">STEP 03</span>
+                                <h4 className="text-xs font-bold text-white">Insert Modular Leveling Shim</h4>
+                                <p className="text-[11px] text-slate-400">If the floor slope is uneven, interlock modular leveling shims to raise specific corners.</p>
+                            </div>
+                            <div className="bg-[#08080D] p-4 rounded-2xl border border-white/10 space-y-2">
+                                <span className="text-xs font-mono font-bold text-[#F27E24]">STEP 04</span>
+                                <h4 className="text-xs font-bold text-white">Verify Spirit Level Tool</h4>
+                                <p className="text-[11px] text-slate-400">Place included pocket bubble level on top of appliance to confirm zero wobble.</p>
+                            </div>
+                        </div>
+                    </div>
                 )}
+
+                {/* TAB 3: UNIVERSAL COMPATIBILITY GRID */}
+                {activeTab === 'compatibility' && (
+                    <div className="overflow-x-auto animate-in fade-in duration-300">
+                        <table className="w-full text-xs text-left text-slate-300 border border-white/10 rounded-2xl overflow-hidden">
+                            <thead className="bg-[#08080D] text-white font-heading uppercase text-[11px]">
+                                <tr>
+                                    <th className="py-3 px-4">Appliance / Equipment</th>
+                                    <th className="py-3 px-4">Load Capacity</th>
+                                    <th className="py-3 px-4">Walking Damping</th>
+                                    <th className="py-3 px-4">Floor Type</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/10">
+                                <tr className="bg-[#111116]">
+                                    <td className="py-3 px-4 font-bold text-white">Front-Load & Top-Load Washers</td>
+                                    <td className="py-3 px-4">Up to 800 LBS</td>
+                                    <td className="py-3 px-4 text-[#F27E24] font-bold">99.4% Reduction</td>
+                                    <td className="py-3 px-4">Tile, Hardwood, Concrete</td>
+                                </tr>
+                                <tr className="bg-[#08080D]">
+                                    <td className="py-3 px-4 font-bold text-white">Heavy-Duty Clothes Dryers</td>
+                                    <td className="py-3 px-4">Up to 600 LBS</td>
+                                    <td className="py-3 px-4 text-[#F27E24] font-bold">98.9% Reduction</td>
+                                    <td className="py-3 px-4">Laminate, Tile, Vinyl</td>
+                                </tr>
+                                <tr className="bg-[#111116]">
+                                    <td className="py-3 px-4 font-bold text-white">Fitness Treadmills & Gym Racks</td>
+                                    <td className="py-3 px-4">Up to 850 LBS</td>
+                                    <td className="py-3 px-4 text-[#F27E24] font-bold">97.5% Impact Noise Absorbed</td>
+                                    <td className="py-3 px-4">Rubber, Wood, Tile</td>
+                                </tr>
+                                <tr className="bg-[#08080D]">
+                                    <td className="py-3 px-4 font-bold text-white">Commercial HVAC & Subwoofers</td>
+                                    <td className="py-3 px-4">Up to 800 LBS</td>
+                                    <td className="py-3 px-4 text-[#F27E24] font-bold">Low-Frequency Isolation</td>
+                                    <td className="py-3 px-4">All Surfaces</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
             </div>
+
+            {/* Amazon-Grade Technical Datasheet */}
+            <TechSpecsTable product={product} />
+
+            {/* Employee Inquiry Form */}
+            <InquiryForm productId={mongoId} productName={product.name} />
 
         </div>
     );

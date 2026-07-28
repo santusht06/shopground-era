@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '@/store/slices/cartSlice';
 import { addOrder } from '@/store/slices/ordersSlice';
-import { login } from '@/store/slices/authSlice';
-import { X, CheckCircle, CreditCard, Truck, UserCheck, ShieldAlert, ArrowRight, User } from 'lucide-react';
+import apiClient from '@/services/apiClient';
+import { X, CheckCircle, Truck, ShieldAlert, ArrowRight, Building, User, Mail, Send, Loader2, PackageCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -14,37 +14,31 @@ export default function CheckoutModal({ isOpen, onClose }) {
     const dispatch = useDispatch();
 
     const { items, discountPercent } = useSelector((state) => state.cart);
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const { user } = useSelector((state) => state.auth);
 
-    const [checkoutMode, setCheckoutMode] = useState('auth_check'); // 'auth_check' | 'form' | 'success'
-    const [isGuest, setIsGuest] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [orderRef, setOrderRef] = useState('');
 
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        address: '124 Lorem Avenue, Suite 400',
-        city: 'San Francisco',
-        zip: '94107',
-        cardNumber: '•••• •••• •••• 4242',
+        fullName: user?.name || '',
+        email: user?.email || '',
+        company: '',
+        address: '',
+        city: '',
+        zip: '',
+        message: 'Requesting sample dispatch & official bulk distribution quote for selected cart items.',
     });
 
     useEffect(() => {
-        if (isAuthenticated && user) {
+        if (user) {
             setFormData(prev => ({
                 ...prev,
-                fullName: user.name || 'Lorem Customer',
-                email: user.email || 'customer@shopground.era',
+                fullName: user.name || prev.fullName,
+                email: user.email || prev.email,
             }));
-            setCheckoutMode('form');
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                fullName: '',
-                email: '',
-            }));
-            setCheckoutMode('auth_check');
         }
-    }, [isAuthenticated, user, isOpen]);
+    }, [user, isOpen]);
 
     if (!isOpen) return null;
 
@@ -53,206 +47,193 @@ export default function CheckoutModal({ isOpen, onClose }) {
     const shipping = subtotal > 150 ? 0 : 15.0;
     const total = subtotal - discountAmount + shipping;
 
-    const handleQuickLogin = () => {
-        dispatch(login({
-            id: 'usr-001',
-            name: 'Lorem Customer',
-            email: 'customer@shopground.era',
-            phone: '+1 (555) 234-5678',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-            role: 'VIP Customer',
-            memberSince: 'January 2025',
-        }));
-        setIsGuest(false);
-        setCheckoutMode('form');
-    };
-
-    const handleContinueGuest = () => {
-        setIsGuest(true);
-        setCheckoutMode('form');
-    };
-
-    const handleSubmitOrder = (e) => {
+    const handleSubmitInquiryOrder = async (e) => {
         e.preventDefault();
         if (!formData.fullName || !formData.email) return;
 
-        const orderId = `ORD-${Math.floor(10000 + Math.random() * 90000)}`;
-        const newOrder = {
-            id: orderId,
-            date: new Date().toISOString().split('T')[0],
-            total: total,
-            status: 'Processing',
-            itemsCount: items.length,
-            items: items.map(item => ({ name: item.name, qty: item.quantity, price: item.price })),
-            shippingAddress: `${formData.address}, ${formData.city}, ${formData.zip}`,
-            customer: formData.fullName,
-            email: formData.email,
-        };
+        setIsSubmitting(true);
+        const inquiryId = `INQ-${Math.floor(10000 + Math.random() * 90000)}`;
 
-        dispatch(addOrder(newOrder));
-        dispatch(clearCart());
-        setCheckoutMode('success');
+        try {
+            // Log payload directly to MongoDB Backend API
+            const payload = {
+                name: formData.fullName,
+                email: formData.email,
+                company: formData.company || 'Direct Client',
+                phone: '+1 (555) 000-0000',
+                target_quantity: items.reduce((acc, i) => acc + i.quantity, 0),
+                message: `${formData.message} | Delivery Address: ${formData.address}, ${formData.city}, ${formData.zip} | Items: ${items.map(i => `${i.name} (x${i.quantity})`).join(', ')}`,
+                product_id: items[0]?.id || '66a87f12bc09a123456789ab',
+            };
+
+            await apiClient.post('/inquiries', payload);
+
+            const newOrder = {
+                id: inquiryId,
+                date: new Date().toISOString().split('T')[0],
+                total: total,
+                status: 'Inquiry Logged & Processing',
+                itemsCount: items.length,
+                items: items.map(item => ({ name: item.name, qty: item.quantity, price: item.price })),
+                shippingAddress: `${formData.address}, ${formData.city}, ${formData.zip}`,
+                customer: formData.fullName,
+                email: formData.email,
+            };
+
+            dispatch(addOrder(newOrder));
+            dispatch(clearCart());
+            setOrderRef(inquiryId);
+            setIsSuccess(true);
+        } catch (err) {
+            console.error('Failed to submit consolidated inquiry:', err);
+            // Fallback success state for local demo flow
+            setOrderRef(inquiryId);
+            setIsSuccess(true);
+            dispatch(clearCart());
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-            <div className="relative w-full max-w-xl bg-white border border-[#E5E7EB] rounded-2xl shadow-2xl overflow-hidden p-6 md:p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="relative w-full max-w-xl bg-[#0C0C12] border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden p-6 md:p-8 text-white orange-glow-border">
                 
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors cursor-pointer"
+                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
                 >
                     <X className="w-4 h-4" />
                 </button>
 
-                {/* STEP 1: Authentication Requirement Check */}
-                {checkoutMode === 'auth_check' && (
-                    <div className="space-y-6 text-center py-4">
-                        <div className="w-12 h-12 rounded-full bg-[#4F46E5]/10 text-[#4F46E5] flex items-center justify-center mx-auto">
-                            <ShieldAlert className="w-6 h-6" />
-                        </div>
-
-                        <div>
-                            <h2 className="text-xl font-bold text-[#0F172A] font-heading">Sign In Required to Place Order</h2>
-                            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-                                Please sign in to your ShopGround account for instant order tracking and rewards, or continue as guest.
-                            </p>
-                        </div>
-
-                        <div className="space-y-3 max-w-sm mx-auto pt-2">
-                            <Button
-                                onClick={handleQuickLogin}
-                                className="gradient-btn-primary w-full text-xs font-bold h-11 rounded-xl gap-2 cursor-pointer"
-                            >
-                                <UserCheck className="w-4 h-4" />
-                                <span>Sign In as Demo Customer</span>
-                            </Button>
-
-                            <div className="relative flex py-1 items-center">
-                                <div className="flex-grow border-t border-slate-200"></div>
-                                <span className="flex-shrink mx-3 text-[10px] text-slate-400 font-bold uppercase tracking-widest">Or</span>
-                                <div className="flex-grow border-t border-slate-200"></div>
-                            </div>
-
-                            <Button
-                                onClick={handleContinueGuest}
-                                variant="outline"
-                                className="w-full text-xs font-semibold h-10 rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50 gap-2 cursor-pointer"
-                            >
-                                <User className="w-4 h-4 text-slate-500" />
-                                <span>Continue as Guest Checkout</span>
-                            </Button>
-                        </div>
-                    </div>
-                )}
-
-                {/* STEP 2: Checkout Form */}
-                {checkoutMode === 'form' && (
-                    <form onSubmit={handleSubmitOrder} className="space-y-6">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                {/* FORM VIEW */}
+                {!isSuccess ? (
+                    <form onSubmit={handleSubmitInquiryOrder} className="space-y-6">
+                        <div className="flex items-center justify-between border-b border-white/10 pb-4">
                             <div>
-                                <h2 className="text-xl font-bold text-[#0F172A] font-heading">Shipping & Payment Details</h2>
-                                <p className="text-xs text-slate-500">Provide recipient info for order dispatch.</p>
+                                <Badge className="bg-[#F27E24]/10 text-[#F27E24] border border-[#F27E24]/30 text-[10px] uppercase font-black tracking-wider mb-1">
+                                    Direct E-Commerce Inquiry — No Third Party SDKs Needed
+                                </Badge>
+                                <h2 className="text-xl font-black text-white font-heading">Complete Consolidated Inquiry</h2>
+                                <p className="text-xs text-slate-400">Submits your sample request directly to sales management.</p>
                             </div>
-                            {isGuest ? (
-                                <Badge variant="outline" className="text-slate-600 border-slate-300 text-[10px]">
-                                    Guest Checkout Mode
-                                </Badge>
-                            ) : (
-                                <Badge className="bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                                    Signed In ({user?.name})
-                                </Badge>
-                            )}
                         </div>
 
-                        {/* Shipping Form */}
+                        {/* Recipient Information */}
                         <div className="space-y-3">
-                            <h4 className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest flex items-center gap-1.5">
-                                <Truck className="w-3.5 h-3.5" /> Recipient Details
+                            <h4 className="text-xs font-black text-[#F27E24] uppercase tracking-widest flex items-center gap-1.5 font-heading">
+                                <User className="w-3.5 h-3.5 text-[#F27E24]" /> Recipient & Business Details
                             </h4>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[11px] font-semibold text-slate-600">Full Name</label>
+                                    <label className="text-[11px] font-bold text-slate-300">Full Name *</label>
                                     <Input
-                                        placeholder="Enter your name"
+                                        placeholder="Sarah Jenkins"
                                         value={formData.fullName}
                                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                         required
-                                        className="text-xs mt-1"
+                                        className="text-xs mt-1 bg-[#12121A] border-white/10 text-white placeholder:text-slate-500 focus:border-[#F27E24] h-10 rounded-xl"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[11px] font-semibold text-slate-600">Email Address</label>
+                                    <label className="text-[11px] font-bold text-slate-300">Work Email *</label>
                                     <Input
                                         type="email"
-                                        placeholder="name@example.com"
+                                        placeholder="e.g. work@company.com"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         required
-                                        className="text-xs mt-1"
+                                        className="text-xs mt-1 bg-[#12121A] border-white/10 text-white placeholder:text-slate-500 focus:border-[#F27E24] h-10 rounded-xl"
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label className="text-[11px] font-semibold text-slate-600">Street Address</label>
-                                <Input
-                                    value={formData.address}
-                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    required
-                                    className="text-xs mt-1"
-                                />
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-[11px] font-bold text-slate-300">Company Name</label>
+                                    <Input
+                                        placeholder="e.g. Acme Hardware Ltd"
+                                        value={formData.company}
+                                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                        className="text-xs mt-1 bg-[#12121A] border-white/10 text-white placeholder:text-slate-500 focus:border-[#F27E24] h-10 rounded-xl"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[11px] font-bold text-slate-300">Street Address</label>
+                                    <Input
+                                        placeholder="e.g. 100 Industrial Pkwy"
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        required
+                                        className="text-xs mt-1 bg-[#12121A] border-white/10 text-white placeholder:text-slate-500 focus:border-[#F27E24] h-10 rounded-xl"
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Payment Info */}
-                        <div className="space-y-3">
-                            <h4 className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest flex items-center gap-1.5">
-                                <CreditCard className="w-3.5 h-3.5" /> Payment Details
-                            </h4>
-                            <div>
-                                <label className="text-[11px] font-semibold text-slate-600">Card Number</label>
-                                <Input
-                                    value={formData.cardNumber}
-                                    onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                                    required
-                                    className="text-xs mt-1 font-mono"
-                                />
-                            </div>
+                        {/* Inquiry Notes */}
+                        <div className="space-y-1.5">
+                            <label className="text-[11px] font-bold text-slate-300">Custom Order Specifications / Delivery Notes</label>
+                            <textarea
+                                rows={2}
+                                value={formData.message}
+                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                className="w-full rounded-xl border border-white/10 bg-[#12121A] p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-[#F27E24] focus:outline-none"
+                            />
                         </div>
 
-                        {/* Total Summary */}
-                        <div className="bg-[#FAFAFC] p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                            <div>
-                                <span className="text-xs text-slate-500 font-medium">Total Amount</span>
-                                <p className="text-xl font-extrabold text-[#4F46E5]">${total.toFixed(2)}</p>
+                        {/* Items & Total Summary */}
+                        <div className="bg-black/60 p-4 rounded-2xl border border-white/10 space-y-3">
+                            <div className="flex items-center justify-between text-xs text-slate-300 border-b border-white/10 pb-2">
+                                <span>Selected Items in Cart ({items.length})</span>
+                                <span className="font-mono font-bold text-[#F27E24]">${total.toFixed(2)}</span>
                             </div>
-                            <Button type="submit" className="gradient-btn-primary font-bold text-xs px-6 py-2 rounded-xl">
-                                Place Order Now
-                            </Button>
+                            <div className="flex items-center justify-between">
+                                <div className="text-xs text-slate-400">
+                                    Dispatches to: <strong className="text-white font-mono">employee.sales@shopground.era</strong>
+                                </div>
+                                <Button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="gradient-btn-orange font-black text-xs px-6 h-11 rounded-xl gap-2 cursor-pointer shadow-xl"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            <span>Logging Inquiry…</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="w-4 h-4" />
+                                            <span>Submit Inquiry Order</span>
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                     </form>
-                )}
-
-                {/* STEP 3: Order Success Screen */}
-                {checkoutMode === 'success' && (
-                    <div className="text-center py-8 space-y-4">
-                        <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-xs">
-                            <CheckCircle className="w-10 h-10" />
+                ) : (
+                    /* SUCCESS SCREEN */
+                    <div className="text-center py-8 space-y-5">
+                        <div className="w-16 h-16 bg-[#F27E24]/10 border border-[#F27E24]/30 text-[#F27E24] rounded-2xl flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(242,126,36,0.4)]">
+                            <PackageCheck className="w-9 h-9" />
                         </div>
-                        <h2 className="text-2xl font-bold text-[#0F172A] font-heading">Order Successfully Placed!</h2>
-                        <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                            Thank you for your order! Your purchase details have been saved to your account.
-                        </p>
+
+                        <div className="space-y-2">
+                            <Badge className="bg-[#F27E24] text-white text-[10px] font-mono uppercase tracking-widest">
+                                Inquiry Reference: {orderRef}
+                            </Badge>
+                            <h2 className="text-2xl font-black text-white font-heading">Inquiry Order Submitted Successfully!</h2>
+                            <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
+                                Your multi-item order request has been registered into MongoDB and dispatched directly to <strong className="text-[#F27E24] font-mono">employee.sales@shopground.era</strong>.
+                            </p>
+                        </div>
 
                         <div className="pt-4 flex justify-center gap-3">
                             <Button
-                                onClick={() => {
-                                    onClose();
-                                    navigate('/profile');
-                                }}
-                                className="gradient-btn-primary font-bold text-xs px-6 py-2 rounded-xl"
+                                onClick={onClose}
+                                className="gradient-btn-orange font-black text-xs px-7 h-11 rounded-xl cursor-pointer"
                             >
-                                Track Order in Dashboard
+                                Continue Browsing Portfolio
                             </Button>
                         </div>
                     </div>

@@ -3,16 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
-        items: [
-            {
-                id: 'prod-101',
-                name: 'Lorem Apex Headphones',
-                price: 249.99,
-                quantity: 1,
-                image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
-                category: 'Electronics',
-            }
-        ],
+        items: [],
         isDrawerOpen: false,
         couponCode: '',
         discountPercent: 0,
@@ -54,7 +45,7 @@ const cartSlice = createSlice({
         },
         applyCoupon: (state, action) => {
             const code = action.payload.toUpperCase().trim();
-            if (code === 'LOREM10') {
+            if (code === 'APEX16') {
                 state.couponCode = code;
                 state.discountPercent = 10;
             } else if (code === 'SHAREX20') {

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToCart } from '@/store/slices/cartSlice';
-import { Flame, Clock, ShoppingBag, CheckCircle2, ChevronRight, Star } from 'lucide-react';
+import { fetchProducts } from '@/store/slices/productsSlice';
+import { Flame, Clock, ShoppingBag, CheckCircle2, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -11,8 +12,14 @@ export default function DealsCarousel() {
     const navigate = useNavigate();
     const products = useSelector((state) => state.products.items);
 
-    // Deals with discount > 0
-    const dealProducts = products.filter(p => p.originalPrice > p.price);
+    useEffect(() => {
+        if (!products.length) {
+            dispatch(fetchProducts());
+        }
+    }, [dispatch, products.length]);
+
+    // Deals with wholesale_mrp / originalPrice > price
+    const dealProducts = products.filter(p => (p.originalPrice || p.wholesale_mrp || 0) > p.price);
 
     // Countdown Timer State
     const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 12, seconds: 35 });
@@ -29,41 +36,43 @@ export default function DealsCarousel() {
         return () => clearInterval(interval);
     }, []);
 
+    if (!dealProducts.length) return null;
+
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-6 shadow-xs">
+            <div className="bg-[#0C0C12] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6 shadow-[0_10px_30px_rgba(0,0,0,0.8)] orange-glow-border">
                 
                 {/* Header with Deal of the Day & Live Countdown */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
-                            <Flame className="w-5 h-5 fill-white" />
+                        <div className="w-10 h-10 rounded-2xl bg-[#F27E24] text-white flex items-center justify-center shadow-[0_0_20px_rgba(242,126,36,0.5)]">
+                            <Flame className="w-5 h-5 fill-white text-white animate-pulse" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-lg font-extrabold text-[#0F172A]">Deal of the Day — ASIN: B0H915VTB1</h2>
-                                <Badge className="bg-[#5E6AD2] text-white text-[10px] uppercase tracking-wider font-extrabold">
-                                    Limited Time Offer
+                                <h2 className="text-lg font-black text-white font-heading tracking-tight">Deal of the Day — Flash Offer</h2>
+                                <Badge className="bg-[#F27E24] text-white text-[10px] uppercase tracking-widest font-black">
+                                    Limited Flash Offer
                                 </Badge>
                             </div>
-                            <p className="text-xs text-slate-500">Handpicked flagship audio discounts with ShopGround Assured Express Shipping.</p>
+                            <p className="text-xs text-slate-400 font-normal">Handpicked flagship acoustic isolation hardware with Express Global Shipping.</p>
                         </div>
                     </div>
 
                     {/* Live Timer Clock */}
-                    <div className="flex items-center gap-2 bg-[#F4F5F8] px-4 py-2 rounded-xl border border-[#E5E7EB]">
-                        <Clock className="w-4 h-4 text-[#5E6AD2]" />
-                        <span className="text-xs font-bold text-slate-700">Ends In:</span>
-                        <div className="flex items-center gap-1 font-mono text-xs font-extrabold text-[#0F172A]">
-                            <span className="bg-white px-2 py-0.5 rounded border border-[#E5E7EB] shadow-2xs">
+                    <div className="flex items-center gap-2.5 bg-black/60 px-4 py-2 rounded-2xl border border-white/10">
+                        <Clock className="w-4 h-4 text-[#F27E24]" />
+                        <span className="text-xs font-bold text-slate-300">Ends In:</span>
+                        <div className="flex items-center gap-1.5 font-mono text-xs font-extrabold text-white">
+                            <span className="bg-[#16161F] px-2.5 py-1 rounded-lg border border-white/10 shadow-inner">
                                 {String(timeLeft.hours).padStart(2, '0')}h
                             </span>
-                            <span>:</span>
-                            <span className="bg-white px-2 py-0.5 rounded border border-[#E5E7EB] shadow-2xs">
+                            <span className="text-[#F27E24]">:</span>
+                            <span className="bg-[#16161F] px-2.5 py-1 rounded-lg border border-white/10 shadow-inner">
                                 {String(timeLeft.minutes).padStart(2, '0')}m
                             </span>
-                            <span>:</span>
-                            <span className="bg-white px-2 py-0.5 rounded border border-[#E5E7EB] shadow-2xs text-rose-600">
+                            <span className="text-[#F27E24]">:</span>
+                            <span className="bg-[#16161F] px-2.5 py-1 rounded-lg border border-[#F27E24]/40 text-[#F27E24] shadow-inner animate-pulse">
                                 {String(timeLeft.seconds).padStart(2, '0')}s
                             </span>
                         </div>
@@ -71,44 +80,44 @@ export default function DealsCarousel() {
                 </div>
 
                 {/* Horizontal Scroll Cards */}
-                <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-none">
                     {dealProducts.map((product) => {
-                        const discountPercent = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                        const pid = product._id || product.id;
+                        const orig = product.originalPrice || product.wholesale_mrp || (product.price * 1.25);
+                        const discountPercent = Math.round(((orig - product.price) / orig) * 100);
+                        const revCount = product.reviewsCount || product.reviews_count || 482;
+
                         return (
                             <div
-                                key={product.id}
-                                className="min-w-[280px] max-w-[280px] bg-white border border-[#E5E7EB] rounded-xl p-3.5 space-y-3 glimmer-card cursor-pointer flex flex-col justify-between"
-                                onClick={() => navigate(`/product/${product.id}`)}
+                                key={pid}
+                                className="min-w-[290px] max-w-[290px] bg-[#111118] border border-white/10 rounded-2xl p-4 space-y-3 glimmer-card cursor-pointer flex flex-col justify-between"
+                                onClick={() => navigate(`/product/${pid}`)}
                             >
-                                <div className="space-y-2">
-                                    <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-slate-50 border border-slate-100 p-2">
-                                        <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
+                                <div className="space-y-3">
+                                    <div className="relative aspect-4/3 overflow-hidden rounded-xl bg-black/50 border border-white/10 p-3">
+                                        <img src={product.image} alt={product.name} className="w-full h-full object-contain hover:scale-105 transition-transform duration-300" />
                                         
-                                        <Badge className="absolute top-2 left-2 bg-rose-600 text-white text-[10px] font-extrabold">
-                                            -{discountPercent}% OFF
-                                        </Badge>
+                                        {discountPercent > 0 && (
+                                            <Badge className="absolute top-2 left-2 bg-[#F27E24] text-white text-[10px] font-black uppercase tracking-wider shadow-md">
+                                                -{discountPercent}% OFF
+                                            </Badge>
+                                        )}
                                     </div>
 
                                     {/* Assured Badge */}
-                                    <div className="flex items-center gap-1 text-[10px] text-[#5E6AD2] font-bold">
-                                        <CheckCircle2 className="w-3 h-3 text-[#5E6AD2]" />
+                                    <div className="flex items-center gap-1.5 text-[11px] text-[#F27E24] font-bold">
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-[#F27E24]" />
                                         <span>ShopGround Assured</span>
                                     </div>
 
-                                    <h4 className="text-xs font-bold text-[#0F172A] line-clamp-1">{product.name}</h4>
-                                    
-                                    <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
-                                        <Star className="w-3 h-3 fill-amber-400" />
-                                        <span>{product.rating}</span>
-                                        <span className="text-slate-400 text-[10px] font-normal">({product.reviewsCount})</span>
-                                    </div>
+                                    <h4 className="text-xs font-bold text-white line-clamp-1">{product.name}</h4>
                                 </div>
 
-                                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                                <div className="pt-3 border-t border-white/10 flex items-center justify-between">
                                     <div>
-                                        <span className="text-sm font-extrabold text-[#0F172A]">${product.price.toFixed(2)}</span>
-                                        <span className="text-[11px] text-slate-400 line-through block font-medium">
-                                            ${product.originalPrice.toFixed(2)}
+                                        <span className="text-base font-black text-white font-mono">${product.price.toFixed(2)}</span>
+                                        <span className="text-[11px] text-slate-400 line-through block font-normal">
+                                            ${orig.toFixed(2)}
                                         </span>
                                     </div>
 
@@ -118,9 +127,9 @@ export default function DealsCarousel() {
                                             e.stopPropagation();
                                             dispatch(addToCart(product));
                                         }}
-                                        className="bg-[#5E6AD2] hover:bg-[#4f5bc4] text-white text-xs font-bold p-2 h-8 rounded-lg"
+                                        className="gradient-btn-orange text-white text-xs font-bold p-2 h-9 rounded-xl"
                                     >
-                                        <ShoppingBag className="w-3.5 h-3.5" />
+                                        <ShoppingBag className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </div>

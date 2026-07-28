@@ -1,54 +1,42 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const initialProducts = [
-    {
-        id: '66a87f12bc09a123456789ab',
-        _id: '66a87f12bc09a123456789ab',
-        asin: 'B0H915VTB1',
-        name: 'Apex Pro Wireless Active Noise Cancelling Headphones',
-        subtitle: 'MongoDB ID: 66a87f12bc09a123456789ab — Premium Studio Grade Audio',
-        price: 249.99,
-        originalPrice: 299.99,
-        category: 'Audio Gear',
-        brand: 'Apex Audio',
-        stock: 24,
-        image: '/images/product/main.png',
-        images: [
-            '/images/product/main.png',
-            '/images/product/angle.png',
-            '/images/product/feature.png',
-            '/images/product/banner1.png',
-            '/images/product/banner2.png'
-        ],
-        status: 'Active',
-        variants: [
-            { sku: 'APEX-ANC-BLK', color: 'Midnight Black', stock: 14, price: 249.99 },
-            { sku: 'APEX-ANC-SLV', color: 'Silver Alum', stock: 10, price: 249.99 }
-        ]
+const API_BASE = 'http://localhost:8000/api/v1';
+
+// ── Cloudinary CDN helper ─────────────────────────────────────────────────────
+const CDN = (publicId, w = 600) =>
+    `https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_${w}/shopground/products/${publicId}.png`;
+
+// ── Async Thunks ──────────────────────────────────────────────────────────────
+
+export const fetchAdminProducts = createAsyncThunk(
+    'admin/fetchProducts',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${API_BASE}/products`);
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.detail || 'Failed to fetch products');
+        }
     }
-];
+);
 
-const initialOrders = [
-    {
-        id: 'ORD-89241',
-        customer: 'Lorem Customer',
-        email: 'customer@shopground.era',
-        date: '2026-07-25',
-        total: 249.99,
-        status: 'Processing',
-        courier: 'FedEx Express',
-        awbNumber: 'AWB-99824102',
-        warehouse: 'Warehouse Alpha (US-West)',
-        items: ['Apex Pro Headphones (1x)'],
-        shippingAddress: '124 Lorem Avenue, San Francisco, CA',
+export const fetchAdminOrders = createAsyncThunk(
+    'admin/fetchOrders',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${API_BASE}/orders`);
+            return res.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.detail || 'Failed to fetch orders');
+        }
     }
-];
+);
 
-const initialCustomers = [
-    { id: 'usr-001', name: 'Lorem Customer', email: 'customer@shopground.era', role: 'VIP Customer', ordersCount: 1, totalSpent: 249.99 }
-];
+// ── Static seed data (campaigns, customers, returns, audit logs) ──────────────
+// These will move to DB in a future sprint. Products & orders come from API.
 
-const initialCampaigns = [
+const seedCampaigns = [
     {
         id: 'cmp-1',
         name: 'Studio Audio Flash Sale',
@@ -57,92 +45,121 @@ const initialCampaigns = [
         startDate: '2026-07-25',
         endDate: '2026-07-30',
         status: 'Active',
-        bannerText: '🔥 Special Audio Sale: Get $50 Off Apex Pro Headphones (MongoDB ID: 66a87f12bc09a123456789ab)',
-    }
+        bannerText: '🔥 Special Audio Sale: Get $50 Off Apex Pro Headphones',
+    },
 ];
 
-const initialReturnRequests = [
+const seedCustomers = [
+    {
+        id: 'usr-001',
+        name: 'Alex Johnson',
+        email: 'alex@shopground.era',
+        role: 'VIP Customer',
+        ordersCount: 1,
+        totalSpent: 249.99,
+    },
+];
+
+const seedReturnRequests = [
     {
         id: 'RET-101',
         orderId: 'ORD-89241',
-        customer: 'Lorem Customer',
+        customer: 'Alex Johnson',
         reason: 'Size/Color Exchange Request',
         status: 'Pending Review',
         amount: 249.99,
-    }
+    },
 ];
 
-const initialAuditLogs = [
+const seedAuditLogs = [
     {
         id: 'log-1',
         user: 'Super Admin',
-        action: "Configured MongoDB Product Document '_id: 66a87f12bc09a123456789ab'",
+        action: 'Seeded MongoDB with Cloudinary CDN image URLs',
         timestamp: 'Just now',
-        ip: '192.168.1.1',
-    }
+        ip: '127.0.0.1',
+    },
 ];
+
+// ── Slice ─────────────────────────────────────────────────────────────────────
 
 const adminSlice = createSlice({
     name: 'admin',
     initialState: {
         currentRole: 'Super Admin',
-        availableRoles: ['Super Admin', 'Store Manager', 'Catalog Specialist', 'Fulfillment Agent', 'Support Agent'],
-        products: initialProducts,
-        orders: initialOrders,
-        customers: initialCustomers,
-        campaigns: initialCampaigns,
-        returnRequests: initialReturnRequests,
-        auditLogs: initialAuditLogs,
+        availableRoles: [
+            'Super Admin',
+            'Store Manager',
+            'Catalog Specialist',
+            'Fulfillment Agent',
+            'Support Agent',
+        ],
+        products: [],
+        orders: [],
+        customers: seedCustomers,
+        campaigns: seedCampaigns,
+        returnRequests: seedReturnRequests,
+        auditLogs: seedAuditLogs,
         activeTab: 'dashboard',
-        apiEndpoint: 'http://localhost:8000/api/v1',
-        backendCorsDomain: 'admin.myapp.com',
+        loading: false,
+        error: null,
+        apiEndpoint: API_BASE,
     },
     reducers: {
-        setActiveTab: (state, action) => {
-            state.activeTab = action.payload;
-        },
-        setCurrentRole: (state, action) => {
-            state.currentRole = action.payload;
-        },
-        addProduct: (state, action) => {
-            state.products.unshift(action.payload);
-        },
+        setActiveTab: (state, action) => { state.activeTab = action.payload; },
+        setCurrentRole: (state, action) => { state.currentRole = action.payload; },
+        addProduct: (state, action) => { state.products.unshift(action.payload); },
         deleteProduct: (state, action) => {
-            state.products = state.products.filter((p) => p.id !== action.payload);
+            state.products = state.products.filter(
+                (p) => p._id !== action.payload && p.id !== action.payload
+            );
         },
         updateOrderStatus: (state, action) => {
             const { orderId, status } = action.payload;
-            const order = state.orders.find((o) => o.id === orderId);
-            if (order) {
-                order.status = status;
-            }
+            const order = state.orders.find((o) => o._id === orderId || o.id === orderId);
+            if (order) order.status = status;
         },
-        addCampaign: (state, action) => {
-            state.campaigns.unshift(action.payload);
-        },
+        addCampaign: (state, action) => { state.campaigns.unshift(action.payload); },
         deleteCampaign: (state, action) => {
             state.campaigns = state.campaigns.filter((c) => c.id !== action.payload);
         },
         toggleCampaignStatus: (state, action) => {
             const campaign = state.campaigns.find((c) => c.id === action.payload);
-            if (campaign) {
-                campaign.status = campaign.status === 'Active' ? 'Paused' : 'Active';
-            }
+            if (campaign) campaign.status = campaign.status === 'Active' ? 'Paused' : 'Active';
         },
         processReturnRequest: (state, action) => {
             const { returnId, status } = action.payload;
             const ret = state.returnRequests.find((r) => r.id === returnId);
-            if (ret) {
-                ret.status = status;
-            }
+            if (ret) ret.status = status;
         },
         updateReturnStatus: (state, action) => {
             const { returnId, status } = action.payload;
             const ret = state.returnRequests.find((r) => r.id === returnId);
-            if (ret) {
-                ret.status = status;
-            }
+            if (ret) ret.status = status;
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            // fetchAdminProducts
+            .addCase(fetchAdminProducts.pending, (state) => { state.loading = true; state.error = null; })
+            .addCase(fetchAdminProducts.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products = action.payload;
+            })
+            .addCase(fetchAdminProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // fetchAdminOrders
+            .addCase(fetchAdminOrders.pending, (state) => { state.loading = true; })
+            .addCase(fetchAdminOrders.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orders = action.payload;
+            })
+            .addCase(fetchAdminOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
     },
 });
 
@@ -159,4 +176,5 @@ export const {
     updateReturnStatus,
 } = adminSlice.actions;
 
+export { fetchAdminProducts, fetchAdminOrders };
 export default adminSlice.reducer;

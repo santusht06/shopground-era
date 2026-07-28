@@ -4,7 +4,7 @@ const initialAddresses = [
     {
         id: 'addr-1',
         tag: 'Home',
-        street: '124 Lorem Avenue, Suite 400',
+        street: '124 Market Street, Suite 400',
         city: 'San Francisco',
         zip: '94107',
         country: 'United States',
@@ -26,7 +26,7 @@ const authSlice = createSlice({
     initialState: {
         user: {
             id: 'usr-001',
-            name: 'Lorem Customer',
+            name: 'Guest User',
             email: 'customer@shopground.era',
             phone: '+1 (555) 234-5678',
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',

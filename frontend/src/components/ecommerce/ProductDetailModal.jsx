@@ -50,12 +50,7 @@ export default function ProductDetailModal() {
                 <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
                     <div className="space-y-4">
                         <div>
-                            <div className="flex items-center gap-1 text-amber-500 font-semibold text-xs mb-1">
-                                <Star className="w-4 h-4 fill-amber-400" />
-                                <span>{product.rating}</span>
-                                <span className="text-slate-400 font-normal">({product.reviewsCount} customer reviews)</span>
-                            </div>
-                            <h2 className="text-2xl font-bold text-[#0F172A] leading-tight">{product.name}</h2>
+                            <h2 className="text-2xl font-bold text-white font-heading leading-tight">{product.name}</h2>
                             <p className="text-xs text-[#5E6AD2] font-semibold mt-0.5">{product.subtitle}</p>
                         </div>
 

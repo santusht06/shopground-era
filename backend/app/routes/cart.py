@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 import json
 from app.models.cart import CartUpdate
-from app.core.redis import get_redis
+from app.core.redis import get_redis_client as get_redis
 
 router = APIRouter(prefix="/cart", tags=["Cart"])
 
