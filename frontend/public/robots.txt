@@ -1,0 +1,14 @@
+# User-agent directives for ShopGround Era Single Product Portfolio
+User-agent: *
+Allow: /
+Allow: /product/
+Allow: /assets/
+Allow: /logo.png
+
+# Disallow internal API endpoints & admin routes from search indexes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://shopgroundera.com/sitemap.xml

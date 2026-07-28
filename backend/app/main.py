@@ -16,6 +16,7 @@ from app.routes.inventory import router as inventory_router
 from app.routes.analytics import router as analytics_router
 from app.routes.media import router as media_router
 from app.routes.inquiries import router as inquiries_router
+from app.routes.sse import router as sse_router
 from app.routes.health import router as health_router
 
 app = FastAPI(
@@ -53,6 +54,7 @@ async def shutdown_event():
 app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(products_router, prefix=settings.API_V1_STR)
 app.include_router(inquiries_router, prefix=settings.API_V1_STR)
+app.include_router(sse_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(cart_router, prefix=settings.API_V1_STR)
 app.include_router(categories_router, prefix=settings.API_V1_STR)
