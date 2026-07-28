@@ -41,12 +41,12 @@ export default function DealsCarousel() {
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-lg font-extrabold text-[#0F172A]">Deal of the Day</h2>
+                                <h2 className="text-lg font-extrabold text-[#0F172A]">Deal of the Day — ASIN: B0H915VTB1</h2>
                                 <Badge className="bg-[#5E6AD2] text-white text-[10px] uppercase tracking-wider font-extrabold">
-                                    Limited Time
+                                    Limited Time Offer
                                 </Badge>
                             </div>
-                            <p className="text-xs text-slate-500">Handpicked top discounts with Flipkart Assured & Express Shipping.</p>
+                            <p className="text-xs text-slate-500">Handpicked flagship audio discounts with ShopGround Assured Express Shipping.</p>
                         </div>
                     </div>
 
@@ -77,12 +77,12 @@ export default function DealsCarousel() {
                         return (
                             <div
                                 key={product.id}
-                                className="min-w-[240px] max-w-[240px] bg-white border border-[#E5E7EB] rounded-xl p-3.5 space-y-3 glimmer-card cursor-pointer flex flex-col justify-between"
+                                className="min-w-[280px] max-w-[280px] bg-white border border-[#E5E7EB] rounded-xl p-3.5 space-y-3 glimmer-card cursor-pointer flex flex-col justify-between"
                                 onClick={() => navigate(`/product/${product.id}`)}
                             >
                                 <div className="space-y-2">
-                                    <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-slate-50">
-                                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                    <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-slate-50 border border-slate-100 p-2">
+                                        <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
                                         
                                         <Badge className="absolute top-2 left-2 bg-rose-600 text-white text-[10px] font-extrabold">
                                             -{discountPercent}% OFF
@@ -100,6 +100,7 @@ export default function DealsCarousel() {
                                     <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
                                         <Star className="w-3 h-3 fill-amber-400" />
                                         <span>{product.rating}</span>
+                                        <span className="text-slate-400 text-[10px] font-normal">({product.reviewsCount})</span>
                                     </div>
                                 </div>
 

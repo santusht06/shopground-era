@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory, setSortBy } from '@/store/slices/productsSlice';
 import { SlidersHorizontal } from 'lucide-react';
 
-const categories = ['All', 'Electronics', 'Fashion', 'Furniture', 'Accessories', 'Home & Kitchen'];
+const categories = ['All', 'Audio Gear', 'Electronics', 'Active Noise Cancelling', 'Wireless Audio'];
 
 export default function CategoryPills() {
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export default function CategoryPills() {
                     <button
                         key={category}
                         onClick={() => dispatch(setSelectedCategory(category))}
-                        className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                        className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                             selectedCategory === category
                                 ? 'bg-[#5E6AD2] text-white shadow-sm'
                                 : 'bg-white text-slate-600 border border-[#E5E7EB] hover:border-slate-300 hover:text-slate-900'
@@ -38,7 +38,7 @@ export default function CategoryPills() {
                     onChange={(e) => dispatch(setSortBy(e.target.value))}
                     className="bg-white border border-[#E5E7EB] text-slate-800 rounded-lg text-xs py-1.5 px-2.5 focus:outline-none focus:ring-1 focus:ring-[#5E6AD2]"
                 >
-                    <option value="featured">Featured Items</option>
+                    <option value="featured">Featured Audio Items</option>
                     <option value="price-low">Price: Low to High</option>
                     <option value="price-high">Price: High to Low</option>
                     <option value="rating">Highest Rated</option>

@@ -1,140 +1,109 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setSelectedCategory } from '@/store/slices/productsSlice';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Sparkles, Volume2, ShieldCheck, Zap, Headphones } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 export default function CategoryGridCards() {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const handleCategoryClick = (category) => {
-        dispatch(setSelectedCategory(category));
-        const catalogEl = document.getElementById('product-catalog');
-        catalogEl?.scrollIntoView({ behavior: 'smooth' });
+    const handleProductClick = () => {
+        navigate('/product/B0H915VTB1');
     };
 
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                {/* Amazon Card 1: Electronics */}
-                <Card className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs">
+                {/* Amazon Showcase 1: Main Studio View */}
+                <Card
+                    onClick={handleProductClick}
+                    className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs cursor-pointer group"
+                >
                     <div>
-                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3">Top Deals in Electronics</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div onClick={() => handleCategoryClick('Electronics')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=300&q=80" alt="Headphones" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Headphones</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$249.99</span>
-                            </div>
-                            <div onClick={() => handleCategoryClick('Electronics')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=300&q=80" alt="Keyboard" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Keyboards</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$135.50</span>
-                            </div>
+                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3 font-heading">Flagship Studio View</h3>
+                        <div className="aspect-square bg-slate-50 rounded-xl overflow-hidden mb-2 p-2 border border-slate-100">
+                            <img
+                                src="/images/product/main.png"
+                                alt="Apex Pro Headphones Studio View"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
                         </div>
+                        <span className="text-xs font-bold text-[#0F172A] block">Apex Pro ANC Headphones</span>
+                        <span className="text-xs text-[#5E6AD2] font-extrabold">$249.99 <span className="text-[10px] text-slate-400 line-through font-normal">$299.99</span></span>
                     </div>
-                    <button
-                        onClick={() => handleCategoryClick('Electronics')}
-                        className="text-xs font-bold text-[#5E6AD2] hover:underline flex items-center gap-1 pt-2 border-t border-slate-100 cursor-pointer"
-                    >
-                        <span>Explore All Electronics</span>
+                    <div className="text-xs font-bold text-[#5E6AD2] group-hover:underline flex items-center gap-1 pt-2 border-t border-slate-100">
+                        <span>View Product Details (ASIN: B0H915VTB1)</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    </div>
                 </Card>
 
-                {/* Amazon Card 2: Workspace */}
-                <Card className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs">
+                {/* Amazon Showcase 2: 45 Degree Angle View */}
+                <Card
+                    onClick={handleProductClick}
+                    className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs cursor-pointer group"
+                >
                     <div>
-                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3">Upgrade Your Living & Office</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div onClick={() => handleCategoryClick('Furniture')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1580481072645-022f9a6d85d5?auto=format&fit=crop&w=300&q=80" alt="Chair" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Ergo Chairs</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$450.00</span>
-                            </div>
-                            <div onClick={() => handleCategoryClick('Home & Kitchen')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=300&q=80" alt="Coffee Set" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Coffee Sets</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$45.00</span>
-                            </div>
+                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3 font-heading">45° Swivel Ergonomics</h3>
+                        <div className="aspect-square bg-slate-50 rounded-xl overflow-hidden mb-2 p-2 border border-slate-100">
+                            <img
+                                src="/images/product/angle.png"
+                                alt="Apex Pro Headphones Angle View"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
                         </div>
+                        <span className="text-xs font-bold text-[#0F172A] block">Ultra-Soft Memory Foam Fit</span>
+                        <span className="text-xs text-emerald-600 font-bold">285g Lightweight Fit</span>
                     </div>
-                    <button
-                        onClick={() => handleCategoryClick('Furniture')}
-                        className="text-xs font-bold text-[#5E6AD2] hover:underline flex items-center gap-1 pt-2 border-t border-slate-100 cursor-pointer"
-                    >
-                        <span>Explore Home & Furniture</span>
+                    <div className="text-xs font-bold text-[#5E6AD2] group-hover:underline flex items-center gap-1 pt-2 border-t border-slate-100">
+                        <span>Explore Swivel Design</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    </div>
                 </Card>
 
-                {/* Amazon Card 3: Fashion */}
-                <Card className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs">
+                {/* Amazon Showcase 3: Titanium Driver View */}
+                <Card
+                    onClick={handleProductClick}
+                    className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs cursor-pointer group"
+                >
                     <div>
-                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3">Trending Fashion & Travel</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div onClick={() => handleCategoryClick('Fashion')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=300&q=80" alt="Duffel Bag" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Travel Bags</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$98.00</span>
-                            </div>
-                            <div onClick={() => handleCategoryClick('Fashion')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=300&q=80" alt="Sweater" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Merino Wool</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$110.00</span>
-                            </div>
+                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3 font-heading">40mm Titanium Drivers</h3>
+                        <div className="aspect-square bg-slate-50 rounded-xl overflow-hidden mb-2 p-2 border border-slate-100">
+                            <img
+                                src="/images/product/feature.png"
+                                alt="Apex Pro Headphones Driver Feature"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
                         </div>
+                        <span className="text-xs font-bold text-[#0F172A] block">Custom Acoustic Architecture</span>
+                        <span className="text-xs text-[#5E6AD2] font-bold">Hi-Res Audio Certified</span>
                     </div>
-                    <button
-                        onClick={() => handleCategoryClick('Fashion')}
-                        className="text-xs font-bold text-[#5E6AD2] hover:underline flex items-center gap-1 pt-2 border-t border-slate-100 cursor-pointer"
-                    >
-                        <span>Explore Fashion Catalog</span>
+                    <div className="text-xs font-bold text-[#5E6AD2] group-hover:underline flex items-center gap-1 pt-2 border-t border-slate-100">
+                        <span>Explore Sound Drivers</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    </div>
                 </Card>
 
-                {/* Amazon Card 4: Accessories */}
-                <Card className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs">
+                {/* Amazon Showcase 4: Active ANC Banner */}
+                <Card
+                    onClick={handleProductClick}
+                    className="bg-white border-[#E5E7EB] p-5 space-y-4 glimmer-card flex flex-col justify-between shadow-xs cursor-pointer group"
+                >
                     <div>
-                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3">Premium Timepieces</h3>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div onClick={() => handleCategoryClick('Accessories')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80" alt="Watch" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Chronographs</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$189.00</span>
-                            </div>
-                            <div onClick={() => handleCategoryClick('Electronics')} className="cursor-pointer group">
-                                <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden mb-1">
-                                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=300&q=80" alt="Projector" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-800 block line-clamp-1">Projectors</span>
-                                <span className="text-[10px] text-[#5E6AD2] font-semibold">$320.00</span>
-                            </div>
+                        <h3 className="text-base font-extrabold text-[#0F172A] mb-3 font-heading">38dB Hybrid Active ANC</h3>
+                        <div className="aspect-square bg-slate-50 rounded-xl overflow-hidden mb-2 p-2 border border-slate-100">
+                            <img
+                                src="/images/product/banner1.png"
+                                alt="Apex Pro Headphones ANC Feature"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
                         </div>
+                        <span className="text-xs font-bold text-[#0F172A] block">30-Hour Playback Battery</span>
+                        <span className="text-xs text-amber-600 font-bold">Fast Charge Ready</span>
                     </div>
-                    <button
-                        onClick={() => handleCategoryClick('Accessories')}
-                        className="text-xs font-bold text-[#5E6AD2] hover:underline flex items-center gap-1 pt-2 border-t border-slate-100 cursor-pointer"
-                    >
-                        <span>Explore Premium Accessories</span>
+                    <div className="text-xs font-bold text-[#5E6AD2] group-hover:underline flex items-center gap-1 pt-2 border-t border-slate-100">
+                        <span>Explore Battery & ANC</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    </div>
                 </Card>
 
             </div>

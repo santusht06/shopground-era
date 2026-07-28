@@ -4,54 +4,78 @@ from motor.motor_asyncio import AsyncIOMotorClient
 MONGODB_URL = "mongodb://localhost:27017"
 DATABASE_NAME = "shopground_db"
 
-PRODUCTS = [
+AMAZON_PRODUCT_B0H915VTB1 = {
+    "_id": "B0H915VTB1",
+    "name": "Apex Pro Wireless Active Noise Cancelling Headphones",
+    "subtitle": "ASIN: B0H915VTB1 — Premium Studio Grade Audio",
+    "description": "High-fidelity audio engineered with active noise cancellation, custom 40mm titanium acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions.",
+    "price": 249.99,
+    "original_price": 299.99,
+    "category": "Audio Gear",
+    "brand": "Apex Audio",
+    "stock": 24,
+    "rating": 4.9,
+    "reviews_count": 128,
+    "image": "/images/product/main.png",
+    "images": [
+        "/images/product/main.png",
+        "/images/product/angle.png",
+        "/images/product/feature.png",
+        "/images/product/banner1.png",
+        "/images/product/banner2.png"
+    ],
+    "specs": [
+        "Bluetooth 5.3 + LDAC Codec",
+        "38dB Hybrid Active Noise Cancellation",
+        "30-Hour Battery Playtime (45 Hours ANC Off)",
+        "Custom 40mm Titanium Acoustic Drivers",
+        "ASIN: B0H915VTB1"
+    ],
+    "variants": [
+        {"sku": "B0H915VTB1-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
+        {"sku": "B0H915VTB1-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
+    ],
+    "is_new": True,
+    "status": "Active"
+}
+
+CATEGORIES = [
     {
-        "id": "prod-101",
-        "name": "Lorem Apex Headphones",
-        "subtitle": "Wireless Active Noise Cancelling Audio",
-        "price": 249.99,
-        "originalPrice": 299.99,
-        "category": "Electronics",
-        "rating": 4.8,
-        "reviewsCount": 124,
-        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.",
-        "specs": ["Bluetooth 5.3", "35-Hour Battery Life", "Active Noise Cancellation"],
-        "isFeatured": True,
-        "isNew": True,
-        "stock": 18
+        "_id": "cat_audio_gear",
+        "name": "Audio Gear",
+        "slug": "audio-gear",
+        "description": "Flagship wireless headphones, ANC headsets, and studio monitors.",
+        "image": "/images/product/main.png"
     },
     {
-        "id": "prod-102",
-        "name": "Ipsum Minimalist Chronograph",
-        "subtitle": "Brushed Stainless Steel Timepiece",
-        "price": 189.00,
-        "originalPrice": 220.00,
-        "category": "Accessories",
-        "rating": 4.9,
-        "reviewsCount": 89,
-        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
-        "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        "specs": ["Japanese Quartz Movement", "5 ATM Water Resistant"],
-        "isFeatured": True,
-        "isNew": False,
-        "stock": 12
+        "_id": "cat_anc_headsets",
+        "name": "Active Noise Cancelling",
+        "slug": "anc-headsets",
+        "description": "Advanced hybrid ANC headsets for work and travel.",
+        "image": "/images/product/banner1.png"
     },
     {
-        "id": "prod-103",
-        "name": "Dolor Smart Ergonomics Chair",
-        "subtitle": "Lumbar Support Executive Desk Seat",
-        "price": 450.00,
-        "originalPrice": 520.00,
-        "category": "Furniture",
-        "rating": 4.7,
-        "reviewsCount": 65,
-        "image": "https://images.unsplash.com/photo-1580481072645-022f9a6d85d5?auto=format&fit=crop&w=600&q=80",
-        "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-        "specs": ["Dynamic Lumbar Support", "Breathable Mesh Back"],
-        "isFeatured": True,
-        "isNew": True,
-        "stock": 8
+        "_id": "cat_wireless_audio",
+        "name": "Wireless Audio",
+        "slug": "wireless-audio",
+        "description": "High-fidelity Bluetooth 5.3 audio devices.",
+        "image": "/images/product/angle.png"
+    }
+]
+
+ORDERS = [
+    {
+        "_id": "ORD-89241",
+        "date": "2026-07-25",
+        "total": 249.99,
+        "status": "Processing",
+        "courier": "FedEx Express",
+        "awb_number": "AWB-99824102",
+        "warehouse": "Warehouse Alpha (US-West)",
+        "customer": "Lorem Customer",
+        "email": "customer@shopground.era",
+        "shipping_address": "124 Lorem Avenue, San Francisco, CA 94107",
+        "items": [{"name": "Apex Pro Wireless ANC Headphones (ASIN: B0H915VTB1)", "qty": 1, "price": 249.99}]
     }
 ]
 
@@ -59,12 +83,21 @@ async def seed():
     client = AsyncIOMotorClient(MONGODB_URL)
     db = client[DATABASE_NAME]
 
-    print("Clearing existing products...")
+    print("Clearing existing database collections...")
     await db["products"].delete_many({})
+    await db["categories"].delete_many({})
+    await db["orders"].delete_many({})
 
-    print("Inserting seed products...")
-    await db["products"].insert_many(PRODUCTS)
-    print("Seed completed successfully!")
+    print("Inserting Amazon Product B0H915VTB1...")
+    await db["products"].insert_one(AMAZON_PRODUCT_B0H915VTB1)
+
+    print("Inserting Audio Taxonomy Categories...")
+    await db["categories"].insert_many(CATEGORIES)
+
+    print("Inserting Sample Orders...")
+    await db["orders"].insert_many(ORDERS)
+
+    print("MongoDB seed completed successfully!")
     client.close()
 
 if __name__ == "__main__":
