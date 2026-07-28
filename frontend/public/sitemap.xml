@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  
-  <!-- Main Portfolio Homepage -->
+
+  <!-- ShopGround Era — Brand Homepage -->
   <url>
     <loc>https://shopgroundera.com/</loc>
     <lastmod>2026-07-29</lastmod>
@@ -10,12 +10,12 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_main.png</image:loc>
-      <image:title>GroundEra Anti-Vibration Pads Main Renders</image:title>
-      <image:caption>800 LB Load Rating Stackable Anti-Vibration Pads</image:caption>
+      <image:title>ShopGround Era — GroundEra Anti-Vibration Pads</image:title>
+      <image:caption>800 LB Heavy-Duty Anti-Vibration Pads by ShopGround Era (shopgroundera.com)</image:caption>
     </image:image>
   </url>
 
-  <!-- Flagship Single Product Detail Page -->
+  <!-- Flagship Product: GroundEra Anti-Vibration Pads -->
   <url>
     <loc>https://shopgroundera.com/product/66a87f12bc09a123456789ab</loc>
     <lastmod>2026-07-29</lastmod>
@@ -23,7 +23,8 @@
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_angle.png</image:loc>
-      <image:title>GroundEra Stackable Leveling Shim Assembly</image:title>
+      <image:title>GroundEra Anti-Vibration Pads with Stackable Leveling Shim</image:title>
+      <image:caption>ShopGround Era GroundEra Pads — 800 LB load rated, honeycomb grip, ships in 48 hours</image:caption>
     </image:image>
   </url>
 
