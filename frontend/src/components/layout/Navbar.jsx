@@ -81,22 +81,25 @@ export default function Navbar() {
                     />
                 </Link>
 
-                {/* Quick Section Navigation Links with Scroll Spy Active Effect */}
-                <nav className="hidden md:flex items-center gap-2 text-xs font-bold">
+                {/* Quick Section Navigation Links with High-Precision Apple/Vercel Scroll Spy Active Effect */}
+                <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-[#08080C]/90 border border-white/10 backdrop-blur-xl shadow-xl">
                     {NAV_ITEMS.map((item) => {
                         const isActive = activeSection === item.name;
                         return (
                             <button
                                 key={item.name}
                                 onClick={() => scrollToSection(item.id)}
-                                className={`px-3.5 py-1.5 rounded-full transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${
+                                className={`relative px-4 py-1.5 rounded-full text-xs transition-all duration-300 cursor-pointer flex items-center gap-2 ${
                                     isActive
-                                        ? 'bg-[#F27E24]/15 text-[#F27E24] border border-[#F27E24]/35 font-extrabold shadow-[0_0_12px_rgba(242,126,36,0.25)] scale-105'
-                                        : 'text-slate-300 hover:text-[#F27E24] hover:bg-white/5 font-semibold'
+                                        ? 'bg-gradient-to-r from-[#F27E24]/25 via-[#F27E24]/15 to-[#F27E24]/25 text-white border border-[#F27E24]/60 font-extrabold shadow-[0_0_20px_rgba(242,126,36,0.4)] scale-[1.03]'
+                                        : 'text-slate-400 hover:text-white hover:bg-white/5 font-semibold'
                                 }`}
                             >
                                 {isActive && (
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#F27E24] animate-pulse" />
+                                    <>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#F27E24] animate-pulse shadow-[0_0_8px_#F27E24]" />
+                                        <div className="absolute -bottom-[3px] left-1/2 -translate-x-1/2 w-3/5 h-[2px] bg-gradient-to-r from-transparent via-[#F27E24] to-transparent shadow-[0_0_8px_#F27E24]" />
+                                    </>
                                 )}
                                 <span>{item.label}</span>
                             </button>
