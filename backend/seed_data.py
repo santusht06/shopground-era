@@ -4,10 +4,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 MONGODB_URL = "mongodb://localhost:27017"
 DATABASE_NAME = "shopground_db"
 
-AMAZON_PRODUCT_B0H915VTB1 = {
-    "_id": "B0H915VTB1",
+MONGODB_PRODUCT_66A87F12 = {
+    "_id": "66a87f12bc09a123456789ab",
+    "id": "66a87f12bc09a123456789ab",
+    "asin": "B0H915VTB1",
     "name": "Apex Pro Wireless Active Noise Cancelling Headphones",
-    "subtitle": "ASIN: B0H915VTB1 — Premium Studio Grade Audio",
+    "subtitle": "Premium Studio Grade Audio — Active Hybrid ANC",
     "description": "High-fidelity audio engineered with active noise cancellation, custom 40mm titanium acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions.",
     "price": 249.99,
     "original_price": 299.99,
@@ -32,8 +34,8 @@ AMAZON_PRODUCT_B0H915VTB1 = {
         "ASIN: B0H915VTB1"
     ],
     "variants": [
-        {"sku": "B0H915VTB1-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
-        {"sku": "B0H915VTB1-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
+        {"sku": "APEX-ANC-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
+        {"sku": "APEX-ANC-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
     ],
     "is_new": True,
     "status": "Active"
@@ -75,7 +77,7 @@ ORDERS = [
         "customer": "Lorem Customer",
         "email": "customer@shopground.era",
         "shipping_address": "124 Lorem Avenue, San Francisco, CA 94107",
-        "items": [{"name": "Apex Pro Wireless ANC Headphones (ASIN: B0H915VTB1)", "qty": 1, "price": 249.99}]
+        "items": [{"name": "Apex Pro Wireless ANC Headphones (MongoDB ID: 66a87f12bc09a123456789ab)", "qty": 1, "price": 249.99}]
     }
 ]
 
@@ -88,8 +90,8 @@ async def seed():
     await db["categories"].delete_many({})
     await db["orders"].delete_many({})
 
-    print("Inserting Amazon Product B0H915VTB1...")
-    await db["products"].insert_one(AMAZON_PRODUCT_B0H915VTB1)
+    print("Inserting Product with MongoDB ObjectId '66a87f12bc09a123456789ab'...")
+    await db["products"].insert_one(MONGODB_PRODUCT_66A87F12)
 
     print("Inserting Audio Taxonomy Categories...")
     await db["categories"].insert_many(CATEGORIES)

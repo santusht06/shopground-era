@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialProducts = [
     {
-        id: 'B0H915VTB1',
+        id: '66a87f12bc09a123456789ab',
+        _id: '66a87f12bc09a123456789ab',
+        asin: 'B0H915VTB1',
         name: 'Apex Pro Wireless Active Noise Cancelling Headphones',
-        subtitle: 'ASIN: B0H915VTB1 — Premium Studio Grade Audio',
+        subtitle: 'Premium Studio Grade Audio — Active Hybrid ANC',
         price: 249.99,
         originalPrice: 299.99,
-        category: 'Electronics',
+        category: 'Audio Gear',
         brand: 'Apex Audio',
         rating: 4.9,
         reviewsCount: 128,
@@ -19,8 +21,8 @@ const initialProducts = [
             '/images/product/banner1.png',
             '/images/product/banner2.png'
         ],
-        description: 'High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions (ASIN: B0H915VTB1).',
-        specs: ['Bluetooth 5.3', '30-Hour Battery Life', 'Active Noise Cancellation (ANC)', 'Custom Acoustic Drivers', 'ASIN: B0H915VTB1'],
+        description: 'High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions (MongoDB ID: 66a87f12bc09a123456789ab).',
+        specs: ['Bluetooth 5.3 + LDAC', '38dB Hybrid Active Noise Cancellation', '30-Hour Battery Life', 'Custom 40mm Titanium Acoustic Drivers', 'MongoDB ID: 66a87f12bc09a123456789ab'],
         isFeatured: true,
         isNew: true,
         stock: 24,

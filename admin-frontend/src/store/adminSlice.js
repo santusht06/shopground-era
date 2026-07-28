@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialProducts = [
     {
-        id: 'B0H915VTB1',
+        id: '66a87f12bc09a123456789ab',
+        _id: '66a87f12bc09a123456789ab',
+        asin: 'B0H915VTB1',
         name: 'Apex Pro Wireless Active Noise Cancelling Headphones',
-        subtitle: 'ASIN: B0H915VTB1 — Premium Studio Grade Audio',
+        subtitle: 'MongoDB ID: 66a87f12bc09a123456789ab — Premium Studio Grade Audio',
         price: 249.99,
         originalPrice: 299.99,
-        category: 'Electronics',
+        category: 'Audio Gear',
         brand: 'Apex Audio',
         stock: 24,
         image: '/images/product/main.png',
@@ -20,8 +22,8 @@ const initialProducts = [
         ],
         status: 'Active',
         variants: [
-            { sku: 'B0H915VTB1-BLK', color: 'Midnight Black', stock: 14, price: 249.99 },
-            { sku: 'B0H915VTB1-SLV', color: 'Silver Alum', stock: 10, price: 249.99 }
+            { sku: 'APEX-ANC-BLK', color: 'Midnight Black', stock: 14, price: 249.99 },
+            { sku: 'APEX-ANC-SLV', color: 'Silver Alum', stock: 10, price: 249.99 }
         ]
     }
 ];
@@ -49,13 +51,13 @@ const initialCustomers = [
 const initialCampaigns = [
     {
         id: 'cmp-1',
-        name: 'Amazon Prime & Big Billion Days Flash Sale',
+        name: 'Studio Audio Flash Sale',
         discountPercent: 16.67,
         code: 'APEX16',
         startDate: '2026-07-25',
         endDate: '2026-07-30',
         status: 'Active',
-        bannerText: '🔥 Amazon Prime Special: Get $50 Off Apex Pro Headphones (ASIN: B0H915VTB1)',
+        bannerText: '🔥 Special Audio Sale: Get $50 Off Apex Pro Headphones (MongoDB ID: 66a87f12bc09a123456789ab)',
     }
 ];
 
@@ -74,7 +76,7 @@ const initialAuditLogs = [
     {
         id: 'log-1',
         user: 'Super Admin',
-        action: 'Imported Amazon Product (ASIN: B0H915VTB1) & High-Res Images',
+        action: "Configured MongoDB Product Document '_id: 66a87f12bc09a123456789ab'",
         timestamp: 'Just now',
         ip: '192.168.1.1',
     }

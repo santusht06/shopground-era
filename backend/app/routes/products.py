@@ -5,15 +5,16 @@ from app.core.database import get_database
 
 router = APIRouter(prefix="/products", tags=["Product Catalog"])
 
-# Amazon ASIN B0H915VTB1 — Primary Catalog Item
-AMAZON_PRODUCT_B0H915VTB1 = {
-    "_id": "B0H915VTB1",
+MONGODB_PRODUCT_66A87F12 = {
+    "_id": "66a87f12bc09a123456789ab",
+    "id": "66a87f12bc09a123456789ab",
+    "asin": "B0H915VTB1",
     "name": "Apex Pro Wireless Active Noise Cancelling Headphones",
-    "subtitle": "ASIN: B0H915VTB1 — Premium Studio Grade Audio",
-    "description": "High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions.",
+    "subtitle": "Premium Studio Grade Audio — Active Hybrid ANC",
+    "description": "High-fidelity audio engineered with active noise cancellation, custom 40mm titanium acoustic drivers, 30-hour playback battery life, and plush memory foam ear cushions.",
     "price": 249.99,
     "original_price": 299.99,
-    "category": "Electronics",
+    "category": "Audio Gear",
     "brand": "Apex Audio",
     "stock": 24,
     "rating": 4.9,
@@ -26,16 +27,22 @@ AMAZON_PRODUCT_B0H915VTB1 = {
         "/images/product/banner1.png",
         "/images/product/banner2.png"
     ],
-    "specs": ["Bluetooth 5.3", "30-Hour Battery", "Active ANC", "Custom Acoustic Drivers", "ASIN: B0H915VTB1"],
+    "specs": [
+        "Bluetooth 5.3 + LDAC Codec",
+        "38dB Hybrid Active Noise Cancellation",
+        "30-Hour Battery Playtime (45 Hours ANC Off)",
+        "Custom 40mm Titanium Acoustic Drivers",
+        "MongoDB ID: 66a87f12bc09a123456789ab"
+    ],
     "variants": [
-        {"sku": "B0H915VTB1-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
-        {"sku": "B0H915VTB1-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
+        {"sku": "APEX-ANC-BLK", "color": "Midnight Black", "stock": 14, "price": 249.99},
+        {"sku": "APEX-ANC-SLV", "color": "Silver Alum", "stock": 10, "price": 249.99}
     ],
     "is_new": True,
     "status": "Active"
 }
 
-DEMO_PRODUCTS = [AMAZON_PRODUCT_B0H915VTB1]
+DEMO_PRODUCTS = [MONGODB_PRODUCT_66A87F12]
 
 @router.get("", response_model=List[ProductInDB])
 async def list_products(
@@ -43,7 +50,7 @@ async def list_products(
     search: Optional[str] = Query(None, description="Search term in title or description")
 ):
     """
-    Retrieve product catalog starting exclusively with Amazon product B0H915VTB1.
+    Retrieve product catalog starting exclusively with MongoDB ObjectId product '66a87f12bc09a123456789ab'.
     """
     db = get_database()
     if db:
@@ -74,21 +81,26 @@ async def list_products(
 @router.get("/{product_id}", response_model=ProductInDB)
 async def get_product(product_id: str):
     """
-    Retrieve single product details by ID or ASIN B0H915VTB1.
+    Retrieve single product details by MongoDB ObjectId.
     """
     db = get_database()
     if db:
-        product = await db.products.find_one({"_id": product_id})
+        product = await db.products.find_one({
+            "$or": [
+                {"_id": product_id},
+                {"id": product_id},
+                {"asin": product_id}
+            ]
+        })
         if product:
             product["_id"] = str(product["_id"])
             return product
 
     for p in DEMO_PRODUCTS:
-        if p["_id"] == product_id or product_id.upper() == "B0H915VTB1":
+        if p["_id"] == product_id or p.get("id") == product_id or p.get("asin") == product_id:
             return p
 
-    # Return primary Amazon product if ID not found
-    return AMAZON_PRODUCT_B0H915VTB1
+    return MONGODB_PRODUCT_66A87F12
 
 @router.post("", response_model=ProductInDB, status_code=status.HTTP_201_CREATED)
 async def create_product(product_data: ProductCreate):
@@ -97,8 +109,7 @@ async def create_product(product_data: ProductCreate):
     """
     db = get_database()
     product_dict = product_data.dict()
-    product_dict["_id"] = f"B0H915VTB1-{int(status.HTTP_201_CREATED)}"
-
+    
     if db:
         res = await db.products.insert_one(product_dict)
         product_dict["_id"] = str(res.inserted_id)

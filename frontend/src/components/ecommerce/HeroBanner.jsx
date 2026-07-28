@@ -23,7 +23,7 @@ export default function HeroBanner() {
     }, []);
 
     const handleShopNow = () => {
-        navigate('/product/B0H915VTB1');
+        navigate('/product/66a87f12bc09a123456789ab');
     };
 
     return (
@@ -43,9 +43,9 @@ export default function HeroBanner() {
                             <div className="flex flex-wrap items-center gap-2">
                                 <Badge className="bg-[#5E6AD2] text-white text-xs font-extrabold px-3 py-1 uppercase tracking-wider flex items-center gap-1">
                                     <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-pulse" />
-                                    Amazon Prime Special Deal
+                                    MongoDB Verified Product
                                 </Badge>
-                                <span className="text-xs text-slate-400 font-medium">ASIN: B0H915VTB1 — In Stock</span>
+                                <span className="text-xs text-slate-400 font-medium">ID: 66a87f12bc09a123456789ab — In Stock</span>
                             </div>
 
                             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-none text-white font-heading">
@@ -54,7 +54,7 @@ export default function HeroBanner() {
                             </h1>
 
                             <p className="text-sm text-slate-300 max-w-xl leading-relaxed">
-                                High-fidelity audio engineered with active noise cancellation, custom acoustic drivers, 30-hour battery life, and plush memory foam ear cushions (ASIN: B0H915VTB1).
+                                High-fidelity audio engineered with active noise cancellation, custom 40mm titanium acoustic drivers, 30-hour battery life, and plush memory foam ear cushions (MongoDB ID: 66a87f12bc09a123456789ab).
                             </p>
 
                             {/* Actions & Countdown Pill */}
@@ -83,7 +83,7 @@ export default function HeroBanner() {
                             <div className="relative aspect-4/3 rounded-2xl overflow-hidden border border-white/20 shadow-2xl group bg-white/5">
                                 <img
                                     src="/images/product/main.png"
-                                    alt="Apex Pro Headphones ASIN B0H915VTB1"
+                                    alt="Apex Pro Headphones MongoDB 66a87f12bc09a123456789ab"
                                     className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">

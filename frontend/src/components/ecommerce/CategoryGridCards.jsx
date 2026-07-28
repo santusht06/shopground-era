@@ -7,7 +7,7 @@ export default function CategoryGridCards() {
     const navigate = useNavigate();
 
     const handleProductClick = () => {
-        navigate('/product/B0H915VTB1');
+        navigate('/product/66a87f12bc09a123456789ab');
     };
 
     return (
@@ -32,7 +32,7 @@ export default function CategoryGridCards() {
                         <span className="text-xs text-[#5E6AD2] font-extrabold">$249.99 <span className="text-[10px] text-slate-400 line-through font-normal">$299.99</span></span>
                     </div>
                     <div className="text-xs font-bold text-[#5E6AD2] group-hover:underline flex items-center gap-1 pt-2 border-t border-slate-100">
-                        <span>View Product Details (ASIN: B0H915VTB1)</span>
+                        <span>View Product Details (MongoDB ID)</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                 </Card>
