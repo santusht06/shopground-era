@@ -9,7 +9,7 @@ import { ProductDetailSkeleton } from '@/components/ui/skeleton';
 import { AmazonCardButton } from '@/components/ui/AmazonBuyButton';
 import {
     Star, Check, ChevronRight, Share2, Shield, Truck,
-    RotateCcw, Zap, Headphones, Building, Send, Database, ExternalLink,
+    RotateCcw, Zap, Headphones, Building, Send, ExternalLink,
     ShoppingBag, Layers, VolumeX, CheckCircle2, Sliders, ArrowRight, Activity
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -89,12 +89,12 @@ export default function ProductDetailPage() {
         return (
             <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#F27E24]/10 border border-[#F27E24]/30 text-[#F27E24] flex items-center justify-center mx-auto">
-                    <Database className="w-6 h-6" />
+                    <ChevronRight className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-black text-white font-heading">Product Not Found in Database</h2>
-                <p className="text-sm text-slate-400 max-w-md mx-auto">{error || `No record found in MongoDB for ID "${id}".`}</p>
+                <h2 className="text-2xl font-black text-white font-heading">Product Unavailable</h2>
+                <p className="text-sm text-slate-400 max-w-md mx-auto">This product could not be loaded. Please return to the homepage or contact us at info@shopgroundera.com.</p>
                 <Button onClick={() => navigate('/')} className="gradient-btn-orange font-bold text-white">
-                    Return to Main Portfolio
+                    Back to Home
                 </Button>
             </div>
         );
@@ -112,7 +112,7 @@ export default function ProductDetailPage() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 bg-[#050507] text-[#F8FAFC]">
 
-            {/* Breadcrumb & Database Verification Bar */}
+            {/* Breadcrumb & Share Bar */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-400 border-b border-white/10 pb-4 gap-3">
                 <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
                     <Link to="/" className="hover:text-[#F27E24] font-medium text-slate-300">All Products</Link>
@@ -134,7 +134,7 @@ export default function ProductDetailPage() {
             {/* Main Product Split Box */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
-                {/* Left: Cloudinary High-Res Media Gallery */}
+                {/* Left: Product Media Gallery */}
                 <div className="lg:col-span-7 space-y-4">
                     <div className="relative aspect-4/3 bg-[#0C0C12] rounded-3xl border border-white/10 overflow-hidden group shadow-2xl orange-glow-border">
                         {selectedImage && (
@@ -144,11 +144,7 @@ export default function ProductDetailPage() {
                                 className="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
                             />
                         )}
-                        <div className="absolute top-4 left-4 flex flex-col gap-2">
-                            <Badge className="bg-[#F27E24] text-white text-xs font-black uppercase tracking-wider shadow-lg">
-                                Cloudinary CDN Media Verified
-                            </Badge>
-                        </div>
+
                     </div>
 
                     {/* Thumbnail Strip */}
