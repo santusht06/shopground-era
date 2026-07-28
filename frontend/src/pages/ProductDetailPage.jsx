@@ -184,25 +184,18 @@ export default function ProductDetailPage() {
                         {product.long_description || product.description || "Industrial-grade elastomer acoustic isolation engineered with high-traction honeycomb grips, stackable leveling shims, and an 800 LB load capacity."}
                     </p>
 
-                    {/* Price & Stock Box */}
+                    {/* Price Box */}
                     <div className="p-5 bg-[#0C0C12] border border-white/10 rounded-2xl shadow-xl space-y-3 orange-glow-border">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <span className="text-xs text-slate-400 block font-medium">Sample / Direct Order Price</span>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-black text-white font-mono">
-                                        ${product.price?.toFixed(2)}
-                                    </span>
-                                    {originalPrice > product.price && (
-                                        <span className="text-sm text-slate-500 line-through font-normal font-mono">
-                                            ${originalPrice?.toFixed(2)}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <Badge variant="outline" className="text-[#F27E24] bg-[#F27E24]/10 border-[#F27E24]/30 text-xs px-3 py-1 font-extrabold">
-                                Stock: {product.stock || 1500} Units
-                            </Badge>
+                        <span className="text-xs text-slate-400 block font-medium">Sample / Direct Order Price</span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-3xl font-black text-white font-mono">
+                                ${product.price?.toFixed(2)}
+                            </span>
+                            {originalPrice > product.price && (
+                                <span className="text-sm text-slate-500 line-through font-normal font-mono">
+                                    ${originalPrice?.toFixed(2)}
+                                </span>
+                            )}
                         </div>
                     </div>
 
