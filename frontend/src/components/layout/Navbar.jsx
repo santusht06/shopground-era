@@ -81,25 +81,22 @@ export default function Navbar() {
                     />
                 </Link>
 
-                {/* Quick Section Navigation Links with High-Precision Apple/Vercel Scroll Spy Active Effect */}
-                <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-[#08080C]/90 border border-white/10 backdrop-blur-xl shadow-xl">
+                {/* Quick Section Navigation Links with Minimalist White Active Effect */}
+                <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-[#08080C]/80 border border-white/10 backdrop-blur-xl">
                     {NAV_ITEMS.map((item) => {
                         const isActive = activeSection === item.name;
                         return (
                             <button
                                 key={item.name}
                                 onClick={() => scrollToSection(item.id)}
-                                className={`relative px-4 py-1.5 rounded-full text-xs transition-all duration-300 cursor-pointer flex items-center gap-2 ${
+                                className={`px-4 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer flex items-center gap-2 ${
                                     isActive
-                                        ? 'bg-gradient-to-r from-[#F27E24]/25 via-[#F27E24]/15 to-[#F27E24]/25 text-white border border-[#F27E24]/60 font-extrabold shadow-[0_0_20px_rgba(242,126,36,0.4)] scale-[1.03]'
-                                        : 'text-slate-400 hover:text-white hover:bg-white/5 font-semibold'
+                                        ? 'bg-white/10 text-white border border-white/20 font-bold shadow-sm'
+                                        : 'text-slate-400 hover:text-white hover:bg-white/5 font-medium'
                                 }`}
                             >
                                 {isActive && (
-                                    <>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#F27E24] animate-pulse shadow-[0_0_8px_#F27E24]" />
-                                        <div className="absolute -bottom-[3px] left-1/2 -translate-x-1/2 w-3/5 h-[2px] bg-gradient-to-r from-transparent via-[#F27E24] to-transparent shadow-[0_0_8px_#F27E24]" />
-                                    </>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white" />
                                 )}
                                 <span>{item.label}</span>
                             </button>
