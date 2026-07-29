@@ -8,10 +8,20 @@ const SCROLL_LINKS = [
     { label: 'Get a Quote', href: '#inquiry-form-section' },
 ];
 
+/**
+ * Footer — contains:
+ * 1. Brand manifesto + OEM CTA
+ * 2. Navigation with keyword-rich anchor text
+ * 3. Contact section
+ * 4. Hidden SEO text block (aria-hidden=false — fully readable by crawlers, visually subtle)
+ */
 export default function Footer() {
     return (
-        <footer className="bg-[#050507] border-t border-white/10 text-xs text-slate-400">
-
+        <footer
+            className="bg-[#050507] border-t border-white/10 text-xs text-slate-400"
+            itemScope
+            itemType="https://schema.org/WPFooter"
+        >
             {/* MAIN FOOTER */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -19,11 +29,15 @@ export default function Footer() {
                     {/* BRAND MANIFESTO */}
                     <div className="md:col-span-5 space-y-4">
                         <div className="flex items-center">
-                            <img
-                                src="/logo.png"
-                                alt="Logo"
-                                className="h-14 w-auto object-contain"
-                            />
+                            <a href="https://shopgroundera.com" aria-label="ShopGround Era — Home">
+                                <img
+                                    src="/logo.png"
+                                    alt="ShopGround Era — GroundEra Anti Vibration Pads for Washing Machine, Dryers & Heavy Machinery"
+                                    className="h-14 w-auto object-contain"
+                                    width="112"
+                                    height="56"
+                                />
+                            </a>
                         </div>
                         <p className="text-slate-400 leading-relaxed max-w-sm">
                             We make one thing: the best anti-vibration pad in the world. Industrial-grade, direct from factory, shipped to your warehouse or doorstep within 48 hours.
@@ -42,7 +56,7 @@ export default function Footer() {
                     <div className="hidden md:block md:col-span-1" />
 
                     {/* NAV LINKS */}
-                    <div className="md:col-span-2">
+                    <nav aria-label="Footer navigation" className="md:col-span-2">
                         <h4 className="font-black text-white text-xs uppercase tracking-widest mb-4 font-heading">Explore</h4>
                         <ul className="space-y-2.5">
                             {SCROLL_LINKS.map((l) => (
@@ -53,7 +67,7 @@ export default function Footer() {
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </nav>
 
                     {/* CONTACT */}
                     <div className="md:col-span-4 space-y-4">
@@ -67,6 +81,34 @@ export default function Footer() {
                         </p>
                     </div>
 
+                </div>
+
+                {/* ─────────────────────────────────────────────────────────────────────
+                     SEO KEYWORD SECTION
+                     Readable by all crawlers. Intentionally low visual prominence.
+                     Covers all high-intent related search queries from Google Shopping.
+                ──────────────────────────────────────────────────────────────────── */}
+                <div className="border-t border-white/5 pt-8">
+                    <p className="text-slate-600 text-[10px] leading-loose">
+                        <strong className="text-slate-500">ShopGround Era</strong> (shopgroundera.com) is the official brand manufacturer for{' '}
+                        <strong className="text-slate-500">GroundEra Anti Vibration Pads</strong> —
+                        the best-reviewed heavy-duty <a href="https://shopgroundera.com/product/66a87f12bc09a123456789ab" className="hover:text-[#F27E24] underline transition-colors">anti vibration pads for washing machine</a> front load and top load models.
+                        Our pads feature an innovative stackable height system, high-traction honeycomb anti-skid grip, and an{' '}
+                        <strong className="text-slate-500">800 LB load capacity</strong> — making them ideal for:
+                        washer &amp; dryer stabilizer rubber legs,
+                        treadmill vibration dampening feet,
+                        HVAC compressor rubber mounts,
+                        refrigerator anti-vibration pads,
+                        heavy machinery anti-skid bushes,
+                        rubber vibration isolation pads for industrial equipment,
+                        washing machine noise reduction feet, and
+                        anti skid stand bushes for front load and top load washers.
+                        Compatible with all major brands: Samsung, LG, Whirlpool, Bosch, Maytag, GE, Electrolux, Miele.
+                        Available at{' '}
+                        <a href="https://shopgroundera.com" className="hover:text-[#F27E24] underline transition-colors">shopgroundera.com</a>
+                        {' '}and on{' '}
+                        <a href="https://www.amazon.com/dp/B0H915VTB1" rel="noopener" className="hover:text-[#F27E24] underline transition-colors" target="_blank">Amazon</a>.
+                    </p>
                 </div>
 
                 {/* BOTTOM BAR */}

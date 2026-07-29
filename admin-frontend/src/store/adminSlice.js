@@ -176,5 +176,4 @@ export const {
     updateReturnStatus,
 } = adminSlice.actions;
 
-export { fetchAdminProducts, fetchAdminOrders };
 export default adminSlice.reducer;

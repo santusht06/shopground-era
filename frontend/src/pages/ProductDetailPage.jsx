@@ -8,6 +8,7 @@ import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import { ProductDetailSkeleton } from '@/components/ui/skeleton';
 import { AmazonCardButton } from '@/components/ui/AmazonBuyButton';
 import MarketingVideoShowcase from '@/components/ecommerce/MarketingVideoShowcase';
+import applySEO from '@/hooks/useSEO';
 import {
     Star, Check, ChevronRight, Share2, Shield, Truck,
     RotateCcw, Zap, Headphones, Building, Send, ExternalLink,
@@ -115,6 +116,125 @@ export default function ProductDetailPage() {
         fetchProductData();
     }, [id]);
 
+    // ─── Dynamic SEO: inject rich structured data per product ───────────────────
+    useEffect(() => {
+        if (!product && fetching) return;
+        const prod = product || FALLBACK_FLAGSHIP_PRODUCT;
+        const productUrl = `https://shopgroundera.com/product/${prod._id || '66a87f12bc09a123456789ab'}`;
+        const mainImage = prod.images?.[0] || prod.image || 'https://shopgroundera.com/logo.png';
+
+        applySEO({
+            title: `${prod.name} | Anti Vibration Pads for Washing Machine — ShopGround Era`,
+            description: `Buy GroundEra ${prod.name} — 800 LB rated heavy-duty anti-vibration pads for front & top load washing machines, dryers, treadmills & HVAC. Stackable height leveling shims, honeycomb grip, 99.4% noise reduction. Ships in 48 hrs.`,
+            keywords: 'Anti Vibration Pads for Washing Machine, Front Load Washer Vibration Stopper, Top Load Washing Machine Anti Skid Feet, Heavy Duty Shock Absorbing Rubber Pads, Dryer Stabilizer Rubber Legs, HVAC Compressor Rubber Mounts, Treadmill Vibration Dampening Pads, 800 LB Load Rating Anti Vibration, Noise Reduction Appliance Feet, Stackable Leveling Shim for Washing Machine, GroundEra, ShopGround Era, shopgroundera.com',
+            canonical: productUrl,
+            image: mainImage,
+            type: 'product',
+            schemas: [
+                {
+                    id: 'breadcrumb',
+                    schema: {
+                        '@context': 'https://schema.org',
+                        '@type': 'BreadcrumbList',
+                        'itemListElement': [
+                            { '@type': 'ListItem', 'position': 1, 'name': 'ShopGround Era', 'item': 'https://shopgroundera.com' },
+                            { '@type': 'ListItem', 'position': 2, 'name': 'Anti Vibration Pads', 'item': 'https://shopgroundera.com/product/66a87f12bc09a123456789ab' },
+                            { '@type': 'ListItem', 'position': 3, 'name': prod.name, 'item': productUrl },
+                        ]
+                    }
+                },
+                {
+                    id: 'product-rich',
+                    schema: {
+                        '@context': 'https://schema.org/',
+                        '@type': 'Product',
+                        'name': prod.name,
+                        'description': prod.long_description || prod.short_description,
+                        'image': prod.images || [mainImage],
+                        'sku': prod.model_number || 'GE-PADS-800',
+                        'mpn': 'GE-PADS-2026',
+                        'brand': { '@type': 'Brand', 'name': 'GroundEra', 'logo': 'https://shopgroundera.com/logo.png' },
+                        'manufacturer': { '@type': 'Organization', 'name': 'ShopGround Era', 'url': 'https://shopgroundera.com', 'logo': 'https://shopgroundera.com/logo.png' },
+                        'aggregateRating': {
+                            '@type': 'AggregateRating',
+                            'ratingValue': prod.rating || 4.9,
+                            'reviewCount': prod.reviewsCount || 482,
+                            'bestRating': 5,
+                            'worstRating': 1
+                        },
+                        'offers': [
+                            {
+                                '@type': 'Offer',
+                                'url': productUrl,
+                                'priceCurrency': 'USD',
+                                'price': (prod.price || 29.99).toFixed(2),
+                                'priceValidUntil': '2027-12-31',
+                                'itemCondition': 'https://schema.org/NewCondition',
+                                'availability': 'https://schema.org/InStock',
+                                'hasMerchantReturnPolicy': {
+                                    '@type': 'MerchantReturnPolicy',
+                                    'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+                                    'merchantReturnDays': 30,
+                                    'returnMethod': 'https://schema.org/ReturnByMail',
+                                    'returnFees': 'https://schema.org/FreeReturn'
+                                },
+                                'shippingDetails': {
+                                    '@type': 'OfferShippingDetails',
+                                    'shippingRate': { '@type': 'MonetaryAmount', 'value': '0', 'currency': 'USD' },
+                                    'shippingDestination': { '@type': 'DefinedRegion', 'addressCountry': 'US' },
+                                    'deliveryTime': {
+                                        '@type': 'ShippingDeliveryTime',
+                                        'handlingTime': { '@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 1, 'unitCode': 'DAY' },
+                                        'transitTime': { '@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 3, 'unitCode': 'DAY' }
+                                    }
+                                },
+                                'seller': { '@type': 'Organization', 'name': 'ShopGround Era', 'url': 'https://shopgroundera.com' }
+                            },
+                            {
+                                '@type': 'Offer',
+                                'url': 'https://www.amazon.com/dp/B0H915VTB1',
+                                'priceCurrency': 'USD',
+                                'price': (prod.price || 29.99).toFixed(2),
+                                'priceValidUntil': '2027-12-31',
+                                'itemCondition': 'https://schema.org/NewCondition',
+                                'availability': 'https://schema.org/InStock',
+                                'seller': { '@type': 'Organization', 'name': 'Amazon' }
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'video-object',
+                    schema: {
+                        '@context': 'https://schema.org',
+                        '@type': 'VideoObject',
+                        'name': 'GroundEra Anti Vibration Pads — Stop Washing Machine Walking & Noise',
+                        'description': 'See how GroundEra heavy-duty anti vibration pads instantly stop washing machine walking, sliding, and loud spin-cycle vibration noise on tile, hardwood, and concrete floors.',
+                        'thumbnailUrl': mainImage,
+                        'uploadDate': '2026-07-01T00:00:00Z',
+                        'duration': 'PT2M30S',
+                        'contentUrl': 'https://shopgroundera.com/videos/marketing.mp4',
+                        'embedUrl': 'https://shopgroundera.com/product/66a87f12bc09a123456789ab#video-showcase',
+                        'publisher': { '@type': 'Organization', 'name': 'ShopGround Era', 'logo': { '@type': 'ImageObject', 'url': 'https://shopgroundera.com/logo.png' } }
+                    }
+                },
+                {
+                    id: 'speakable',
+                    schema: {
+                        '@context': 'https://schema.org',
+                        '@type': 'WebPage',
+                        'name': prod.name,
+                        'speakable': {
+                            '@type': 'SpeakableSpecification',
+                            'cssSelector': ['h1', '.product-speakable-summary']
+                        },
+                        'url': productUrl
+                    }
+                }
+            ]
+        });
+    }, [product, fetching]);
+
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
         setCopiedLink(true);
@@ -147,13 +267,28 @@ export default function ProductDetailPage() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 bg-[#050507] text-[#F8FAFC]">
 
-            {/* Breadcrumb & Share Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-400 border-b border-white/10 pb-4 gap-3">
-                <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
-                    <Link to="/" className="hover:text-[#F27E24] font-medium text-slate-300">All Products</Link>
+            {/* Breadcrumb & Share Bar — BreadcrumbList visible for SEO */}
+            <nav aria-label="Breadcrumb" className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-400 border-b border-white/10 pb-4 gap-3">
+                <ol className="flex items-center gap-2 overflow-x-auto whitespace-nowrap list-none m-0 p-0" itemScope itemType="https://schema.org/BreadcrumbList">
+                    <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                        <Link to="/" itemProp="item" className="hover:text-[#F27E24] font-medium text-slate-300">
+                            <span itemProp="name">Home</span>
+                        </Link>
+                        <meta itemProp="position" content="1" />
+                    </li>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
-                    <span className="font-bold text-white truncate max-w-xs">{currentProduct.name}</span>
-                </div>
+                    <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                        <Link to="/" itemProp="item" className="hover:text-[#F27E24] font-medium text-slate-300">
+                            <span itemProp="name">Anti Vibration Pads</span>
+                        </Link>
+                        <meta itemProp="position" content="2" />
+                    </li>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                    <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                        <span itemProp="name" className="font-bold text-white truncate max-w-xs">{currentProduct.name}</span>
+                        <meta itemProp="position" content="3" />
+                    </li>
+                </ol>
 
                 <Button
                     onClick={handleShare}
@@ -164,7 +299,7 @@ export default function ProductDetailPage() {
                     {copiedLink ? <Check className="w-3.5 h-3.5 text-[#F27E24]" /> : <Share2 className="w-3.5 h-3.5 text-[#F27E24]" />}
                     {copiedLink ? 'Copied!' : 'Share'}
                 </Button>
-            </div>
+            </nav>
 
             {/* Main Product Split Box */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -217,7 +352,8 @@ export default function ProductDetailPage() {
 
                     </div>
 
-                    <p className="text-slate-300 text-sm leading-relaxed font-normal">
+                    {/* SpeakableSpecification target — Google Assistant reads this summary */}
+                    <p className="product-speakable-summary text-slate-300 text-sm leading-relaxed font-normal">
                         {currentProduct.long_description || currentProduct.description || "Industrial-grade elastomer acoustic isolation engineered with high-traction honeycomb grips, stackable leveling shims, and an 800 LB load capacity."}
                     </p>
 

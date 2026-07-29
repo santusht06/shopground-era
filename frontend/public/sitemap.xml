@@ -1,31 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
 
-  <!-- ShopGround Era — Brand Homepage -->
+  <!-- ════════════════════════════════════════════════════════════════════
+       1. Brand Homepage — Priority 1.0
+  ═══════════════════════════════════════════════════════════════════════ -->
   <url>
     <loc>https://shopgroundera.com/</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+
+    <!-- Primary Product Image -->
     <image:image>
       <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_main.png</image:loc>
-      <image:title>ShopGround Era — GroundEra Anti-Vibration Pads</image:title>
-      <image:caption>800 LB Heavy-Duty Anti-Vibration Pads by ShopGround Era (shopgroundera.com)</image:caption>
+      <image:title>GroundEra Anti Vibration Pads for Washing Machine — ShopGround Era</image:title>
+      <image:caption>800 LB Heavy-Duty Anti-Vibration Pads — Stop Washing Machine Walking, Noise & Vibration. Stackable Design with Leveling Shim.</image:caption>
     </image:image>
+
+    <!-- Angle Shot -->
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_angle.png</image:loc>
+      <image:title>GroundEra Anti Vibration Pads — Stackable Height Leveling System Side View</image:title>
+      <image:caption>Heavy-duty rubber shock absorbers with precision stacking shims and honeycomb grip for front load &amp; top load washers.</image:caption>
+    </image:image>
+
+    <!-- Brand Logo -->
+    <image:image>
+      <image:loc>https://shopgroundera.com/logo.png</image:loc>
+      <image:title>ShopGround Era Brand Logo — GroundEra Anti Vibration Pads Manufacturer</image:title>
+      <image:caption>ShopGround Era official logo — manufacturer of GroundEra industrial-grade anti-vibration isolation pads.</image:caption>
+    </image:image>
+
+    <!-- Marketing Video -->
+    <video:video>
+      <video:thumbnail_loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_800/shopground/products/apex_pro_main.png</video:thumbnail_loc>
+      <video:title>GroundEra Anti Vibration Pads — Stop Washing Machine Walking &amp; Noise</video:title>
+      <video:description>See how GroundEra heavy-duty anti vibration pads instantly stop washing machine walking, sliding, and loud spin-cycle vibration noise on tile, hardwood, vinyl, and concrete floors.</video:description>
+      <video:content_loc>https://shopgroundera.com/videos/marketing.mp4</video:content_loc>
+      <video:player_loc>https://shopgroundera.com/product/66a87f12bc09a123456789ab#video-showcase</video:player_loc>
+      <video:duration>150</video:duration>
+      <video:publication_date>2026-07-01T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:tag>anti vibration pads</video:tag>
+      <video:tag>washing machine vibration stopper</video:tag>
+      <video:tag>heavy duty shock absorber</video:tag>
+      <video:tag>appliance stabilizer</video:tag>
+      <video:category>Home &amp; Kitchen</video:category>
+    </video:video>
   </url>
 
-  <!-- Flagship Product: GroundEra Anti-Vibration Pads -->
+  <!-- ════════════════════════════════════════════════════════════════════
+       2. Flagship Product Page — Priority 0.95
+  ═══════════════════════════════════════════════════════════════════════ -->
   <url>
     <loc>https://shopgroundera.com/product/66a87f12bc09a123456789ab</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
+
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_main.png</image:loc>
+      <image:title>GroundEra Heavy Duty Anti Vibration Pads for Washing Machine with Leveling Shim &amp; Spirit Level</image:title>
+      <image:caption>GroundEra Stackable Anti Vibration Pads for Washing Machine Front Load &amp; Top Load — 800 LB Load Rating, Honeycomb Anti-Skid Grip</image:caption>
+    </image:image>
+
     <image:image>
       <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_angle.png</image:loc>
-      <image:title>GroundEra Anti-Vibration Pads with Stackable Leveling Shim</image:title>
-      <image:caption>ShopGround Era GroundEra Pads — 800 LB load rated, honeycomb grip, ships in 48 hours</image:caption>
+      <image:title>GroundEra Anti Vibration Pads — Side View with Stackable Height System</image:title>
+      <image:caption>Anti-vibration rubber feet with stackable shims for custom height leveling — compatible with Samsung, LG, Whirlpool, Bosch, Maytag</image:caption>
     </image:image>
+
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_banner1.png</image:loc>
+      <image:title>GroundEra Anti Vibration Pads — 800 LB Load Capacity Industrial Rubber Shock Absorbers</image:title>
+      <image:caption>Heavy-duty polymer construction absorbs 99.4% of kinetic spin energy. Suitable for commercial front-load washers, dryers, treadmills &amp; HVAC compressors.</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_banner2.png</image:loc>
+      <image:title>GroundEra Anti Vibration Pads — Honeycomb Anti-Skid Surface Texture Detail</image:title>
+      <image:caption>High-traction honeycomb grip texture prevents appliance walking &amp; sliding on tile, hardwood, vinyl, and concrete floors.</image:caption>
+    </image:image>
+
+    <video:video>
+      <video:thumbnail_loc>https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_800/shopground/products/apex_pro_main.png</video:thumbnail_loc>
+      <video:title>GroundEra Anti Vibration Pads — Product Demo Video</video:title>
+      <video:description>Watch GroundEra anti vibration pads eliminate washing machine vibration, noise, and appliance walking in a live product demonstration. Heavy-duty 800 LB rated rubber feet for front &amp; top load washers, dryers, treadmills, and HVAC equipment.</video:description>
+      <video:content_loc>https://shopgroundera.com/videos/marketing.mp4</video:content_loc>
+      <video:player_loc>https://shopgroundera.com/product/66a87f12bc09a123456789ab#video-showcase</video:player_loc>
+      <video:duration>150</video:duration>
+      <video:publication_date>2026-07-01T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:tag>anti vibration pads for washing machine</video:tag>
+      <video:tag>washer dryer stabilizer rubber legs</video:tag>
+      <video:tag>heavy duty shock absorbing rubber pads</video:tag>
+      <video:tag>noise reduction appliance feet</video:tag>
+      <video:tag>treadmill vibration dampening</video:tag>
+      <video:tag>HVAC compressor rubber mounts</video:tag>
+      <video:category>Home &amp; Appliance Hardware</video:category>
+    </video:video>
   </url>
 
 </urlset>

@@ -12,7 +12,7 @@ async def system_health_check():
     Checks MongoDB, Redis Task Queue, and System Status.
     """
     db = get_database()
-    mongo_status = "Connected" if db else "Offline / Standby"
+    mongo_status = "Connected" if db is not None else "Offline / Standby"
 
     pending_email_tasks = await get_queue_length()
 
