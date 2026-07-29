@@ -22,7 +22,8 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
   const [duration, setDuration] = useState('0:00');
   const [showControls, setShowControls] = useState(true);
 
-  const videoSource = "/videos/groundera_marketing_hero.mp4";
+  // MinIO S3 Container Object Storage Stream URL
+  const videoSource = "https://shopgroundera.com/minio/shopground-media/videos/groundera_marketing_hero.mp4";
 
   // Memory-safe IntersectionObserver for Auto-play / Auto-pause
   useEffect(() => {
