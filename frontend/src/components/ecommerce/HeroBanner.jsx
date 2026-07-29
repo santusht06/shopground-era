@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, memo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '@/services/apiClient';
 import { ArrowRight, Send, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -35,6 +35,7 @@ const HeroBanner = memo(function HeroBanner() {
     const [loading, setLoading] = useState(true);
     const [activeSlideIndex, setActiveSlideIndex] = useState(0);
     const [transitioning, setTransitioning] = useState(false);
+    const timeoutRef = useRef(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -49,7 +50,10 @@ const HeroBanner = memo(function HeroBanner() {
             }
         };
         load();
-        return () => { isMounted = false; };
+        return () => {
+            isMounted = false;
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
     }, []);
 
     const slides = useMemo(() => {
@@ -60,13 +64,14 @@ const HeroBanner = memo(function HeroBanner() {
 
     const goTo = useCallback((indexFn) => {
         setTransitioning(true);
-        setTimeout(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
             setActiveSlideIndex(typeof indexFn === 'function' ? indexFn : () => indexFn);
             setTransitioning(false);
         }, 220);
     }, []);
 
-    // Auto-advance carousel
+    // Auto-advance carousel with memory-safe interval
     useEffect(() => {
         const t = setInterval(() => goTo((prev) => (prev + 1) % slides.length), 5000);
         return () => clearInterval(t);
@@ -98,35 +103,32 @@ const HeroBanner = memo(function HeroBanner() {
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-[540px]">
                         {/* LEFT: COPY */}
                         <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16 space-y-8">
-                            <div className="flex items-center gap-3">
-                                <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#F27E24] bg-[#F27E24]/10 border border-[#F27E24]/25 px-4 py-1.5 rounded-full">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#F27E24] animate-pulse" />
-                                    New Release — 2026 Edition
-                                </span>
-                            </div>
-
-                            <div className="space-y-2">
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.05] tracking-[-0.03em] font-heading">
-                                    {product?.name || 'GroundEra Anti-Vibration Pads'}
-                                </h1>
-                                <div className="flex items-center gap-3 pt-2">
-                                    <div className="h-px flex-1 bg-gradient-to-r from-[#F27E24] to-transparent" />
-                                    <span className="text-[#F27E24] text-xs font-black uppercase tracking-widest">
-                                        {product?.brand || 'GroundEra'} Hardware
-                                    </span>
+                            <div className="space-y-4">
+                                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F27E24]/10 border border-[#F27E24]/30 text-[#F27E24] text-xs font-black tracking-wider uppercase">
+                                    <span className="w-2 h-2 rounded-full bg-[#F27E24] animate-pulse" />
+                                    <span>INDUSTRIAL HEAVY-DUTY ISOLATOR</span>
                                 </div>
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white font-heading leading-tight">
+                                    {product?.name || "GroundEra Anti-Vibration Pads"}
+                                </h1>
+                                <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+                                    {product?.description || "Heavy-duty anti-vibration pads featuring an innovative stackable design, high-traction honeycomb grip texture, 800 lb load rating, and precision leveling shims."}
+                                </p>
                             </div>
 
-                            <p className="text-base text-slate-300 leading-relaxed max-w-lg">
-                                {product?.short_description || product?.long_description || 'Industrial elastomer pads that silence your washing machine and stop it from walking.'}
-                            </p>
-
-                            <div className="flex flex-wrap gap-2">
-                                {['800 LB Rated', '99.4% Damping', 'Ships in 24h', '2-yr Warranty'].map((p, i) => (
-                                    <span key={i} className="text-xs font-bold text-slate-200 bg-white/5 border border-white/10 rounded-full px-3.5 py-1.5">
-                                        ✓ {p}
-                                    </span>
-                                ))}
+                            <div className="grid grid-cols-3 gap-3 border-y border-white/10 py-5 my-2">
+                                <div>
+                                    <span className="text-xl sm:text-2xl font-black text-white font-mono block">800 LBS</span>
+                                    <span className="text-[11px] text-slate-400 font-medium">Load Rating</span>
+                                </div>
+                                <div className="border-x border-white/10 px-3">
+                                    <span className="text-xl sm:text-2xl font-black text-[#F27E24] font-mono block">99.4%</span>
+                                    <span className="text-[11px] text-slate-400 font-medium">Vibration Damping</span>
+                                </div>
+                                <div className="pl-3">
+                                    <span className="text-xl sm:text-2xl font-black text-white font-mono block">48 HRS</span>
+                                    <span className="text-[11px] text-slate-400 font-medium">Factory Express</span>
+                                </div>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -150,66 +152,59 @@ const HeroBanner = memo(function HeroBanner() {
                             </div>
                         </div>
 
-                        {/* RIGHT: PHOTO CAROUSEL */}
-                        <div className="relative flex flex-col">
-                            <div className="flex-1 relative overflow-hidden bg-black/40 min-h-[360px] lg:min-h-0">
+                        {/* RIGHT: INTERACTIVE CAROUSEL DISPLAY */}
+                        <div className="relative flex flex-col justify-between p-8 lg:p-12 bg-gradient-to-br from-[#12121B] to-[#0A0A10]">
+                            <div className="flex items-center justify-between z-10">
+                                <span className="px-3 py-1 rounded-lg bg-black/60 border border-white/10 text-[11px] font-bold text-[#F27E24] tracking-widest uppercase">
+                                    {currentSlide.tag}
+                                </span>
+                                <div className="flex items-center gap-1.5 bg-black/60 border border-white/10 px-3 py-1.5 rounded-full">
+                                    {slides.map((_, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => goTo(i)}
+                                            className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                                                i === activeSlideIndex ? 'w-6 bg-[#F27E24]' : 'w-1.5 bg-white/20 hover:bg-white/40'
+                                            }`}
+                                            aria-label={`Slide ${i + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="relative my-auto py-8 flex items-center justify-center min-h-[300px]">
                                 <img
                                     src={currentSlide.url}
                                     alt={currentSlide.caption}
-                                    className={`absolute inset-0 w-full h-full object-contain p-8 transition-all duration-500 ${transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
+                                    className={`max-h-[340px] w-auto object-contain transition-all duration-300 transform ${
+                                        transitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                                    }`}
                                 />
-
-                                <button
-                                    onClick={() => goTo((p) => (p === 0 ? slides.length - 1 : p - 1))}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/15 text-white flex items-center justify-center hover:bg-[#F27E24] hover:border-[#F27E24] transition-all cursor-pointer"
-                                >
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button
-                                    onClick={() => goTo((p) => (p + 1) % slides.length)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/15 text-white flex items-center justify-center hover:bg-[#F27E24] hover:border-[#F27E24] transition-all cursor-pointer"
-                                >
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
-
-                                <div className="absolute top-4 right-4 bg-[#F27E24] text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-                                    {currentSlide.tag}
-                                </div>
-
-                                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent pt-12 pb-4 px-5">
-                                    <p className="text-sm font-bold text-white">{currentSlide.caption}</p>
-                                    <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
-                                        {activeSlideIndex + 1} / {slides.length}
-                                    </p>
-                                </div>
                             </div>
 
-                            <div className="flex gap-2 p-4 bg-black/50 border-t border-white/10">
-                                {slides.map((s, i) => (
+                            <div className="flex items-center justify-between z-10 border-t border-white/10 pt-4 mt-2">
+                                <div>
+                                    <span className="text-xs text-slate-400 block font-medium">Model Visualization</span>
+                                    <span className="text-sm font-bold text-white">{currentSlide.caption}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
                                     <button
-                                        key={i}
-                                        onClick={() => goTo(i)}
-                                        className={`flex-1 aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                                            i === activeSlideIndex
-                                                ? 'border-[#F27E24] shadow-[0_0_10px_rgba(242,126,36,0.5)]'
-                                                : 'border-transparent opacity-50 hover:opacity-80'
-                                        }`}
+                                        onClick={() => goTo((prev) => (prev - 1 + slides.length) % slides.length)}
+                                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-[#F27E24] hover:border-transparent text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+                                        aria-label="Previous Slide"
                                     >
-                                        <img src={s.url} alt={s.caption} className="w-full h-full object-contain bg-black/60 p-1" />
+                                        <ChevronLeft className="w-5 h-5" />
                                     </button>
-                                ))}
+                                    <button
+                                        onClick={() => goTo((prev) => (prev + 1) % slides.length)}
+                                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-[#F27E24] hover:border-transparent text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+                                        aria-label="Next Slide"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="relative z-10 border-t border-white/10 bg-black/40 px-8 sm:px-12 lg:px-16 py-4 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
-                        <div className="flex items-center gap-6">
-                            <span>SKU: <strong className="text-white">{product?.model_number || 'APEX-ANC-2026'}</strong></span>
-                            <span className="hidden sm:inline">Category: <strong className="text-white">Anti-Vibration Hardware</strong></span>
-                        </div>
-                        <div className="flex items-center gap-2 text-[#F27E24] font-bold">
-                            <span className="w-2 h-2 rounded-full bg-[#F27E24] animate-pulse" />
-                            In Stock · 1,500+ units ready for dispatch
                         </div>
                     </div>
                 </div>

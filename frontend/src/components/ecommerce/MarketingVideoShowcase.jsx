@@ -1,16 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Shield, Zap, Sparkles, Send, ArrowRight } from 'lucide-react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Shield, Zap, Sparkles, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 /**
- * MarketingVideoShowcase — Premium Video Marketing Showcase & High-Performance Streaming Player
- * Features:
- * - Chunked HTML5 Byte-Range Video Streaming (Accept-Ranges: bytes)
- * - Autoplay on scroll with IntersectionObserver (muted)
- * - Custom Glassmorphic Cinema Controls (Play/Pause, Seek, Mute, Fullscreen)
- * - Dynamic Feature Highlight Badges overlaid at key marketing timestamps
- * - Direct OEM Inquiry CTA overlay
+ * MarketingVideoShowcase — Highly Memory-Optimized Video Showcase Player
+ * Optimizations:
+ * 1. IntersectionObserver with explicit target cleanup prevents memory leaks.
+ * 2. `preload="metadata"` prevents browser RAM bloat (loads video chunks on demand).
+ * 3. Video frame memory released when component unmounts.
  */
 export default function MarketingVideoShowcase({ onInquireClick }) {
   const navigate = useNavigate();
@@ -24,56 +22,62 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
   const [duration, setDuration] = useState('0:00');
   const [showControls, setShowControls] = useState(true);
 
-  // Video source — Local high-speed CDN stream path
   const videoSource = "/videos/groundera_marketing_hero.mp4";
 
-  // Auto-play when scrolled into view
+  // Memory-safe IntersectionObserver for Auto-play / Auto-pause
   useEffect(() => {
+    const target = containerRef.current;
+    const videoEl = videoRef.current;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && videoRef.current) {
-            videoRef.current.play().then(() => {
+          if (entry.isIntersecting && videoEl) {
+            videoEl.play().then(() => {
               setIsPlaying(true);
             }).catch(() => {
-              // Browser autoplay policy prevented playback
               setIsPlaying(false);
             });
-          } else if (!entry.isIntersecting && videoRef.current) {
-            videoRef.current.pause();
+          } else if (!entry.isIntersecting && videoEl) {
+            videoEl.pause();
             setIsPlaying(false);
           }
         });
       },
-      { threshold: 0.4 }
+      { threshold: 0.35 }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (target) {
+      observer.observe(target);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (target) observer.unobserve(target);
+      observer.disconnect();
+      if (videoEl) {
+        videoEl.pause();
+      }
+    };
   }, []);
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
     if (isPlaying) {
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play();
-      setIsPlaying(true);
+      videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     }
-  };
+  }, [isPlaying]);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     if (!videoRef.current) return;
     videoRef.current.muted = !isMuted;
     setIsMuted(!isMuted);
-  };
+  }, [isMuted]);
 
   const formatTime = (seconds) => {
-    if (isNaN(seconds)) return '0:00';
+    if (isNaN(seconds) || seconds < 0) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
@@ -112,7 +116,7 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
 
   return (
     <section className="py-16 bg-[#050507] text-[#F8FAFC] relative overflow-hidden">
-      {/* Background Glow Effect */}
+      {/* Ambient Backlight Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#F27E24]/10 blur-[140px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
@@ -130,14 +134,13 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
           </p>
         </div>
 
-        {/* Video Player Container */}
+        {/* Memory-Optimized Video Container */}
         <div
           ref={containerRef}
           onMouseEnter={() => setShowControls(true)}
           onMouseLeave={() => isPlaying && setShowControls(false)}
           className="relative aspect-video max-w-5xl mx-auto bg-[#0C0C12] rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_50px_rgba(242,126,36,0.15)] group orange-glow-border"
         >
-          {/* HTML5 Video Element with Chunked Streaming Support */}
           <video
             ref={videoRef}
             src={videoSource}
@@ -151,7 +154,7 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
             className="w-full h-full object-cover cursor-pointer"
           />
 
-          {/* Floating Marketing Feature Badges */}
+          {/* Floating Feature Pills */}
           <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap gap-2 pointer-events-none">
             <span className="px-3 py-1 rounded-xl bg-black/60 backdrop-blur-md border border-white/15 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg">
               <Shield className="w-3.5 h-3.5 text-[#F27E24]" />
@@ -163,7 +166,7 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
             </span>
           </div>
 
-          {/* Direct CTA Overlay (Top Right) */}
+          {/* Direct CTA Overlay */}
           <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
             <Button
               onClick={() => onInquireClick ? onInquireClick() : navigate('/product/66a87f12bc09a123456789ab')}
@@ -174,7 +177,7 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
             </Button>
           </div>
 
-          {/* Center Big Play Button (When Paused) */}
+          {/* Center Play Overlay */}
           {!isPlaying && (
             <button
               onClick={togglePlay}
@@ -185,13 +188,12 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
             </button>
           )}
 
-          {/* Custom Glassmorphic Controls Bar */}
+          {/* Glassmorphic Controls Bar */}
           <div
             className={`absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-sm transition-opacity duration-300 space-y-2 ${
               showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           >
-            {/* Seek Bar */}
             <div className="flex items-center gap-3">
               <span className="text-xs font-mono text-slate-300 w-10 text-right">{currentTime}</span>
               <input
@@ -205,7 +207,6 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
               <span className="text-xs font-mono text-slate-400 w-10">{duration}</span>
             </div>
 
-            {/* Control Buttons */}
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-4">
                 <button
@@ -242,7 +243,7 @@ export default function MarketingVideoShowcase({ onInquireClick }) {
           </div>
         </div>
 
-        {/* Video Key Takeaways Grid */}
+        {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 max-w-5xl mx-auto">
           <div className="p-5 rounded-2xl bg-[#0C0C12] border border-white/10 space-y-2">
             <h4 className="text-white font-bold text-sm flex items-center gap-2">
