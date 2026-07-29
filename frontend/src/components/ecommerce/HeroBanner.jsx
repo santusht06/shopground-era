@@ -18,11 +18,6 @@ const FALLBACK_SLIDES = [
         tag: "MICRO-TEXTURE",
     },
     {
-        url: "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_case.png",
-        caption: "Stackable Leveling Assembly",
-        tag: "MODULAR DESIGN",
-    },
-    {
         url: "https://res.cloudinary.com/dnay8iqz3/image/upload/f_auto,q_auto,w_1200/shopground/products/apex_pro_banner1.png",
         caption: "Full Appliance Integration",
         tag: "800 LB RATED",

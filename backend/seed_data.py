@@ -22,7 +22,6 @@ def _cdn(public_id: str, width: int = 1200) -> str:
 CDN = {
     "main":    _cdn("apex_pro_main"),
     "angle":   _cdn("apex_pro_angle"),
-    "feature": _cdn("apex_pro_feature"),
     "banner1": _cdn("apex_pro_banner1"),
     "banner2": _cdn("apex_pro_banner2"),
 }
@@ -55,14 +54,12 @@ PRODUCT = {
     "images": [
         CDN["main"],
         CDN["angle"],
-        CDN["feature"],
         CDN["banner1"],
         CDN["banner2"],
     ],
     "cloudinary_public_ids": {
         "main": "shopground/products/apex_pro_main",
         "angle": "shopground/products/apex_pro_angle",
-        "feature": "shopground/products/apex_pro_feature",
         "banner1": "shopground/products/apex_pro_banner1",
         "banner2": "shopground/products/apex_pro_banner2",
     },
