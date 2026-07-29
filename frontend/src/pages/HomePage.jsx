@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import apiClient from '@/services/apiClient';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProductById } from '@/store/slices/productsSlice';
 import HeroBanner from '@/components/ecommerce/HeroBanner';
 import BrandStrip from '@/components/ecommerce/BrandStrip';
 import WholesaleTiers from '@/components/ecommerce/WholesaleTiers';
@@ -10,27 +11,43 @@ import MarketingVideoShowcase from '@/components/ecommerce/MarketingVideoShowcas
 import { HeroSkeleton } from '@/components/ui/skeleton';
 import applySEO from '@/hooks/useSEO';
 
+const FLAGSHIP_ID = '66a87f12bc09a123456789ab';
+
 export default function HomePage() {
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+
+    // ── Pull product from Redux cache ─────────────────────────────────────────
+    const reduxProduct = useSelector(state => state.products.selectedProduct);
+    const reduxLoading = useSelector(state => state.products.loading);
+
+    // Only show skeleton if we have NO cached data at all (first ever load).
+    // If we have stale-but-valid Redux data, render immediately and refresh silently.
+    const hasData = Boolean(reduxProduct);
+    const [localProduct, setLocalProduct] = useState(reduxProduct);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const fetchProduct = async () => {
-            try {
-                // Fetch flagship single product directly from MongoDB backend
-                const res = await apiClient.get('/products/66a87f12bc09a123456789ab');
-                setProduct(res.data);
-            } catch (err) {
-                console.error('Failed to fetch flagship product for home page:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
     }, []);
 
-    // ─── Homepage SEO: inject rich schemas ──────────────────────────────────────
+    useEffect(() => {
+        // Dispatch cache-aware thunk — returns instantly from cache if fresh
+        dispatch(fetchProductById(FLAGSHIP_ID))
+            .unwrap()
+            .then(payload => {
+                const prod = payload?.product || payload;
+                if (prod && prod.name) setLocalProduct(prod);
+            })
+            .catch(() => {
+                // API unavailable — keep whatever we have (could be stale cache or null)
+            });
+    }, [dispatch]);
+
+    // Sync local product when Redux updates
+    useEffect(() => {
+        if (reduxProduct) setLocalProduct(reduxProduct);
+    }, [reduxProduct]);
+
+    // ─── Dynamic SEO ──────────────────────────────────────────────────────────
     useEffect(() => {
         applySEO({
             title: 'Anti Vibration Pads for Washing Machine — ShopGround Era | 800 LB Heavy-Duty Shock Absorbing Rubber Feet',
@@ -162,14 +179,15 @@ export default function HomePage() {
 
     const scrollToInquiry = () => {
         const el = document.getElementById('inquiry-section');
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-        }
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
     };
 
-    if (loading) {
+    // ── Show skeleton ONLY on the very first load (no cached data anywhere) ──
+    if (!hasData && reduxLoading) {
         return <HeroSkeleton />;
     }
+
+    const product = localProduct;
 
     return (
         <div className="bg-[#050507] space-y-6 pb-20 text-[#F8FAFC]">
@@ -197,7 +215,10 @@ export default function HomePage() {
 
             {/* 7. Distribution & Pre-Order Inquiry Lead Form */}
             <div id="inquiry-section">
-                <InquiryForm productId={product?._id || '66a87f12bc09a123456789ab'} productName={product?.name} />
+                <InquiryForm
+                    productId={product?._id || FLAGSHIP_ID}
+                    productName={product?.name}
+                />
             </div>
         </div>
     );

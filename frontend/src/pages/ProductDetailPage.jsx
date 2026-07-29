@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/store/slices/cartSlice';
-import apiClient from '@/services/apiClient';
+import { cachedGet } from '@/services/apiClient';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import { ProductDetailSkeleton } from '@/components/ui/skeleton';
@@ -78,10 +78,23 @@ export default function ProductDetailPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [product, setProduct] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
+    // ── Pull any already-cached product from Redux before firing a fetch ─────
+    const reduxProduct = useSelector(state => state.products.selectedProduct);
+    const isSameProduct = reduxProduct &&
+        (reduxProduct._id === (id || '66a87f12bc09a123456789ab') ||
+         reduxProduct.id  === (id || '66a87f12bc09a123456789ab'));
+
+    // If Redux already has this product — pre-populate immediately (no skeleton)
+    const [product, setProduct] = useState(isSameProduct ? reduxProduct : null);
+    const [selectedImage, setSelectedImage] = useState(
+        isSameProduct
+            ? (reduxProduct.images?.[0] || reduxProduct.image || FALLBACK_FLAGSHIP_PRODUCT.image)
+            : null
+    );
     const [copiedLink, setCopiedLink] = useState(false);
-    const [fetching, setFetching] = useState(true);
+    // fetching=false from the start if we already have data
+    const [fetching, setFetching] = useState(!isSameProduct);
+    const hasFetched = useRef(false);
 
     // E-Commerce Quantity & Tab State
     const [quantity, setQuantity] = useState(1);
@@ -90,26 +103,45 @@ export default function ProductDetailPage() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        const targetId = id || '66a87f12bc09a123456789ab';
+
+        // If we already pre-populated from Redux — skip skeleton, do background refresh
+        if (isSameProduct && !hasFetched.current) {
+            hasFetched.current = true;
+            // Silent background revalidation (no skeleton, no loading)
+            cachedGet(`/products/${targetId}`)
+                .then(data => {
+                    if (data) {
+                        setProduct(data);
+                        setSelectedImage(data?.images?.[0] || data?.image || FALLBACK_FLAGSHIP_PRODUCT.image);
+                    }
+                })
+                .catch(() => {}); // Keep showing stale cached data on error
+            return;
+        }
+
+        // No cached data — show skeleton and fetch
         const fetchProductData = async () => {
             setFetching(true);
-            const targetId = id || '66a87f12bc09a123456789ab';
             try {
-                const res = await apiClient.get(`/products/${targetId}`);
-                setProduct(res.data);
-                setSelectedImage(res.data?.images?.[0] || res.data?.image || FALLBACK_FLAGSHIP_PRODUCT.image);
+                // cachedGet: checks memory → sessionStorage → network
+                const data = await cachedGet(`/products/${targetId}`);
+                setProduct(data);
+                setSelectedImage(data?.images?.[0] || data?.image || FALLBACK_FLAGSHIP_PRODUCT.image);
             } catch (err) {
-                console.warn(`Failed to fetch product '${targetId}' from API, attempting flagship fallback...`, err);
+                console.warn(`Failed to fetch product '${targetId}', attempting flagship fallback cache...`, err);
                 try {
-                    const fallbackRes = await apiClient.get('/products/66a87f12bc09a123456789ab');
-                    setProduct(fallbackRes.data);
-                    setSelectedImage(fallbackRes.data?.images?.[0] || fallbackRes.data?.image || FALLBACK_FLAGSHIP_PRODUCT.image);
+                    const fallbackData = await cachedGet('/products/66a87f12bc09a123456789ab');
+                    setProduct(fallbackData);
+                    setSelectedImage(fallbackData?.images?.[0] || fallbackData?.image || FALLBACK_FLAGSHIP_PRODUCT.image);
                 } catch (fallbackErr) {
-                    console.warn('API unavailable, rendering hardcoded flagship product fallback:', fallbackErr);
+                    console.warn('All cache layers missed, using hardcoded fallback:', fallbackErr);
                     setProduct(FALLBACK_FLAGSHIP_PRODUCT);
                     setSelectedImage(FALLBACK_FLAGSHIP_PRODUCT.image);
                 }
             } finally {
                 setFetching(false);
+                hasFetched.current = true;
             }
         };
 
@@ -256,7 +288,8 @@ export default function ProductDetailPage() {
         setTimeout(() => setAddedFeedback(false), 2500);
     };
 
-    if (fetching) {
+    // Only show skeleton on true first load — never on cached re-visits
+    if (fetching && !product) {
         return <ProductDetailSkeleton />;
     }
 
