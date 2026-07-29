@@ -6,6 +6,7 @@ import WholesaleTiers from '@/components/ecommerce/WholesaleTiers';
 import AcousticFeatures from '@/components/ecommerce/AcousticFeatures';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import InquiryForm from '@/components/ecommerce/InquiryForm';
+import MarketingVideoShowcase from '@/components/ecommerce/MarketingVideoShowcase';
 import { HeroSkeleton } from '@/components/ui/skeleton';
 
 export default function HomePage() {
@@ -28,6 +29,13 @@ export default function HomePage() {
         fetchProduct();
     }, []);
 
+    const scrollToInquiry = () => {
+        const el = document.getElementById('inquiry-section');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     if (loading) {
         return <HeroSkeleton />;
     }
@@ -42,19 +50,24 @@ export default function HomePage() {
             {/* 2. Startup Metrics & Live Trust Strip */}
             <BrandStrip />
 
-            {/* 3. Direct Factory Supply & Wholesale Volume Tiers */}
+            {/* 3. Marketing Video Showcase (Streaming Chunked Video Demo) */}
+            <MarketingVideoShowcase onInquireClick={scrollToInquiry} />
+
+            {/* 4. Direct Factory Supply & Wholesale Volume Tiers */}
             <div id="wholesale-section">
                 <WholesaleTiers />
             </div>
 
-            {/* 4. Driver & Acoustic Innovation Section */}
+            {/* 5. Driver & Acoustic Innovation Section */}
             <AcousticFeatures product={product} />
 
-            {/* 5. Full Technical Specs Datasheet */}
+            {/* 6. Full Technical Specs Datasheet */}
             <TechSpecsTable product={product} />
 
-            {/* 6. Distribution & Pre-Order Inquiry Lead Form */}
-            <InquiryForm productId={product?._id || '66a87f12bc09a123456789ab'} productName={product?.name} />
+            {/* 7. Distribution & Pre-Order Inquiry Lead Form */}
+            <div id="inquiry-section">
+                <InquiryForm productId={product?._id || '66a87f12bc09a123456789ab'} productName={product?.name} />
+            </div>
         </div>
     );
 }

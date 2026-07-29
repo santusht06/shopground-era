@@ -7,6 +7,7 @@ import InquiryForm from '@/components/ecommerce/InquiryForm';
 import TechSpecsTable from '@/components/ecommerce/TechSpecsTable';
 import { ProductDetailSkeleton } from '@/components/ui/skeleton';
 import { AmazonCardButton } from '@/components/ui/AmazonBuyButton';
+import MarketingVideoShowcase from '@/components/ecommerce/MarketingVideoShowcase';
 import {
     Star, Check, ChevronRight, Share2, Shield, Truck,
     RotateCcw, Zap, Headphones, Building, Send, ExternalLink,
@@ -255,6 +256,12 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Video Marketing Demo Section */}
+            <MarketingVideoShowcase onInquireClick={() => {
+                const el = document.getElementById('inquiry-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }} />
 
             {/* DEEP PRODUCT DESCRIPTION & TECHNICAL BREAKDOWN TABS */}
             <div className="bg-[#0C0C12] border border-white/10 rounded-3xl p-6 sm:p-10 space-y-8 shadow-[0_10px_30px_rgba(0,0,0,0.8)] orange-glow-border">
