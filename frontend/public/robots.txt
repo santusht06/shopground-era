@@ -1,9 +1,25 @@
-# User-agent directives for ShopGround Era Single Product Portfolio
+# User-agent directives for ShopGround Era
 User-agent: *
 Allow: /
 Allow: /product/
 Allow: /assets/
+Allow: /videos/
+Allow: /minio/
 Allow: /logo.png
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-32x32.png
+Allow: /favicon-16x16.png
+Allow: /apple-touch-icon.png
+Allow: /android-chrome-192x192.png
+Allow: /android-chrome-512x512.png
+Allow: /sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
 
 # Disallow internal API endpoints & admin routes from search indexes
 Disallow: /api/
