@@ -51,8 +51,6 @@ PRODUCT = {
     "category": "Home & Appliance Hardware",
     "brand": "GroundEra",
     "stock": 2500,
-    "rating": 4.9,
-    "reviews_count": 482,
     "image": CDN["main"],
     "images": [
         CDN["main"],

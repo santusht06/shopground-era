@@ -85,7 +85,6 @@ export default function DealsCarousel() {
                         const pid = product._id || product.id;
                         const orig = product.originalPrice || product.wholesale_mrp || (product.price * 1.25);
                         const discountPercent = Math.round(((orig - product.price) / orig) * 100);
-                        const revCount = product.reviewsCount || product.reviews_count || 482;
 
                         return (
                             <div

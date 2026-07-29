@@ -216,15 +216,6 @@ export default function ProductDetailPage() {
                             {currentProduct.name}
                         </h1>
 
-                        <div className="flex items-center gap-2 pt-1">
-                            <div className="flex items-center text-amber-400">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star key={i} className="w-4 h-4 fill-current" />
-                                ))}
-                            </div>
-                            <span className="text-sm font-bold text-white">{currentProduct.rating || 4.9}</span>
-                            <span className="text-xs text-slate-400">({currentProduct.reviewsCount || 482} verified reviews)</span>
-                        </div>
                     </div>
 
                     <p className="text-slate-300 text-sm leading-relaxed font-normal">
