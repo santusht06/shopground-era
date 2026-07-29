@@ -102,7 +102,6 @@ PRODUCT = {
     "distribution_contact": {
         "department": "GroundEra Wholesale & Distribution",
         "email": "employee.sales@shopground.era",
-        "phone": "+1 (800) 555-GROUNDERA",
         "lead_time": "1-2 Business Days for Sample Shipping",
     },
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Mail, Phone } from 'lucide-react';
+import { ArrowUpRight, Mail } from 'lucide-react';
 
 const SCROLL_LINKS = [
     { label: 'Product Overview', href: '#product-overview' },
@@ -62,12 +62,8 @@ export default function Footer() {
                             <Mail className="w-3.5 h-3.5 text-[#F27E24] shrink-0" />
                             info@shopgroundera.com
                         </a>
-                        <a href="tel:+18005550000" className="flex items-center gap-2 text-slate-300 hover:text-[#F27E24] transition-colors">
-                            <Phone className="w-3.5 h-3.5 text-[#F27E24] shrink-0" />
-                            +1 (800) 555-APEX
-                        </a>
                         <p className="text-slate-500 mt-2 leading-relaxed">
-                            Sales team available Mon–Fri, 9AM–6PM EST. Bulk inquiries and OEM customization welcomed.
+                            Sales team available Mon–Fri, 9AM–6PM EST for bulk inquiries and OEM customization.
                         </p>
                     </div>
 
