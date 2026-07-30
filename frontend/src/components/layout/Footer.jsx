@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUpRight, Mail, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 
 const SCROLL_LINKS = [
@@ -14,13 +15,13 @@ const SCROLL_LINKS = [
  * 2. Navigation with keyword-rich anchor text
  * 3. Contact Us section (sales & support)
  * 4. Free returns within 30 days trust highlight
- * 5. Production-grade Policy Modal triggers:
- *    - Refund & Return Policy
- *    - Privacy Policy
- *    - Terms & Conditions
- *    - Get a Sample
+ * 5. Separate Page Links:
+ *    - Refund & Return Policy (/refund-policy)
+ *    - Privacy Policy (/privacy-policy)
+ *    - Terms & Conditions (/terms)
+ *    - Get a Sample (/sample)
  */
-export default function Footer({ onOpenPolicy }) {
+export default function Footer() {
     return (
         <footer
             className="bg-[#050507] border-t border-white/10 text-xs text-slate-400"
@@ -34,7 +35,7 @@ export default function Footer({ onOpenPolicy }) {
                     {/* BRAND MANIFESTO */}
                     <div className="md:col-span-5 space-y-4">
                         <div className="flex items-center">
-                            <a href="https://shopgroundera.com" aria-label="ShopGround Era — Home">
+                            <Link to="/" aria-label="ShopGround Era — Home">
                                 <img
                                     src="/logo.png"
                                     alt="ShopGround Era — GroundEra Anti Vibration Pads for Washing Machine, Dryers & Heavy Machinery"
@@ -42,7 +43,7 @@ export default function Footer({ onOpenPolicy }) {
                                     width="112"
                                     height="56"
                                 />
-                            </a>
+                            </Link>
                         </div>
                         <p className="text-slate-400 leading-relaxed max-w-sm">
                             We make one thing: the best anti-vibration pad in the world. Industrial-grade, direct from factory, shipped to your warehouse or doorstep within 48 hours.
@@ -50,8 +51,8 @@ export default function Footer({ onOpenPolicy }) {
 
                         {/* 30-Day Free Returns Banner Badge */}
                         <div className="pt-1">
-                            <button
-                                onClick={() => onOpenPolicy?.('refund')}
+                            <Link
+                                to="/refund-policy"
                                 className="inline-flex items-center gap-2.5 p-3 rounded-2xl bg-[#0C0C12] border border-[#F27E24]/30 hover:border-[#F27E24] text-slate-200 hover:text-white transition-all cursor-pointer text-left group"
                             >
                                 <div className="w-7 h-7 rounded-xl bg-[#F27E24]/15 flex items-center justify-center text-[#F27E24] shrink-0 group-hover:scale-110 transition-transform">
@@ -61,7 +62,7 @@ export default function Footer({ onOpenPolicy }) {
                                     <span className="font-bold text-white block text-xs">Free returns within 30 days</span>
                                     <span className="text-[10px] text-[#F27E24] font-semibold underline">Read Refund &amp; Return Policy &rarr;</span>
                                 </div>
-                            </button>
+                            </Link>
                         </div>
 
                         {/* OEM Quote CTA */}
@@ -91,12 +92,12 @@ export default function Footer({ onOpenPolicy }) {
                                 </li>
                             ))}
                             <li>
-                                <button
-                                    onClick={() => onOpenPolicy?.('refund')}
-                                    className="hover:text-[#F27E24] transition-colors font-medium cursor-pointer text-left text-slate-400"
+                                <Link
+                                    to="/refund-policy"
+                                    className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 block"
                                 >
                                     Refund &amp; Return Policy
-                                </button>
+                                </Link>
                             </li>
                         </ul>
                     </nav>
@@ -152,34 +153,34 @@ export default function Footer({ onOpenPolicy }) {
                     </p>
                 </div>
 
-                {/* BOTTOM BAR */}
+                {/* BOTTOM BAR — Separate Page Router Links */}
                 <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <p className="text-slate-500">© 2026 ShopGround Era. All rights reserved.</p>
                     <div className="flex items-center gap-4 text-slate-500 flex-wrap">
-                        <button
-                            onClick={() => onOpenPolicy?.('refund')}
-                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
+                        <Link
+                            to="/refund-policy"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
                         >
                             Refund &amp; Return Policy
-                        </button>
-                        <button
-                            onClick={() => onOpenPolicy?.('privacy')}
-                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
+                        </Link>
+                        <Link
+                            to="/privacy-policy"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
                         >
                             Privacy Policy
-                        </button>
-                        <button
-                            onClick={() => onOpenPolicy?.('terms')}
-                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
+                        </Link>
+                        <Link
+                            to="/terms"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
                         >
                             Terms
-                        </button>
-                        <button
-                            onClick={() => onOpenPolicy?.('sample')}
-                            className="hover:text-[#F27E24] transition-colors font-bold text-[#F27E24] cursor-pointer"
+                        </Link>
+                        <Link
+                            to="/sample"
+                            className="hover:text-[#F27E24] transition-colors font-bold text-[#F27E24]"
                         >
                             Get a Sample
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

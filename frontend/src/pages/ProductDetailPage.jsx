@@ -445,14 +445,14 @@ export default function ProductDetailPage({ onOpenPolicy }) {
                             <Truck className="w-4.5 h-4.5 text-[#F27E24]" />
                             <span className="font-semibold text-slate-200">Express Shipping</span>
                         </div>
-                        <button
-                            onClick={() => onOpenPolicy?.('refund')}
+                        <Link
+                            to="/refund-policy"
                             className="p-3 rounded-2xl bg-[#0C0C12] border border-[#F27E24]/30 hover:border-[#F27E24] flex flex-col items-center gap-1.5 justify-center cursor-pointer hover:bg-white/5 transition-all group text-left"
                             title="Click to view Refund & Return Policy"
                         >
                             <RotateCcw className="w-4.5 h-4.5 text-[#F27E24] group-hover:scale-110 transition-transform" />
                             <span className="font-bold text-white text-center leading-tight">Free returns within 30 days</span>
-                        </button>
+                        </Link>
                         <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5 justify-center">
                             <Shield className="w-4.5 h-4.5 text-[#F27E24]" />
                             <span className="font-semibold text-slate-200">Lifetime Warranty</span>
