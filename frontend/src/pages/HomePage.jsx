@@ -13,8 +13,14 @@ import applySEO from '@/hooks/useSEO';
 
 const FLAGSHIP_ID = '66a87f12bc09a123456789ab';
 
-export default function HomePage() {
+export default function HomePage({ onOpenRefundPolicy, autoOpenRefund }) {
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (autoOpenRefund && onOpenRefundPolicy) {
+            onOpenRefundPolicy();
+        }
+    }, [autoOpenRefund, onOpenRefundPolicy]);
 
     // ── Pull product from Redux cache ─────────────────────────────────────────
     const reduxProduct = useSelector(state => state.products.selectedProduct);

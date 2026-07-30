@@ -73,7 +73,7 @@ const FALLBACK_FLAGSHIP_PRODUCT = {
     ]
 };
 
-export default function ProductDetailPage() {
+export default function ProductDetailPage({ onOpenRefundPolicy }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -439,19 +439,23 @@ export default function ProductDetailPage() {
                         </div>
                     </div>
 
-                    {/* Trust Badges */}
+                    {/* Trust Badges — Prominently featuring 30-Day Free Returns */}
                     <div className="grid grid-cols-3 gap-3 text-center text-[11px] text-slate-300 font-medium border-t border-white/10 pt-5">
-                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
-                            <Truck className="w-4 h-4 text-[#F27E24]" />
-                            <span>Express Shipping</span>
+                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5 justify-center">
+                            <Truck className="w-4.5 h-4.5 text-[#F27E24]" />
+                            <span className="font-semibold text-slate-200">Express Shipping</span>
                         </div>
-                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
-                            <Shield className="w-4 h-4 text-[#F27E24]" />
-                            <span>2 Year Warranty</span>
-                        </div>
-                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5">
-                            <Building className="w-4 h-4 text-[#F27E24]" />
-                            <span>OEM Support</span>
+                        <button
+                            onClick={onOpenRefundPolicy}
+                            className="p-3 rounded-2xl bg-[#0C0C12] border border-[#F27E24]/30 hover:border-[#F27E24] flex flex-col items-center gap-1.5 justify-center cursor-pointer hover:bg-white/5 transition-all group text-left"
+                            title="Click to view Refund & Return Policy"
+                        >
+                            <RotateCcw className="w-4.5 h-4.5 text-[#F27E24] group-hover:scale-110 transition-transform" />
+                            <span className="font-bold text-white text-center leading-tight">Free returns within 30 days</span>
+                        </button>
+                        <div className="p-3 rounded-2xl bg-[#0C0C12] border border-white/10 flex flex-col items-center gap-1.5 justify-center">
+                            <Shield className="w-4.5 h-4.5 text-[#F27E24]" />
+                            <span className="font-semibold text-slate-200">Lifetime Warranty</span>
                         </div>
                     </div>
                 </div>
