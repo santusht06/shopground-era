@@ -6,35 +6,46 @@ import ProductDetailPage from '@/pages/ProductDetailPage';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/ecommerce/CartDrawer';
 import CheckoutModal from '@/components/ecommerce/CheckoutModal';
-import RefundPolicyModal from '@/components/ecommerce/RefundPolicyModal';
+import PolicyModal from '@/components/ecommerce/PolicyModal';
 
 export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isRefundPolicyOpen, setIsRefundPolicyOpen] = useState(false);
+  const [isPolicyOpen, setIsPolicyOpen] = useState(false);
+  const [activePolicyTab, setActivePolicyTab] = useState('refund');
 
-  const openRefundPolicy = () => setIsRefundPolicyOpen(true);
+  const openPolicy = (tab = 'refund') => {
+    setActivePolicyTab(tab);
+    setIsPolicyOpen(true);
+  };
 
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-[#050507] text-[#F8FAFC]">
         {/* Single Product Portfolio Navbar */}
-        <Navbar onOpenRefundPolicy={openRefundPolicy} />
+        <Navbar onOpenPolicy={openPolicy} />
 
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<HomePage onOpenRefundPolicy={openRefundPolicy} />} />
-            <Route path="/product/:id" element={<ProductDetailPage onOpenRefundPolicy={openRefundPolicy} />} />
-            <Route path="/refund-policy" element={<HomePage onOpenRefundPolicy={openRefundPolicy} autoOpenRefund={true} />} />
+            <Route path="/" element={<HomePage onOpenPolicy={openPolicy} />} />
+            <Route path="/product/:id" element={<ProductDetailPage onOpenPolicy={openPolicy} />} />
+            <Route path="/refund-policy" element={<HomePage onOpenPolicy={openPolicy} autoOpenPolicyTab="refund" />} />
+            <Route path="/privacy-policy" element={<HomePage onOpenPolicy={openPolicy} autoOpenPolicyTab="privacy" />} />
+            <Route path="/terms" element={<HomePage onOpenPolicy={openPolicy} autoOpenPolicyTab="terms" />} />
+            <Route path="/sample" element={<HomePage onOpenPolicy={openPolicy} autoOpenPolicyTab="sample" />} />
           </Routes>
         </main>
 
         {/* Global Footer */}
-        <Footer onOpenRefundPolicy={openRefundPolicy} />
+        <Footer onOpenPolicy={openPolicy} />
 
-        {/* Global Cart Drawer, Inquiry Checkout & Refund Policy Modals */}
+        {/* Global Cart Drawer, Inquiry Checkout & Unified Policy Modals */}
         <CartDrawer onProceedToCheckout={() => setIsCheckoutOpen(true)} />
         <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
-        <RefundPolicyModal isOpen={isRefundPolicyOpen} onClose={() => setIsRefundPolicyOpen(false)} />
+        <PolicyModal
+          isOpen={isPolicyOpen}
+          onClose={() => setIsPolicyOpen(false)}
+          initialTab={activePolicyTab}
+        />
       </div>
     </BrowserRouter>
   );

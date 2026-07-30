@@ -73,7 +73,7 @@ const FALLBACK_FLAGSHIP_PRODUCT = {
     ]
 };
 
-export default function ProductDetailPage({ onOpenRefundPolicy }) {
+export default function ProductDetailPage({ onOpenPolicy }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -446,7 +446,7 @@ export default function ProductDetailPage({ onOpenRefundPolicy }) {
                             <span className="font-semibold text-slate-200">Express Shipping</span>
                         </div>
                         <button
-                            onClick={onOpenRefundPolicy}
+                            onClick={() => onOpenPolicy?.('refund')}
                             className="p-3 rounded-2xl bg-[#0C0C12] border border-[#F27E24]/30 hover:border-[#F27E24] flex flex-col items-center gap-1.5 justify-center cursor-pointer hover:bg-white/5 transition-all group text-left"
                             title="Click to view Refund & Return Policy"
                         >

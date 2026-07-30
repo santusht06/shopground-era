@@ -14,9 +14,13 @@ const SCROLL_LINKS = [
  * 2. Navigation with keyword-rich anchor text
  * 3. Contact Us section (sales & support)
  * 4. Free returns within 30 days trust highlight
- * 5. Refund & Return Policy modal trigger & links
+ * 5. Production-grade Policy Modal triggers:
+ *    - Refund & Return Policy
+ *    - Privacy Policy
+ *    - Terms & Conditions
+ *    - Get a Sample
  */
-export default function Footer({ onOpenRefundPolicy }) {
+export default function Footer({ onOpenPolicy }) {
     return (
         <footer
             className="bg-[#050507] border-t border-white/10 text-xs text-slate-400"
@@ -47,7 +51,7 @@ export default function Footer({ onOpenRefundPolicy }) {
                         {/* 30-Day Free Returns Banner Badge */}
                         <div className="pt-1">
                             <button
-                                onClick={onOpenRefundPolicy}
+                                onClick={() => onOpenPolicy?.('refund')}
                                 className="inline-flex items-center gap-2.5 p-3 rounded-2xl bg-[#0C0C12] border border-[#F27E24]/30 hover:border-[#F27E24] text-slate-200 hover:text-white transition-all cursor-pointer text-left group"
                             >
                                 <div className="w-7 h-7 rounded-xl bg-[#F27E24]/15 flex items-center justify-center text-[#F27E24] shrink-0 group-hover:scale-110 transition-transform">
@@ -88,7 +92,7 @@ export default function Footer({ onOpenRefundPolicy }) {
                             ))}
                             <li>
                                 <button
-                                    onClick={onOpenRefundPolicy}
+                                    onClick={() => onOpenPolicy?.('refund')}
                                     className="hover:text-[#F27E24] transition-colors font-medium cursor-pointer text-left text-slate-400"
                                 >
                                     Refund &amp; Return Policy
@@ -151,18 +155,31 @@ export default function Footer({ onOpenRefundPolicy }) {
                 {/* BOTTOM BAR */}
                 <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <p className="text-slate-500">© 2026 ShopGround Era. All rights reserved.</p>
-                    <div className="flex items-center gap-4 text-slate-500">
+                    <div className="flex items-center gap-4 text-slate-500 flex-wrap">
                         <button
-                            onClick={onOpenRefundPolicy}
-                            className="hover:text-[#F27E24] transition-colors font-bold text-slate-300 cursor-pointer"
+                            onClick={() => onOpenPolicy?.('refund')}
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
                         >
                             Refund &amp; Return Policy
                         </button>
-                        <a href="#" className="hover:text-slate-400 transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-slate-400 transition-colors">Terms</a>
-                        <a href="#inquiry-form-section" className="hover:text-[#F27E24] transition-colors font-bold text-slate-400">
+                        <button
+                            onClick={() => onOpenPolicy?.('privacy')}
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
+                        >
+                            Privacy Policy
+                        </button>
+                        <button
+                            onClick={() => onOpenPolicy?.('terms')}
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 cursor-pointer"
+                        >
+                            Terms
+                        </button>
+                        <button
+                            onClick={() => onOpenPolicy?.('sample')}
+                            className="hover:text-[#F27E24] transition-colors font-bold text-[#F27E24] cursor-pointer"
+                        >
                             Get a Sample
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
