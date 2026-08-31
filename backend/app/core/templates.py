@@ -1,93 +1,78 @@
-# ShopGround Era Email Templates Engine
+# ShopGround Era Transactional Email Templates (Clean & Minimal Professional)
 
 def get_warranty_registered_html(customer_name: str, warranty_code: str, serial_number: str, order_id: str, product_name: str, purchase_date: str) -> str:
-    return f"""
-<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Lifetime Guarantee Active</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warranty Registration Confirmation</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050507; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #050507; padding: 40px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color: #0f172a;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #0c0c12; border: 1px solid #1e1e2d; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
-          <!-- Header Banner -->
+        <table role="presentation" width="100%" style="max-width: 560px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+          
+          <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #141420 0%, #0c0c12 100%); padding: 32px 32px 24px; text-align: center; border-bottom: 1px solid #1a1a29;">
-              <img src="https://shopgroundera.com/logo.png" alt="ShopGround Era" style="height: 48px; width: auto; margin-bottom: 12px;" />
-              <h1 style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Lifetime Guarantee Active</h1>
-              <p style="color: #f27e24; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 0 0;">100-Year Commercial & Residential Protection</p>
+            <td style="padding: 24px 32px 20px; border-bottom: 1px solid #e2e8f0;">
+              <table role="presentation" width="100%">
+                <tr>
+                  <td style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px;">ShopGround Era</td>
+                  <td align="right" style="font-size: 12px; color: #64748b;">Warranty Confirmation</td>
+                </tr>
+              </table>
             </td>
           </tr>
 
-          <!-- Content Body -->
+          <!-- Content -->
           <tr>
             <td style="padding: 32px;">
-              <p style="color: #e4e4e7; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">Dear <strong>{customer_name}</strong>,</p>
-              <p style="color: #a1a1aa; font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">
-                Congratulations! Your official <strong>ShopGround Era™</strong> Lifetime Guarantee registration is complete and active in our global registry.
+              <h2 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Warranty Registration Confirmed</h2>
+              <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0 0 24px 0;">
+                Hello {customer_name},<br>
+                Your warranty registration has been recorded. Below are your official record details.
               </p>
 
-              <!-- Certificate Details Box -->
-              <table role="presentation" width="100%" style="background-color: #12121c; border: 1px solid #27273a; border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+              <!-- Minimal Data Table -->
+              <table role="presentation" width="100%" style="border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Warranty Code</td>
+                  <td style="padding: 10px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0f172a; font-size: 14px;">{warranty_code}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Serial Number</td>
+                  <td style="padding: 10px 0; text-align: right; font-family: monospace; font-weight: 600; color: #334155;">{serial_number}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Order ID</td>
+                  <td style="padding: 10px 0; text-align: right; color: #334155;">{order_id}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Product</td>
+                  <td style="padding: 10px 0; text-align: right; color: #334155;">{product_name}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Purchase Date</td>
+                  <td style="padding: 10px 0; text-align: right; color: #334155;">{purchase_date}</td>
+                </tr>
                 <tr>
-                  <td>
-                    <table role="presentation" width="100%" style="font-size: 13px; color: #d4d4d8;">
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Warranty Code:</td>
-                        <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #f27e24; font-size: 15px;">{warranty_code}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Serial Number:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #ffffff; font-family: monospace;">{serial_number}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Order ID:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #e4e4e7;">{order_id}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Product:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #e4e4e7;">{product_name}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Purchase Date:</td>
-                        <td style="padding: 6px 0; text-align: right; color: #a1a1aa;">{purchase_date}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 8px 0 0 0; color: #71717a; border-top: 1px dashed #27273a;">Guarantee Period:</td>
-                        <td style="padding: 8px 0 0 0; text-align: right; font-weight: 700; color: #22c55e; border-top: 1px dashed #27273a;">LIFETIME GUARANTEE</td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td style="padding: 10px 0; color: #64748b;">Coverage</td>
+                  <td style="padding: 10px 0; text-align: right; font-weight: 700; color: #16a34a;">Lifetime Guarantee</td>
                 </tr>
               </table>
 
-              <!-- CTA Button -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td align="center">
-                    <a href="https://shopgroundera.com/warranty" target="_blank" style="background: linear-gradient(135deg, #f27e24 0%, #d96914 100%); color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 14px 28px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 14px rgba(242, 126, 36, 0.4);">
-                      Verify Warranty Status Live &rarr;
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="color: #71717a; font-size: 12px; line-height: 1.5; text-align: center; margin: 28px 0 0 0;">
-                If you ever experience vibration dampening failure or structural cracking, file a claim anytime at <a href="https://shopgroundera.com/warranty" style="color: #f27e24; text-decoration: underline;">shopgroundera.com/warranty</a>.
+              <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 24px 0;">
+                To check warranty coverage status anytime, visit <a href="https://shopgroundera.com/warranty" style="color: #2563eb; text-decoration: none;">shopgroundera.com/warranty</a> and enter your Warranty Code.
               </p>
+
+              <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 12px; color: #94a3b8;">
+                ShopGround Era Customer Support &bull; <a href="mailto:info@shopgroundera.com" style="color: #64748b; text-decoration: none;">info@shopgroundera.com</a>
+              </div>
             </td>
           </tr>
 
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #08080e; padding: 20px; text-align: center; border-top: 1px solid #181824;">
-              <p style="color: #52525b; font-size: 12px; margin: 0;">&copy; 2026 ShopGround Era Inc. All rights reserved.</p>
-              <p style="color: #3f3f46; font-size: 11px; margin: 4px 0 0 0;">Official Guarantee Portal &bull; info@shopgroundera.com</p>
-            </td>
-          </tr>
         </table>
       </td>
     </tr>
@@ -98,89 +83,74 @@ def get_warranty_registered_html(customer_name: str, warranty_code: str, serial_
 
 
 def get_claim_submitted_html(customer_name: str, claim_code: str, warranty_code: str, issue_category: str, description: str, evidence_count: int) -> str:
-    return f"""
-<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Warranty Claim Received</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warranty Claim Acknowledgement</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050507; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #050507; padding: 40px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color: #0f172a;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #0c0c12; border: 1px solid #1e1e2d; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
-          <!-- Header Banner -->
+        <table role="presentation" width="100%" style="max-width: 560px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+          
+          <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #141420 0%, #0c0c12 100%); padding: 32px 32px 24px; text-align: center; border-bottom: 1px solid #1a1a29;">
-              <img src="https://shopgroundera.com/logo.png" alt="ShopGround Era" style="height: 48px; width: auto; margin-bottom: 12px;" />
-              <h1 style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Defect Claim Received</h1>
-              <p style="color: #38bdf8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 0 0;">Status: Under Review (Est. 24 Hours)</p>
+            <td style="padding: 24px 32px 20px; border-bottom: 1px solid #e2e8f0;">
+              <table role="presentation" width="100%">
+                <tr>
+                  <td style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px;">ShopGround Era</td>
+                  <td align="right" style="font-size: 12px; color: #64748b;">Claim Acknowledgement</td>
+                </tr>
+              </table>
             </td>
           </tr>
 
-          <!-- Content Body -->
+          <!-- Content -->
           <tr>
             <td style="padding: 32px;">
-              <p style="color: #e4e4e7; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">Dear <strong>{customer_name}</strong>,</p>
-              <p style="color: #a1a1aa; font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">
-                We have received your defect claim for Warranty Code <strong style="color: #f27e24;">{warranty_code}</strong>. Our Senior Quality Engineering team has initiated an audit of your report and attached media evidence.
+              <h2 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Claim Submission Received</h2>
+              <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0 0 24px 0;">
+                Hello {customer_name},<br>
+                We have received your claim for Warranty Code <strong>{warranty_code}</strong>. The details of your submission are provided below.
               </p>
 
-              <!-- Claim Summary Box -->
-              <table role="presentation" width="100%" style="background-color: #12121c; border: 1px solid #27273a; border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+              <!-- Minimal Data Table -->
+              <table role="presentation" width="100%" style="border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Claim Code</td>
+                  <td style="padding: 10px 0; text-align: right; font-family: monospace; font-weight: 700; color: #2563eb; font-size: 14px;">{claim_code}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Issue Category</td>
+                  <td style="padding: 10px 0; text-align: right; font-weight: 600; color: #334155;">{issue_category}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Evidence Files</td>
+                  <td style="padding: 10px 0; text-align: right; color: #334155;">{evidence_count} file(s) attached</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Current Status</td>
+                  <td style="padding: 10px 0; text-align: right; font-weight: 700; color: #d97706;">Under Review</td>
+                </tr>
                 <tr>
-                  <td>
-                    <table role="presentation" width="100%" style="font-size: 13px; color: #d4d4d8;">
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Claim Code:</td>
-                        <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #38bdf8; font-size: 15px;">{claim_code}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Defect Category:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #ffffff;">{issue_category}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Media Evidence:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #22c55e;">{evidence_count} Attached File(s)</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Audit Status:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 700; color: #eab308;">UNDER REVIEW</td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="padding: 12px 0 0 0; border-top: 1px dashed #27273a; color: #a1a1aa; font-size: 12px; line-height: 1.5;">
-                          <strong>Description:</strong> "{description}"
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td style="padding: 12px 0 0 0; color: #64748b; vertical-align: top;">Description</td>
+                  <td style="padding: 12px 0 0 0; text-align: right; color: #334155; font-size: 13px; line-height: 1.4;">{description}</td>
                 </tr>
               </table>
 
-              <!-- CTA Button -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td align="center">
-                    <a href="https://shopgroundera.com/warranty" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 14px 28px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);">
-                      Track Claim Audit Status &rarr;
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="color: #71717a; font-size: 12px; line-height: 1.5; text-align: center; margin: 28px 0 0 0;">
-                You will receive another automated notification as soon as our Quality Engineers authorize replacement dispatch or resolution.
+              <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 24px 0;">
+                Our technical audit team will review your report within 24 hours. You can check updates live at <a href="https://shopgroundera.com/warranty" style="color: #2563eb; text-decoration: none;">shopgroundera.com/warranty</a>.
               </p>
+
+              <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 12px; color: #94a3b8;">
+                ShopGround Era Customer Support &bull; <a href="mailto:info@shopgroundera.com" style="color: #64748b; text-decoration: none;">info@shopgroundera.com</a>
+              </div>
             </td>
           </tr>
 
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #08080e; padding: 20px; text-align: center; border-top: 1px solid #181824;">
-              <p style="color: #52525b; font-size: 12px; margin: 0;">&copy; 2026 ShopGround Era Inc. All rights reserved.</p>
-            </td>
-          </tr>
         </table>
       </td>
     </tr>
@@ -192,98 +162,85 @@ def get_claim_submitted_html(customer_name: str, claim_code: str, warranty_code:
 
 def get_claim_decision_html(customer_name: str, claim_code: str, new_status: str, admin_notes: str = None, tracking_number: str = None) -> str:
     is_approved = "Approved" in new_status
-    is_replacement = "Replacement" in new_status
-    status_color = "#22c55e" if is_approved else "#ef4444"
-    status_title = "APPROVED & DISPATCH AUTHORIZED" if is_replacement else ("CLAIM APPROVED" if is_approved else "AUDIT REJECTED")
+    status_color = "#16a34a" if is_approved else "#dc2626"
 
-    tracking_html = ""
+    tracking_section = ""
     if tracking_number:
-        tracking_html = f"""
-        <div style="background-color: #064e3b; border: 1px solid #059669; border-radius: 12px; padding: 16px; margin: 16px 0;">
-          <p style="color: #6ee7b7; font-size: 12px; font-weight: 700; text-transform: uppercase; margin: 0 0 4px 0;">Courier Tracking Number</p>
-          <p style="color: #ffffff; font-family: monospace; font-size: 18px; font-weight: 800; margin: 0;">{tracking_number}</p>
-          <p style="color: #a7f3d0; font-size: 12px; margin: 6px 0 0 0;">Express replacement dispatch initiated via courier gateway.</p>
+        tracking_section = f"""
+        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px; margin-bottom: 24px;">
+          <div style="font-size: 11px; font-weight: 700; color: #166534; text-transform: uppercase; margin-bottom: 4px;">Courier Tracking Number</div>
+          <div style="font-family: monospace; font-size: 16px; font-weight: 700; color: #15803d;">{tracking_number}</div>
         </div>
         """
 
-    notes_html = ""
+    notes_section = ""
     if admin_notes:
-        notes_html = f"""
-        <div style="background-color: #12121c; border-left: 4px solid {status_color}; padding: 14px; border-radius: 4px 12px 12px 4px; margin: 16px 0;">
-          <p style="color: #71717a; font-size: 11px; font-weight: 700; text-transform: uppercase; margin: 0 0 4px 0;">Auditor Quality Notes</p>
-          <p style="color: #e4e4e7; font-size: 13px; margin: 0; line-height: 1.5;">"{admin_notes}"</p>
+        notes_section = f"""
+        <div style="background-color: #f8fafc; border-left: 3px solid #cbd5e1; padding: 12px 16px; margin-bottom: 24px;">
+          <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">Audit Notes</div>
+          <div style="font-size: 13px; color: #334155; line-height: 1.4;">{admin_notes}</div>
         </div>
         """
 
-    return f"""
-<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Claim Decision Update</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warranty Claim Update</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050507; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #050507; padding: 40px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color: #0f172a;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #0c0c12; border: 1px solid #1e1e2d; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
-          <!-- Header Banner -->
+        <table role="presentation" width="100%" style="max-width: 560px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+          
+          <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #141420 0%, #0c0c12 100%); padding: 32px 32px 24px; text-align: center; border-bottom: 1px solid #1a1a29;">
-              <img src="https://shopgroundera.com/logo.png" alt="ShopGround Era" style="height: 48px; width: auto; margin-bottom: 12px;" />
-              <h1 style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Claim Decision Update</h1>
-              <p style="color: {status_color}; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 0 0;">{status_title}</p>
+            <td style="padding: 24px 32px 20px; border-bottom: 1px solid #e2e8f0;">
+              <table role="presentation" width="100%">
+                <tr>
+                  <td style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px;">ShopGround Era</td>
+                  <td align="right" style="font-size: 12px; color: #64748b;">Claim Status Update</td>
+                </tr>
+              </table>
             </td>
           </tr>
 
-          <!-- Content Body -->
+          <!-- Content -->
           <tr>
             <td style="padding: 32px;">
-              <p style="color: #e4e4e7; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">Dear <strong>{customer_name}</strong>,</p>
-              <p style="color: #a1a1aa; font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">
-                The Quality Audit for Claim Code <strong style="color: #f27e24; font-family: monospace;">{claim_code}</strong> has been finalized by our Engineering Management team.
+              <h2 style="font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Claim Status Updated</h2>
+              <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0 0 24px 0;">
+                Hello {customer_name},<br>
+                The audit review for Claim Code <strong>{claim_code}</strong> has been updated.
               </p>
 
-              <!-- Decision Status Box -->
-              <table role="presentation" width="100%" style="background-color: #12121c; border: 1px solid #27273a; border-radius: 14px; padding: 20px; margin-bottom: 20px;">
+              <!-- Minimal Data Table -->
+              <table role="presentation" width="100%" style="border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b;">Claim Code</td>
+                  <td style="padding: 10px 0; text-align: right; font-family: monospace; font-weight: 700; color: #0f172a;">{claim_code}</td>
+                </tr>
                 <tr>
-                  <td>
-                    <table role="presentation" width="100%" style="font-size: 13px; color: #d4d4d8;">
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Claim Code:</td>
-                        <td style="padding: 6px 0; text-align: right; font-family: monospace; font-weight: 700; color: #ffffff;">{claim_code}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 6px 0; color: #71717a;">Final Status:</td>
-                        <td style="padding: 6px 0; text-align: right; font-weight: 800; color: {status_color}; font-size: 14px;">{new_status}</td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td style="padding: 10px 0; color: #64748b;">Updated Status</td>
+                  <td style="padding: 10px 0; text-align: right; font-weight: 700; color: {status_color}; font-size: 14px;">{new_status}</td>
                 </tr>
               </table>
 
-              {tracking_html}
-              {notes_html}
+              {tracking_section}
+              {notes_section}
 
-              <!-- CTA Button -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 24px;">
-                <tr>
-                  <td align="center">
-                    <a href="https://shopgroundera.com/warranty" target="_blank" style="background: linear-gradient(135deg, #f27e24 0%, #d96914 100%); color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 14px 28px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 14px rgba(242, 126, 36, 0.4);">
-                      View Complete Audit Details &rarr;
-                    </a>
-                  </td>
-                </tr>
-              </table>
+              <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 24px 0;">
+                You can review your claim details anytime at <a href="https://shopgroundera.com/warranty" style="color: #2563eb; text-decoration: none;">shopgroundera.com/warranty</a>.
+              </p>
+
+              <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 12px; color: #94a3b8;">
+                ShopGround Era Customer Support &bull; <a href="mailto:info@shopgroundera.com" style="color: #64748b; text-decoration: none;">info@shopgroundera.com</a>
+              </div>
             </td>
           </tr>
 
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #08080e; padding: 20px; text-align: center; border-top: 1px solid #181824;">
-              <p style="color: #52525b; font-size: 12px; margin: 0;">&copy; 2026 ShopGround Era Inc. All rights reserved.</p>
-            </td>
-          </tr>
         </table>
       </td>
     </tr>
