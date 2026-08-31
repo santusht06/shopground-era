@@ -1,3 +1,5 @@
+from app.core.mail import send_email_async
+from app.core.templates import get_inquiry_acknowledged_html
 from fastapi import APIRouter, HTTPException, status
 from app.models.inquiry import InquiryCreate
 from app.core.database import get_database
@@ -30,6 +32,23 @@ async def create_inquiry(inquiry_data: InquiryCreate):
 
     # Render & Dispatch HTML Email Template
     send_inquiry_email(inquiry_dict)
+
+    # Dispatch Client Acknowledgment Email
+    client_html = get_inquiry_acknowledged_html(
+        name=inquiry_data.name,
+        inquiry_id=inquiry_id,
+        target_quantity=inquiry_data.target_quantity,
+        company=inquiry_data.company,
+        message=inquiry_data.message
+    )
+    try:
+        await send_email_async(
+            inquiry_data.email,
+            f"ShopGround Era™ Product Inquiry Acknowledgment [{inquiry_id}]",
+            client_html
+        )
+    except Exception as ack_err:
+        print("Inquiry client acknowledgment email error:", ack_err)
 
     return {
         "success": True,

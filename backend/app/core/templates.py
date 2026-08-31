@@ -293,3 +293,94 @@ def get_claim_decision_html(customer_name: str, claim_code: str, new_status: str
 </body>
 </html>
 """
+
+
+def get_inquiry_acknowledged_html(name: str, inquiry_id: str, target_quantity: int, company: str, message: str) -> str:
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inquiry Received</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; padding: 24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08);">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td style="background-color: #0f172a; padding: 28px 24px; text-align: center;">
+              <img src="https://shopgroundera.com/logo.png" alt="ShopGround Era" style="height: 44px; width: auto; margin-bottom: 12px; display: inline-block;" />
+              <h1 style="color: #f27e24; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.3px;">Inquiry Received</h1>
+              <p style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 0 0;">GroundEra Anti-Vibration Systems</p>
+            </td>
+          </tr>
+
+          <!-- Content Body -->
+          <tr>
+            <td style="padding: 28px 24px; background-color: #ffffff;">
+              <p style="color: #0f172a; font-size: 15px; font-weight: 600; line-height: 1.5; margin: 0 0 16px 0;">Hello {name},</p>
+              <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">
+                Thank you for your interest in <strong>GroundEra Anti-Vibration Pads with Leveling Shim & Mini Level</strong>. We have logged your details into our sales management system.
+              </p>
+
+              <!-- Inquiry Summary Box -->
+              <table role="presentation" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 24px;">
+                <tr>
+                  <td>
+                    <table role="presentation" width="100%" style="font-size: 13px; color: #334155;">
+                      <tr>
+                        <td style="padding: 8px 0; color: #64748b; font-weight: 500;">Inquiry Reference:</td>
+                        <td style="padding: 8px 0; text-align: right; font-family: monospace; font-weight: 800; color: #0f172a;">{inquiry_id}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: #64748b; font-weight: 500;">Target Quantity:</td>
+                        <td style="padding: 8px 0; text-align: right; font-weight: 700; color: #ea580c;">{target_quantity} Unit(s)</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: #64748b; font-weight: 500;">Company / Org:</td>
+                        <td style="padding: 8px 0; text-align: right; font-weight: 600; color: #1e293b;">{company or "Individual / Retail"}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding: 12px 0 0 0; border-top: 1px dashed #cbd5e1; color: #475569; font-size: 12px; line-height: 1.5;">
+                          <strong>Submitted Requirements:</strong> "{message}"
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color: #475569; font-size: 13px; line-height: 1.5; margin: 0 0 24px 0;">
+                Our sales management team (<a href="mailto:info@shopgroundera.com" style="color: #ea580c; text-decoration: none; font-weight: 600;">info@shopgroundera.com</a>) will review your specifications and contact you directly with pricing, delivery schedules, or distribution terms within 24 hours.
+              </p>
+
+              <!-- CTA Button -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center">
+                    <a href="https://shopgroundera.com" target="_blank" style="background-color: #f27e24; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 14px 28px; border-radius: 10px; display: inline-block;">
+                      Visit ShopGround Era &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8fafc; padding: 18px; text-align: center; border-top: 1px solid #e2e8f0;">
+              <p style="color: #64748b; font-size: 12px; margin: 0; font-weight: 500;">&copy; 2026 ShopGround Era Inc. All rights reserved.</p>
+              <p style="color: #94a3b8; font-size: 11px; margin: 4px 0 0 0;">Sales & Wholesale Support &bull; info@shopgroundera.com</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+"""
