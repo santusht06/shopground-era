@@ -1,0 +1,28 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+motor>=3.4.0              # Async MongoDB driver
+pymongo>=4.7.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt==4.3.0
+python-multipart>=0.0.9   # File uploads
+pydantic>=2.7.0
+pydantic-settings>=2.3.0
+python-dotenv>=1.0.0
+aiofiles>=23.0.0          # Async file I/O
+celery>=5.4.0
+redis>=5.0.0
+kombu>=5.3.0              # RabbitMQ/Celery transport
+aioimaplib>=1.1.0         # Async IMAP client
+aiosmtplib>=3.0.0         # Async SMTP client
+email-validator>=2.1.0
+httpx>=0.27.0             # Async HTTP client
+Jinja2>=3.1.4             # Email templates
+bleach>=6.1.0             # HTML sanitization
+slowapi>=0.1.9            # Rate limiting
+starlette>=0.40.0
+anyio>=4.0.0
+tzdata>=2024.1
+python-magic>=0.4.27      # MIME type detection
+boto3>=1.34.0
+

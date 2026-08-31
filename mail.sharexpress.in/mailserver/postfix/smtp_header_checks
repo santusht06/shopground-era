@@ -1,0 +1,7 @@
+# Remove BCC and internal Received headers before external delivery
+# This prevents leaking internal IP addresses to the outside world
+/^Received: from [^ ]+ \(.*192\.168\./  IGNORE
+/^Received: from [^ ]+ \(.*10\.\d+\./   IGNORE
+/^Received: from [^ ]+ \(.*172\.\d+\./  IGNORE
+/^X-Originating-IP:/                    IGNORE
+/^X-Mailer:/                            IGNORE

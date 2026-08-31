@@ -39,6 +39,7 @@ class WarrantyClaimCreate(BaseModel):
     issue_category: IssueCategory = IssueCategory.VIBRATION_DAMPENING_FAIL
     description: str = Field(..., example="The pads began sliding after 2 weeks of heavy washer spin cycles.")
     evidence_url: Optional[str] = Field(None, example="https://shopgroundera.com/minio/warranty-evidence/file.jpg")
+    evidence_urls: Optional[list[str]] = Field(default_factory=list)
 
 class WarrantyAdminUpdate(BaseModel):
     status: WarrantyStatus

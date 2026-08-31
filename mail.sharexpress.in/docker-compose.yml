@@ -1,0 +1,261 @@
+# =============================================================================
+# mail.sharexpress.in — Full Production Stack
+# =============================================================================
+
+x-backend-common: &backend-common
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+  env_file: .env
+  environment:
+    - MONGO_URI=mongodb://mongodb:27017
+    - REDIS_URL=redis://redis:6379/0
+    - RABBITMQ_URL=amqp://mail:${RABBITMQ_PASSWORD:-mailpassword}@rabbitmq:5672/
+    - POSTFIX_HOST=postfix
+    - DOVECOT_HOST=dovecot
+  volumes:
+    - mail-attachments:/app/attachments
+  depends_on:
+    mongodb:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+  restart: unless-stopped
+  networks:
+    - mail-net
+
+services:
+  # ─── MongoDB ─────────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: mail-mongodb
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=maildb
+    restart: unless-stopped
+    networks:
+      - mail-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+
+  # ─── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: mail-redis
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - mail-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  # ─── RabbitMQ ────────────────────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: mail-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=mail
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-mailpassword}
+      - RABBITMQ_DEFAULT_VHOST=/
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"  # Management UI (localhost only)
+    restart: unless-stopped
+    networks:
+      - mail-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+
+  # ─── Postfix + OpenDKIM ──────────────────────────────────────────────────────
+  postfix:
+    build:
+      context: ./mailserver
+      dockerfile: Dockerfile.postfix
+    container_name: mail-postfix
+    hostname: mail.sharexpress.in
+    ports:
+      - "25:25"     # SMTP incoming
+      - "587:587"   # Submission (authenticated outgoing)
+      - "465:465"   # SMTPS legacy
+    volumes:
+      - ./mailserver/postfix:/etc/postfix/custom:ro
+      - ./mailserver/opendkim:/etc/opendkim/custom:ro
+      - opendkim-keys:/etc/opendkim/keys   # Persistent DKIM keys
+      - mail-storage:/var/mail/vhosts
+      - ./ssl:/etc/postfix/ssl:ro
+    environment:
+      - MAIL_DOMAIN=${MAIL_DOMAIN:-sharexpress.in}
+      - MAIL_HOSTNAME=${MAIL_HOSTNAME:-mail.sharexpress.in}
+    restart: unless-stopped
+    cap_add:
+      - NET_BIND_SERVICE
+      - DAC_READ_SEARCH
+    networks:
+      - mail-net
+    healthcheck:
+      test: ["CMD", "postfix", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+
+  # ─── Dovecot (IMAP / POP3 / LMTP) ──────────────────────────────────────────
+  dovecot:
+    build:
+      context: ./mailserver
+      dockerfile: Dockerfile.dovecot
+    container_name: mail-dovecot
+    ports:
+      - "993:993"   # IMAPS
+      - "143:143"   # IMAP + STARTTLS
+      - "995:995"   # POP3S
+      - "110:110"   # POP3 + STARTTLS
+    volumes:
+      - ./mailserver/dovecot:/etc/dovecot/custom:ro
+      - ./mailserver/scripts:/scripts:ro
+      - mail-storage:/var/mail/vhosts
+      - ./ssl:/etc/dovecot/ssl:ro
+    environment:
+      - MAIL_DOMAIN=${MAIL_DOMAIN:-sharexpress.in}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-AdminPass123!}
+    depends_on:
+      postfix:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - mail-net
+    healthcheck:
+      test: ["CMD", "doveadm", "log", "errors"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 25s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+
+  # ─── Backend API (FastAPI) ───────────────────────────────────────────────────
+  backend:
+    <<: *backend-common
+    container_name: mail-backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+
+  # ─── Background Worker (RabbitMQ consumer) ───────────────────────────────────
+  worker:
+    <<: *backend-common
+    container_name: mail-worker
+    command: ["celery", "-A", "app.workers.mail_worker", "worker", "--loglevel=info", "-Q", "mail_high,mail_normal,mail_bulk,mail_retry"]
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M
+
+  # ─── Frontend (React → Nginx) ────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://api.mail.sharexpress.in/api/v1
+    container_name: mail-frontend
+    restart: unless-stopped
+    networks:
+      - mail-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+
+  # ─── Nginx Reverse Proxy ─────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: mail-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+    networks:
+      - mail-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+
+volumes:
+  mongo-data:
+  redis-data:
+  rabbitmq-data:
+  mail-storage:
+  mail-attachments:
+  nginx-logs:
+  opendkim-keys:    # Named volume for persistent DKIM keypair
+
+networks:
+  mail-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

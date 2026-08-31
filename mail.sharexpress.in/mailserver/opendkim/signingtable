@@ -1,0 +1,8 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OpenDKIM SigningTable
+# Maps sender addresses to key entries in keytable
+# Using refile: prefix allows regex matching
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Sign all mail from @sharexpress.in with the mail key
+*@sharexpress.in    mail._domainkey.sharexpress.in

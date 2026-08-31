@@ -344,34 +344,36 @@ export default function WarrantyManagement() {
               {/* MEDIA EVIDENCE INSPECTION VIEWER */}
               <div className="space-y-2">
                 <label className="text-xs font-extrabold text-slate-900 block flex items-center justify-between">
-                  <span>Defect Evidence Media Inspection</span>
-                  {auditItem.evidence_url && (
-                    <a
-                      href={auditItem.evidence_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[#5E6AD2] text-[11px] font-bold hover:underline flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" /> Full Screen
-                    </a>
-                  )}
+                  <span>Defect Evidence Media Inspection ({(auditItem.evidence_urls && auditItem.evidence_urls.length > 0) ? auditItem.evidence_urls.length : (auditItem.evidence_url ? 1 : 0)} Attached Files)</span>
                 </label>
 
-                {auditItem.evidence_url ? (
-                  <div className="rounded-2xl border border-slate-300 overflow-hidden bg-black/90 flex items-center justify-center min-h-[220px] max-h-[360px] p-2 relative">
-                    {isVideo(auditItem.evidence_url) ? (
-                      <video
-                        src={auditItem.evidence_url}
-                        controls
-                        className="max-h-[340px] w-auto rounded-xl object-contain"
-                      />
-                    ) : (
-                      <img
-                        src={auditItem.evidence_url}
-                        alt="Defect Evidence"
-                        className="max-h-[340px] w-auto rounded-xl object-contain"
-                      />
-                    )}
+                {((auditItem.evidence_urls && auditItem.evidence_urls.length > 0) || auditItem.evidence_url) ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(auditItem.evidence_urls && auditItem.evidence_urls.length > 0 ? auditItem.evidence_urls : [auditItem.evidence_url]).map((m_url, m_idx) => (
+                      <div key={m_idx} className="rounded-2xl border border-slate-300 overflow-hidden bg-black/90 flex flex-col items-center justify-center p-2 relative group min-h-[200px]">
+                        {isVideo(m_url) ? (
+                          <video
+                            src={m_url}
+                            controls
+                            className="max-h-[240px] w-auto rounded-xl object-contain"
+                          />
+                        ) : (
+                          <img
+                            src={m_url}
+                            alt={`Defect Evidence ${m_idx + 1}`}
+                            className="max-h-[240px] w-auto rounded-xl object-contain"
+                          />
+                        )}
+                        <a
+                          href={m_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 text-[#5E6AD2] text-[10px] font-bold hover:underline flex items-center gap-1 bg-white/90 px-2.5 py-1 rounded-lg"
+                        >
+                          <ExternalLink className="w-3 h-3" /> View Fullscreen Media {m_idx + 1}
+                        </a>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="p-6 text-center border border-dashed border-slate-300 rounded-2xl text-slate-400 text-xs">

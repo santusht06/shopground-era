@@ -1,0 +1,13 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Virtual Mailbox Mapping — Maps email addresses to mailbox paths
+# ─────────────────────────────────────────────────────────────────────────────
+# Note: Dovecot handles virtual delivery via LMTP, so these paths serve as 
+# Postfix verification mapping. Postfix expects: address path/
+# Remember to run: postmap /etc/postfix/custom/virtual_mailboxes
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Administrator & Core Accounts
+santusht@sharexpress.in        sharexpress.in/santusht/
+support@sharexpress.in         sharexpress.in/support/
+hr@sharexpress.in              sharexpress.in/hr/
+noreply@sharexpress.in         sharexpress.in/noreply/

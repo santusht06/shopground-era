@@ -1,0 +1,42 @@
+FROM alpine:3.18
+
+# Install Postfix + OpenDKIM (DKIM signing milter) + dependencies
+RUN apk add --no-cache \
+    postfix \
+    postfix-pcre \
+    cyrus-sasl \
+    cyrus-sasl-login \
+    opendkim \
+    opendkim-utils \
+    ca-certificates \
+    bash \
+    openssl \
+    libmagic
+
+# Create OpenDKIM user and directories
+RUN addgroup -g 8891 opendkim 2>/dev/null || true && \
+    adduser -u 8891 -G opendkim -h /etc/opendkim -s /sbin/nologin -D opendkim 2>/dev/null || true
+
+# Create required directories
+RUN mkdir -p \
+    /etc/postfix/custom \
+    /var/spool/postfix/private \
+    /var/mail/vhosts \
+    /etc/postfix/ssl \
+    /etc/opendkim \
+    /etc/opendkim/custom \
+    /etc/opendkim/keys \
+    /var/run/opendkim && \
+    chown -R postfix:postfix /var/mail/vhosts && \
+    chown -R opendkim:opendkim /etc/opendkim /var/run/opendkim
+
+# Add postfix to opendkim group (so milter socket is accessible)
+RUN addgroup postfix opendkim 2>/dev/null || true
+
+# Copy entrypoint script
+COPY postfix-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 25 465 587
+
+ENTRYPOINT ["/entrypoint.sh"]

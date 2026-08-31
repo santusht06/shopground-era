@@ -37,7 +37,8 @@ export default function WarrantyPage() {
     email: "",
     issue_category: "Dampening Failure / Walking Pads",
     description: "",
-    evidence_url: ""
+    evidence_url: "",
+    evidence_urls: []
   });
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimResult, setClaimResult] = useState(null);
@@ -49,15 +50,15 @@ export default function WarrantyPage() {
 
   // File Upload Handler
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length === 0) return;
 
     setUploadingMedia(true);
     setUploadSuccess(false);
     setClaimError(null);
 
     const formData = new FormData();
-    formData.append("file", file);
+    selectedFiles.forEach(f => formData.append("files", f));
 
     try {
       const res = await fetch("https://api.shopgroundera.com/api/v1/warranty/upload-evidence", {
@@ -68,7 +69,15 @@ export default function WarrantyPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "File upload failed.");
 
-      setClaimForm(prev => ({ ...prev, evidence_url: data.url }));
+      const newUrls = data.urls || [data.url];
+      setClaimForm(prev => {
+        const combined = [...(prev.evidence_urls || []), ...newUrls];
+        return {
+          ...prev,
+          evidence_url: combined[0] || "",
+          evidence_urls: combined
+        };
+      });
       setUploadSuccess(true);
     } catch (err) {
       setClaimError(`Media Upload Error: ${err.message}`);
@@ -598,7 +607,7 @@ export default function WarrantyPage() {
                   
                   <div className="relative border-2 border-dashed border-white/20 rounded-2xl p-4 text-center hover:border-[#F27E24] transition-all bg-[#161622]/50">
                     <input
-                      type="file"
+                      type="file" multiple
                       accept="image/*,video/*"
                       onChange={handleFileUpload}
                       disabled={uploadingMedia}

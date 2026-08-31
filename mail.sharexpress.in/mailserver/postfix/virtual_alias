@@ -1,0 +1,9 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Virtual Aliases Mapping — Forwarding & Distribution Groups
+# Remember to run: postmap /etc/postfix/custom/virtual_alias
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Example alias
+admin@sharexpress.in           santusht@sharexpress.in
+info@sharexpress.in            support@sharexpress.in
+help@sharexpress.in            support@sharexpress.in

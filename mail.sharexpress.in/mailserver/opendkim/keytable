@@ -1,0 +1,7 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OpenDKIM KeyTable
+# Format: key-name  domain:selector:/path/to/private.key
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Primary DKIM key — selector "mail2024" for sharexpress.in
+mail._domainkey.sharexpress.in    sharexpress.in:mail:/etc/opendkim/keys/sharexpress.in/mail.private

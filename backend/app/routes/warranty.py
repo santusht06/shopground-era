@@ -24,41 +24,59 @@ MINIO_EVIDENCE_DIR = "/var/lib/minio/data/warranty-evidence"
 # ─── FILE UPLOAD ENDPOINT (MINIO STORAGE) ───────────────────────────────────
 
 @router.post("/warranty/upload-evidence")
-async def upload_warranty_evidence(file: UploadFile = File(...)):
-    # Validate content type (images and videos)
-    allowed_types = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm", "video/quicktime"]
-    if file.content_type not in allowed_types:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported file type ({file.content_type}). Please upload JPG, PNG, WEBP images or MP4, WEBM videos."
-        )
+async def upload_warranty_evidence(
+    files: Optional[List[UploadFile]] = File(None),
+    file: Optional[UploadFile] = File(None)
+):
+    upload_list = []
+    if files:
+        upload_list.extend(files)
+    if file:
+        upload_list.append(file)
 
-    # Ensure MinIO evidence directory exists
+    if not upload_list:
+        raise HTTPException(status_code=400, detail="No evidence files uploaded.")
+
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm", "video/quicktime"]
     os.makedirs(MINIO_EVIDENCE_DIR, exist_ok=True)
 
-    # Generate unique filename
-    ext = os.path.splitext(file.filename)[1] or ".jpg"
-    unique_filename = f"evidence_{uuid.uuid4().hex[:12]}{ext}"
-    file_path = os.path.join(MINIO_EVIDENCE_DIR, unique_filename)
+    results = []
+    urls = []
 
-    # Read and save file content
-    contents = await file.read()
-    with open(file_path, "wb") as f:
-        f.write(contents)
+    for f_item in upload_list:
+        if f_item.content_type not in allowed_types:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported file type ({f_item.filename}: {f_item.content_type}). Please upload JPG, PNG, WEBP images or MP4, WEBM videos."
+            )
 
-    # Set permissions so MinIO process can serve it
-    try:
-        os.chmod(file_path, 0o644)
-    except Exception:
-        pass
+        ext = os.path.splitext(f_item.filename)[1] or ".jpg"
+        unique_filename = f"evidence_{uuid.uuid4().hex[:12]}{ext}"
+        file_path = os.path.join(MINIO_EVIDENCE_DIR, unique_filename)
 
-    public_url = f"https://shopgroundera.com/minio/warranty-evidence/{unique_filename}"
+        contents = await f_item.read()
+        with open(file_path, "wb") as f_out:
+            f_out.write(contents)
+
+        try:
+            os.chmod(file_path, 0o644)
+        except Exception:
+            pass
+
+        public_url = f"https://shopgroundera.com/minio/warranty-evidence/{unique_filename}"
+        urls.append(public_url)
+        results.append({
+            "filename": unique_filename,
+            "url": public_url,
+            "content_type": f_item.content_type
+        })
 
     return {
         "success": True,
-        "filename": unique_filename,
-        "url": public_url,
-        "content_type": file.content_type
+        "count": len(results),
+        "url": urls[0] if urls else "",
+        "urls": urls,
+        "files": results
     }
 
 # ─── PUBLIC WARRANTY ENDPOINTS ────────────────────────────────────────────────
@@ -211,7 +229,8 @@ async def submit_warranty_claim(payload: WarrantyClaimCreate):
         "serial_number": warranty["serial_number"],
         "issue_category": payload.issue_category.value,
         "description": payload.description,
-        "evidence_url": payload.evidence_url,
+        "evidence_url": payload.evidence_url or (payload.evidence_urls[0] if payload.evidence_urls else None),
+        "evidence_urls": payload.evidence_urls or ([payload.evidence_url] if payload.evidence_url else []),
         "status": ClaimStatus.UNDER_REVIEW.value,
         "admin_notes": None,
         "tracking_number": None,

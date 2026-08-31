@@ -1,0 +1,26 @@
+FROM alpine:3.18
+
+RUN apk add --no-cache \
+    dovecot \
+    dovecot-pop3d \
+    dovecot-lmtpd \
+    bash \
+    openssl
+
+# Create vmail user & group (UID/GID 5000 — matches 10-mail.conf)
+RUN addgroup -g 5000 vmail && \
+    adduser -u 5000 -G vmail -h /var/mail/vhosts -s /sbin/nologin -D vmail
+
+# Setup required directories
+RUN mkdir -p /etc/dovecot/custom /var/mail/vhosts /var/run/dovecot /etc/dovecot/ssl /scripts && \
+    chown -R vmail:vmail /var/mail/vhosts
+
+# Copy scripts and entrypoint
+COPY scripts/add_mailbox.sh /scripts/add_mailbox.sh
+COPY scripts/remove_mailbox.sh /scripts/remove_mailbox.sh
+COPY dovecot-entrypoint.sh /entrypoint.sh
+RUN chmod +x /scripts/add_mailbox.sh /scripts/remove_mailbox.sh /entrypoint.sh
+
+EXPOSE 110 143 993 995 2400 12345
+
+ENTRYPOINT ["/entrypoint.sh"]
