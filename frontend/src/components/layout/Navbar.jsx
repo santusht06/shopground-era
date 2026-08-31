@@ -175,7 +175,7 @@ export default function Navbar() {
                     >
                         <span className="flex items-center gap-2">
                             <ShieldCheck className="w-4 h-4" />
-                            2-Year Warranty Portal
+                            Lifetime Warranty Portal
                         </span>
                         <ChevronRight className="w-4 h-4 text-[#F27E24]" />
                     </Link>

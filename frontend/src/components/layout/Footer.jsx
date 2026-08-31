@@ -84,7 +84,7 @@ export default function Footer() {
                                     to="/warranty"
                                     className="hover:text-[#F27E24] transition-colors font-semibold text-[#F27E24] block"
                                 >
-                                    2-Year Warranty Portal
+                                    Lifetime Warranty Portal
                                 </Link>
                             </li>
                             <li>
@@ -128,7 +128,7 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
                     <p>&copy; {new Date().getFullYear()} ShopGround Era. All rights reserved.</p>
                     <div className="flex items-center gap-4 text-slate-500 flex-wrap">
-                        <Link to="/warranty" className="hover:text-[#F27E24] text-[#F27E24] font-semibold">2-Year Warranty</Link>
+                        <Link to="/warranty" className="hover:text-[#F27E24] text-[#F27E24] font-semibold">Lifetime Warranty</Link>
                         <Link to="/refund-policy" className="hover:text-[#F27E24]">Refund Policy</Link>
                         <Link to="/privacy-policy" className="hover:text-[#F27E24]">Privacy Policy</Link>
                         <Link to="/terms" className="hover:text-[#F27E24]">Terms &amp; Conditions</Link>

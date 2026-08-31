@@ -1,7 +1,8 @@
 import uuid
+import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, UploadFile, File
 from app.core.database import get_database
 from app.models.warranty import (
     WarrantyRegisterCreate,
@@ -16,6 +17,49 @@ router = APIRouter(tags=["Warranty System"])
 
 def generate_code(prefix: str) -> str:
     return f"{prefix}-{uuid.uuid4().hex[:8].upper()}"
+
+# MinIO evidence data directory path
+MINIO_EVIDENCE_DIR = "/var/lib/minio/data/warranty-evidence"
+
+# ─── FILE UPLOAD ENDPOINT (MINIO STORAGE) ───────────────────────────────────
+
+@router.post("/warranty/upload-evidence")
+async def upload_warranty_evidence(file: UploadFile = File(...)):
+    # Validate content type (images and videos)
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm", "video/quicktime"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file type ({file.content_type}). Please upload JPG, PNG, WEBP images or MP4, WEBM videos."
+        )
+
+    # Ensure MinIO evidence directory exists
+    os.makedirs(MINIO_EVIDENCE_DIR, exist_ok=True)
+
+    # Generate unique filename
+    ext = os.path.splitext(file.filename)[1] or ".jpg"
+    unique_filename = f"evidence_{uuid.uuid4().hex[:12]}{ext}"
+    file_path = os.path.join(MINIO_EVIDENCE_DIR, unique_filename)
+
+    # Read and save file content
+    contents = await file.read()
+    with open(file_path, "wb") as f:
+        f.write(contents)
+
+    # Set permissions so MinIO process can serve it
+    try:
+        os.chmod(file_path, 0o644)
+    except Exception:
+        pass
+
+    public_url = f"https://shopgroundera.com/minio/warranty-evidence/{unique_filename}"
+
+    return {
+        "success": True,
+        "filename": unique_filename,
+        "url": public_url,
+        "content_type": file.content_type
+    }
 
 # ─── PUBLIC WARRANTY ENDPOINTS ────────────────────────────────────────────────
 
@@ -34,17 +78,15 @@ async def register_warranty(payload: WarrantyRegisterCreate):
     if existing:
         return {
             "success": True,
-            "message": "Warranty already registered for this Serial Number or Order ID.",
+            "message": "Lifetime Warranty already registered for this Serial Number or Order ID.",
             "warranty_code": existing["warranty_code"],
-            "status": existing["status"],
+            "status": existing.get("status", WarrantyStatus.APPROVED.value),
             "registered_at": existing["registered_at"],
-            "expires_at": existing["expires_at"]
+            "expires_at": "Lifetime Guarantee"
         }
 
     warranty_code = generate_code("WRN")
     now = datetime.now(timezone.utc)
-    # Default 2 years (24 months)
-    expires_dt = now + timedelta(days=payload.duration_months * 30)
 
     doc = {
         "warranty_code": warranty_code,
@@ -55,11 +97,11 @@ async def register_warranty(payload: WarrantyRegisterCreate):
         "phone": payload.phone,
         "serial_number": payload.serial_number,
         "purchase_date": payload.purchase_date,
-        "duration_months": payload.duration_months,
-        "status": WarrantyStatus.APPROVED.value,  # Auto-activate for genuine orders
+        "duration_months": 1200,  # Lifetime
+        "status": WarrantyStatus.APPROVED.value,  # Auto-activate Lifetime Warranty
         "invoice_url": payload.invoice_url,
         "registered_at": now.strftime("%Y-%m-%d %H:%M UTC"),
-        "expires_at": expires_dt.strftime("%Y-%m-%d"),
+        "expires_at": "Lifetime Guarantee",
         "created_timestamp": now.timestamp()
     }
 
@@ -67,10 +109,10 @@ async def register_warranty(payload: WarrantyRegisterCreate):
     
     return {
         "success": True,
-        "message": "Warranty registered successfully! Your 2-Year Genuine Warranty is now active.",
+        "message": "Lifetime Warranty registered successfully! Your GroundEra™ Lifetime Guarantee is now active.",
         "warranty_code": warranty_code,
         "status": WarrantyStatus.APPROVED.value,
-        "expires_at": doc["expires_at"]
+        "expires_at": "Lifetime Guarantee"
     }
 
 
@@ -85,11 +127,6 @@ async def verify_warranty(warranty_code: str):
             detail=f"Warranty record for code '{warranty_code}' not found."
         )
 
-    # Check if expired
-    expires_dt = datetime.strptime(warranty["expires_at"], "%Y-%m-%d").replace(tzinfo=timezone.utc)
-    is_expired = datetime.now(timezone.utc) > expires_dt
-    current_status = WarrantyStatus.EXPIRED.value if is_expired else warranty.get("status", WarrantyStatus.APPROVED.value)
-
     return {
         "warranty_code": warranty["warranty_code"],
         "order_id": warranty["order_id"],
@@ -97,10 +134,10 @@ async def verify_warranty(warranty_code: str):
         "customer_name": warranty["customer_name"],
         "email": warranty["email"],
         "serial_number": warranty["serial_number"],
-        "status": current_status,
-        "is_valid": not is_expired and current_status == WarrantyStatus.APPROVED.value,
+        "status": warranty.get("status", WarrantyStatus.APPROVED.value),
+        "is_valid": True,
         "purchase_date": warranty["purchase_date"],
-        "expires_at": warranty["expires_at"],
+        "expires_at": "Lifetime Guarantee",
         "registered_at": warranty["registered_at"]
     }
 
@@ -148,7 +185,7 @@ async def submit_warranty_claim(payload: WarrantyClaimCreate):
 
     return {
         "success": True,
-        "message": "Warranty Claim submitted successfully! Our Quality Engineers will review your claim within 24 hours.",
+        "message": "Lifetime Warranty Claim submitted successfully! Our Quality Engineers will review your media evidence within 24 hours.",
         "claim_code": claim_code,
         "status": ClaimStatus.UNDER_REVIEW.value,
         "submitted_at": claim_doc["submitted_at"]
