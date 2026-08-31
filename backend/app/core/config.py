@@ -24,6 +24,15 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "178889896179956")
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "6YArsC09_d_rsmE3_gWappI02mw")
 
+    # SMTP Mail Server Settings (ShopGround Era Production Mail)
+    SMTP_HOST: str = os.getenv("SMTP_HOST", "127.0.0.1")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "25"))
+    SMTP_USER: str = os.getenv("SMTP_USER", "info@shopgroundera.com")
+    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "ShopGroundMail2026!")
+    SMTP_FROM_EMAIL: str = os.getenv("SMTP_FROM_EMAIL", "info@shopgroundera.com")
+    SMTP_FROM_NAME: str = os.getenv("SMTP_FROM_NAME", "ShopGround Era™")
+    MAIL_SERVER_URL: str = os.getenv("MAIL_SERVER_URL", "https://mail.shopgroundera.com")
+
     # Production CORS Allowed Origins
     CORS_ORIGINS: List[str] = [
         "http://localhost:5173",

@@ -1,3 +1,4 @@
+from app.core.mail import send_email_async
 import uuid
 import os
 from datetime import datetime, timedelta, timezone
@@ -127,6 +128,25 @@ async def register_warranty(payload: WarrantyRegisterCreate):
     }
 
     await db.warranties.insert_one(doc)
+
+    # Dispatch Email Notification
+    html_email = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #050507; color: #ffffff; padding: 24px; borderRadius: 16px;">
+        <h2 style="color: #F27E24;">ShopGround Era™ Lifetime Guarantee Active</h2>
+        <p>Dear {payload.customer_name},</p>
+        <p>Your product lifetime warranty has been registered successfully!</p>
+        <div style="background: #161622; padding: 16px; border-radius: 12px; margin: 16px 0;">
+            <p style="margin: 4px 0;"><strong>Warranty Code:</strong> <span style="color: #F27E24; font-family: monospace;">{warranty_code}</span></p>
+            <p style="margin: 4px 0;"><strong>Serial Number:</strong> {payload.serial_number}</p>
+            <p style="margin: 4px 0;"><strong>Coverage:</strong> LIFETIME GUARANTEE</p>
+        </div>
+        <p>Track coverage anytime at <a href="https://shopgroundera.com/warranty" style="color: #F27E24;">shopgroundera.com/warranty</a></p>
+    </div>
+    """
+    try:
+        await send_email_async(payload.email, f"Lifetime Guarantee Active — {warranty_code}", html_email)
+    except Exception as mail_err:
+        print("Mail error:", mail_err)
     
     return {
         "success": True,
@@ -242,6 +262,24 @@ async def submit_warranty_claim(payload: WarrantyClaimCreate):
     }
 
     await db.warranty_claims.insert_one(claim_doc)
+
+    html_claim_email = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #050507; color: #ffffff; padding: 24px; borderRadius: 16px;">
+        <h2 style="color: #F27E24;">Warranty Claim Received</h2>
+        <p>Dear Customer,</p>
+        <p>Your warranty claim has been received and is currently <strong>UNDER REVIEW</strong> by our Quality Engineering team.</p>
+        <div style="background: #161622; padding: 16px; border-radius: 12px; margin: 16px 0;">
+            <p style="margin: 4px 0;"><strong>Claim Code:</strong> <span style="color: #F27E24; font-family: monospace;">{claim_code}</span></p>
+            <p style="margin: 4px 0;"><strong>Warranty Code:</strong> {warranty["warranty_code"]}</p>
+            <p style="margin: 4px 0;"><strong>Status:</strong> UNDER REVIEW</p>
+        </div>
+        <p>Check claim updates anytime at <a href="https://shopgroundera.com/warranty" style="color: #F27E24;">shopgroundera.com/warranty</a></p>
+    </div>
+    """
+    try:
+        await send_email_async(payload.email, f"Warranty Claim Received — {claim_code}", html_claim_email)
+    except Exception as mail_err:
+        print("Claim mail error:", mail_err)
 
     return {
         "success": True,
