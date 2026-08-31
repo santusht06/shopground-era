@@ -25,12 +25,15 @@ MINIO_EVIDENCE_DIR = "/var/lib/minio/data/warranty-evidence"
 
 @router.post("/warranty/upload-evidence")
 async def upload_warranty_evidence(
-    files: Optional[List[UploadFile]] = File(None),
-    file: Optional[UploadFile] = File(None)
+    files: List[UploadFile] = File(default=[]),
+    file: Optional[UploadFile] = File(default=None)
 ):
     upload_list = []
     if files:
-        upload_list.extend(files)
+        if isinstance(files, list):
+            upload_list.extend(files)
+        else:
+            upload_list.append(files)
     if file:
         upload_list.append(file)
 
