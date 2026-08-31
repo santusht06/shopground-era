@@ -100,7 +100,7 @@ const adminSlice = createSlice({
         campaigns: seedCampaigns,
         returnRequests: seedReturnRequests,
         auditLogs: seedAuditLogs,
-        activeTab: 'dashboard',
+        activeTab: 'warranty',
         loading: false,
         error: null,
         apiEndpoint: API_BASE,
