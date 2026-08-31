@@ -24,7 +24,7 @@ class IssueCategory(str, Enum):
 
 class WarrantyRegisterCreate(BaseModel):
     order_id: str = Field(..., example="ORD-99824102")
-    product_name: str = Field("GroundEra Anti-Vibration Pads", example="GroundEra Anti-Vibration Pads")
+    product_name: str = Field("ShopGround Era Anti-Vibration Pads", example="ShopGround Era Anti-Vibration Pads")
     customer_name: str = Field(..., example="Lorem Customer")
     email: EmailStr = Field(..., example="customer@shopground.era")
     phone: Optional[str] = Field(None, example="+1 (555) 234-5678")

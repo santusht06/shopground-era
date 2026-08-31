@@ -5,8 +5,8 @@ import applySEO from "@/hooks/useSEO";
 
 export default function WarrantyPage() {
   applySEO(
-    "GroundEra™ Lifetime Genuine Warranty Registration & Claims",
-    "Register your Lifetime Genuine Warranty for GroundEra Anti-Vibration Pads or submit a claim with direct photo/video media proof for 24-hour engineer audit."
+    "ShopGround Era™ Lifetime Genuine Warranty Registration & Claims",
+    "Register your Lifetime Genuine Warranty for ShopGround Era Anti-Vibration Pads or submit a claim with direct photo/video media proof for 24-hour engineer audit."
   );
 
   const [activeTab, setActiveTab] = useState("register"); // "register" | "verify" | "claim"
@@ -155,7 +155,7 @@ export default function WarrantyPage() {
             <span>Lifetime Genuine Protection</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            GroundEra™ <span className="gradient-text-orange">Lifetime Warranty Portal</span>
+            ShopGround Era™ <span className="gradient-text-orange">Lifetime Warranty Portal</span>
           </h1>
           <p className="text-sm sm:text-base text-slate-400 font-medium max-w-2xl mx-auto">
             Register your purchase for active Lifetime Warranty coverage against dampening breakdown, elastomeric tearing, or shim fitment defects.

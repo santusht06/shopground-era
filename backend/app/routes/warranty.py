@@ -109,7 +109,7 @@ async def register_warranty(payload: WarrantyRegisterCreate):
     
     return {
         "success": True,
-        "message": "Lifetime Warranty registered successfully! Your GroundEra™ Lifetime Guarantee is now active.",
+        "message": "Lifetime Warranty registered successfully! Your ShopGround Era™ Lifetime Guarantee is now active.",
         "warranty_code": warranty_code,
         "status": WarrantyStatus.APPROVED.value,
         "expires_at": "Lifetime Guarantee"
