@@ -1,3 +1,4 @@
+from app.core.templates import get_warranty_registered_html, get_claim_submitted_html, get_claim_decision_html
 from app.core.mail import send_email_async
 import uuid
 import os
@@ -130,23 +131,18 @@ async def register_warranty(payload: WarrantyRegisterCreate):
     await db.warranties.insert_one(doc)
 
     # Dispatch Email Notification
-    html_email = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #050507; color: #ffffff; padding: 24px; borderRadius: 16px;">
-        <h2 style="color: #F27E24;">ShopGround Era™ Lifetime Guarantee Active</h2>
-        <p>Dear {payload.customer_name},</p>
-        <p>Your product lifetime warranty has been registered successfully!</p>
-        <div style="background: #161622; padding: 16px; border-radius: 12px; margin: 16px 0;">
-            <p style="margin: 4px 0;"><strong>Warranty Code:</strong> <span style="color: #F27E24; font-family: monospace;">{warranty_code}</span></p>
-            <p style="margin: 4px 0;"><strong>Serial Number:</strong> {payload.serial_number}</p>
-            <p style="margin: 4px 0;"><strong>Coverage:</strong> LIFETIME GUARANTEE</p>
-        </div>
-        <p>Track coverage anytime at <a href="https://shopgroundera.com/warranty" style="color: #F27E24;">shopgroundera.com/warranty</a></p>
-    </div>
-    """
+    html_email = get_warranty_registered_html(
+        customer_name=payload.customer_name,
+        warranty_code=warranty_code,
+        serial_number=payload.serial_number,
+        order_id=payload.order_id,
+        product_name=payload.product_name,
+        purchase_date=payload.purchase_date
+    )
     try:
-        await send_email_async(payload.email, f"Lifetime Guarantee Active — {warranty_code}", html_email)
+        await send_email_async(payload.email, f"ShopGround Era™ Lifetime Guarantee Active [{warranty_code}]", html_email)
     except Exception as mail_err:
-        print("Mail error:", mail_err)
+        print("Warranty register email error:", mail_err)
     
     return {
         "success": True,
@@ -263,23 +259,19 @@ async def submit_warranty_claim(payload: WarrantyClaimCreate):
 
     await db.warranty_claims.insert_one(claim_doc)
 
-    html_claim_email = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #050507; color: #ffffff; padding: 24px; borderRadius: 16px;">
-        <h2 style="color: #F27E24;">Warranty Claim Received</h2>
-        <p>Dear Customer,</p>
-        <p>Your warranty claim has been received and is currently <strong>UNDER REVIEW</strong> by our Quality Engineering team.</p>
-        <div style="background: #161622; padding: 16px; border-radius: 12px; margin: 16px 0;">
-            <p style="margin: 4px 0;"><strong>Claim Code:</strong> <span style="color: #F27E24; font-family: monospace;">{claim_code}</span></p>
-            <p style="margin: 4px 0;"><strong>Warranty Code:</strong> {warranty["warranty_code"]}</p>
-            <p style="margin: 4px 0;"><strong>Status:</strong> UNDER REVIEW</p>
-        </div>
-        <p>Check claim updates anytime at <a href="https://shopgroundera.com/warranty" style="color: #F27E24;">shopgroundera.com/warranty</a></p>
-    </div>
-    """
+    evidence_count = len(claim_doc.get("evidence_urls", []))
+    html_claim_email = get_claim_submitted_html(
+        customer_name=warranty["customer_name"],
+        claim_code=claim_code,
+        warranty_code=warranty["warranty_code"],
+        issue_category=payload.issue_category.value,
+        description=payload.description,
+        evidence_count=evidence_count
+    )
     try:
-        await send_email_async(payload.email, f"Warranty Claim Received — {claim_code}", html_claim_email)
+        await send_email_async(payload.email, f"ShopGround Era™ Defect Claim Received [{claim_code}]", html_claim_email)
     except Exception as mail_err:
-        print("Claim mail error:", mail_err)
+        print("Claim submission email error:", mail_err)
 
     return {
         "success": True,
@@ -362,18 +354,36 @@ async def update_warranty_status(warranty_code: str, payload: WarrantyAdminUpdat
 @router.patch("/warranty/admin/claims/{claim_code}")
 async def update_claim_status(claim_code: str, payload: ClaimAdminUpdate):
     db = get_database()
+    claim = await db.warranty_claims.find_one({"claim_code": claim_code.strip().upper()})
+    if not claim:
+        raise HTTPException(status_code=404, detail="Claim not found")
+
     update_dict = {"status": payload.status.value}
-    if payload.admin_notes:
+    if payload.admin_notes is not None:
         update_dict["admin_notes"] = payload.admin_notes
-    if payload.tracking_number:
+    if payload.tracking_number is not None:
         update_dict["tracking_number"] = payload.tracking_number
 
-    res = await db.warranty_claims.update_one(
-        {"claim_code": claim_code.strip().upper()},
+    await db.warranty_claims.update_one(
+        {"claim_code": claim["claim_code"]},
         {"$set": update_dict}
     )
 
-    if res.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Claim not found")
+    # Dispatch Email Notification to Customer
+    html_decision = get_claim_decision_html(
+        customer_name=claim.get("customer_name", "Valued Customer"),
+        claim_code=claim["claim_code"],
+        new_status=payload.status.value,
+        admin_notes=payload.admin_notes or claim.get("admin_notes"),
+        tracking_number=payload.tracking_number or claim.get("tracking_number")
+    )
+    try:
+        await send_email_async(
+            claim["email"],
+            f"ShopGround Era™ Claim Update: {payload.status.value} [{claim[claim_code]}]",
+            html_decision
+        )
+    except Exception as mail_err:
+        print("Claim decision email error:", mail_err)
 
     return {"success": True, "message": f"Claim {claim_code} status updated to {payload.status.value}"}
