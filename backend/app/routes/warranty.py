@@ -140,7 +140,7 @@ async def register_warranty(payload: WarrantyRegisterCreate):
         purchase_date=payload.purchase_date
     )
     try:
-        await send_email_async(payload.email, f"Warranty Registration Confirmation [{warranty_code}]", html_email)
+        await send_email_async(payload.email, f"ShopGround Era™ Lifetime Guarantee Active [{warranty_code}]", html_email)
     except Exception as mail_err:
         print("Warranty register email error:", mail_err)
     
@@ -269,7 +269,7 @@ async def submit_warranty_claim(payload: WarrantyClaimCreate):
         evidence_count=evidence_count
     )
     try:
-        await send_email_async(payload.email, f"Warranty Claim Acknowledgement [{claim_code}]", html_claim_email)
+        await send_email_async(payload.email, f"ShopGround Era™ Defect Claim Received [{claim_code}]", html_claim_email)
     except Exception as mail_err:
         print("Claim submission email error:", mail_err)
 
