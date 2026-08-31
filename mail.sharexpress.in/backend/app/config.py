@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     JWT_REFRESH_EXPIRE_DAYS: int = 30
 
     # CORS
-    CORS_ORIGINS: str = "https://mail.sharexpress.in,http://localhost:5173"
+    CORS_ORIGINS: str = "https://mail.shopgroundera.com,https://mail.sharexpress.in,http://localhost:5173"
 
     # Admin
     ADMIN_EMAIL: str = "santusht@sharexpress.in"

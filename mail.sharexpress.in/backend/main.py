@@ -48,7 +48,7 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["mail.sharexpress.in", "api.mail.sharexpress.in", "localhost", "127.0.0.1"],
+    allowed_hosts=["mail.shopgroundera.com", "mail.sharexpress.in", "api.mail.sharexpress.in", "localhost", "127.0.0.1", "*"],
 )
 
 # ─── API Routes ────────────────────────────────────────────────────────────────

@@ -33,17 +33,8 @@ class AttachmentService:
         """Ensure the attachment bucket exists on startup."""
         try:
             s3_client.head_bucket(Bucket=settings.MINIO_BUCKET)
-        except ClientError as e:
-            error_code = e.response.get("Error", {}).get("Code")
-            if error_code == "404" or error_code == "NoSuchBucket":
-                logger.info("Bucket '%s' not found. Creating bucket...", settings.MINIO_BUCKET)
-                try:
-                    s3_client.create_bucket(Bucket=settings.MINIO_BUCKET)
-                    logger.info("✅ Bucket '%s' created successfully.", settings.MINIO_BUCKET)
-                except ClientError as ce:
-                    logger.error("Failed to create bucket '%s': %s", settings.MINIO_BUCKET, ce)
-            else:
-                logger.error("Error checking bucket '%s': %s", settings.MINIO_BUCKET, e)
+        except Exception as e:
+            logger.warning("MinIO bucket connection warning: %s", e)
 
     @staticmethod
     async def upload_attachment(db, file: UploadFile, user_email: str) -> dict:
