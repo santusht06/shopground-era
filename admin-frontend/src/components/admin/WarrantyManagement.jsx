@@ -75,7 +75,7 @@ export default function WarrantyManagement() {
     }
   };
 
-  const isVideo = (url) => url && (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov"));
+  const isVideo = (url) => url && (url.toLowerCase().includes(".mp4") || url.toLowerCase().includes(".webm") || url.toLowerCase().includes(".mov"));
 
   const filteredClaims = claims.filter(c => 
     c.claim_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -185,10 +185,23 @@ export default function WarrantyManagement() {
                         {claim.evidence_url ? (
                           <button
                             onClick={() => openAuditModal(claim)}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#5E6AD2]/10 text-[#5E6AD2] font-bold text-[11px] hover:bg-[#5E6AD2]/20 transition-all cursor-pointer"
+                            className="flex items-center gap-2 group cursor-pointer"
                           >
-                            {isVideo(claim.evidence_url) ? <Film className="w-3.5 h-3.5" /> : <ImageIcon className="w-3.5 h-3.5" />}
-                            <span>Inspect Media</span>
+                            {isVideo(claim.evidence_url) ? (
+                              <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xs group-hover:scale-105 transition-transform border border-slate-200">
+                                <Film className="w-5 h-5 text-[#5E6AD2]" />
+                              </div>
+                            ) : (
+                              <img
+                                src={claim.evidence_url}
+                                alt="Defect Evidence"
+                                className="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-xs group-hover:scale-105 transition-transform bg-slate-100"
+                              />
+                            )}
+                            <div className="text-left">
+                              <span className="text-[11px] font-bold text-[#5E6AD2] block group-hover:underline">Inspect Media</span>
+                              <span className="text-[9px] text-slate-400 font-mono block uppercase">{isVideo(claim.evidence_url) ? "Video File" : "Image File"}</span>
+                            </div>
                           </button>
                         ) : (
                           <span className="text-slate-400 text-[11px]">No media file</span>
