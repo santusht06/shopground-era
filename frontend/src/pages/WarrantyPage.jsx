@@ -511,7 +511,7 @@ export default function WarrantyPage() {
                 {/* 📸 DIRECT MEDIA UPLOAD TO MINIO BUCKET */}
                 <div className="space-y-2">
                   <label className="block text-xs font-bold text-slate-300">
-                    Upload Defect Evidence Photo / Video (MinIO Storage Server)
+                    Upload Defect Evidence Photo / Video (Optional)
                   </label>
                   
                   <div className="relative border-2 border-dashed border-white/20 rounded-2xl p-4 text-center hover:border-[#F27E24] transition-all bg-[#161622]/50">
@@ -527,13 +527,13 @@ export default function WarrantyPage() {
                       {uploadingMedia ? (
                         <>
                           <Loader2 className="w-8 h-8 text-[#F27E24] animate-spin" />
-                          <span className="text-xs text-slate-300 font-medium">Uploading to MinIO S3 server...</span>
+                          <span className="text-xs text-slate-300 font-medium">Uploading media file...</span>
                         </>
                       ) : uploadSuccess ? (
                         <>
                           <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                           <span className="text-xs text-emerald-300 font-bold">Media Uploaded Successfully!</span>
-                          <span className="text-[10px] text-slate-400 font-mono truncate max-w-xs block">{claimForm.evidence_url}</span>
+                          <span className="text-[10px] text-emerald-400 font-medium block">Evidence file attached securely</span>
                         </>
                       ) : (
                         <>
@@ -547,7 +547,7 @@ export default function WarrantyPage() {
                     </div>
                   </div>
 
-                  {claimForm.evidence_url && !uploadSuccess && (
+                  {false && (
                     <input
                       type="url"
                       placeholder="Or enter media URL manually..."
