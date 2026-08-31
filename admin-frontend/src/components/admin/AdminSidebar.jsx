@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setActiveTab } from "@/store/adminSlice";
 import {
     ShieldCheck,
-    FileCheck,
     HardDrive,
 } from "lucide-react";
 
@@ -18,11 +17,13 @@ export default function AdminSidebar() {
     return (
         <aside className="w-64 bg-white border-r border-[#E5E7EB] flex flex-col justify-between hidden md:flex min-h-screen">
             <div className="p-6 space-y-6">
-                {/* Brand Logo */}
+                {/* Brand Logo Image */}
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#5E6AD2] text-white flex items-center justify-center font-black text-xl shadow-md">
-                        S
-                    </div>
+                    <img
+                        src="/logo.png"
+                        alt="ShopGround Era Logo"
+                        className="h-10 w-auto object-contain"
+                    />
                     <div>
                         <span className="text-sm font-extrabold text-[#0F172A] block leading-tight">ShopGround Era</span>
                         <span className="text-[10px] font-bold text-[#5E6AD2] uppercase tracking-wider block">Warranty Control Panel</span>
