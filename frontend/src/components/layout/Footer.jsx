@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Mail, Truck, ShieldCheck, RotateCcw, ArrowUpRight } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Mail, Truck, ShieldCheck, RotateCcw, ArrowUpRight } from "lucide-react";
 
 const SCROLL_LINKS = [
-    { label: 'Overview', href: '#product-overview' },
-    { label: 'Wholesale Tiers', href: '#wholesale-section' },
-    { label: 'Gallery', href: '#gallery-section' },
-    { label: 'Technical Specs', href: '#tech-specs-section' },
-    { label: 'Get a Quote', href: '#inquiry-form-section' },
+    { label: "Overview", href: "#product-overview" },
+    { label: "Wholesale Tiers", href: "#wholesale-section" },
+    { label: "Gallery", href: "#gallery-section" },
+    { label: "Technical Specs", href: "#tech-specs-section" },
+    { label: "Get a Quote", href: "#inquiry-form-section" },
 ];
 
 export default function Footer() {
@@ -82,9 +82,9 @@ export default function Footer() {
                             <li>
                                 <Link
                                     to="/warranty"
-                                    className="hover:text-[#F27E24] transition-colors font-semibold text-[#F27E24] block"
+                                    className="hover:text-[#F27E24] transition-colors font-medium text-slate-400 block"
                                 >
-                                    Lifetime Warranty Portal
+                                    Lifetime Warranty
                                 </Link>
                             </li>
                             <li>
@@ -121,17 +121,65 @@ export default function Footer() {
                     </div>
 
                 </div>
-            </div>
 
-            {/* COPYRIGHT BAR */}
-            <div className="border-t border-white/10 bg-[#0C0C12] py-4 text-slate-400 text-xs">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
-                    <p>&copy; {new Date().getFullYear()} ShopGround Era. All rights reserved.</p>
+                {/* SEO KEYWORD SECTION */}
+                <div className="border-t border-white/5 pt-8">
+                    <p className="text-slate-600 text-[10px] leading-loose">
+                        <strong className="text-slate-500">ShopGround Era</strong> (shopgroundera.com) is the official brand manufacturer for{" "}
+                        <strong className="text-slate-500">GroundEra Anti Vibration Pads</strong> —
+                        the best-reviewed heavy-duty <a href="https://shopgroundera.com/product/66a87f12bc09a123456789ab" className="hover:text-[#F27E24] underline transition-colors">anti vibration pads for washing machine</a> front load and top load models with <strong className="text-slate-500">free returns within 30 days</strong>.
+                        Our pads feature an innovative stackable height system, high-traction honeycomb anti-skid grip, and an{" "}
+                        <strong className="text-slate-500">800 LB load capacity</strong> — making them ideal for:
+                        washer &amp; dryer stabilizer rubber legs,
+                        treadmill vibration dampening feet,
+                        HVAC compressor rubber mounts,
+                        refrigerator anti-vibration pads,
+                        heavy machinery anti-skid bushes,
+                        rubber vibration isolation pads for industrial equipment,
+                        washing machine noise reduction feet, and
+                        anti skid stand bushes for front load and top load washers.
+                        Compatible with all major brands: Samsung, LG, Whirlpool, Bosch, Maytag, GE, Electrolux, Miele.
+                        Available direct at{" "}
+                        <a href="https://shopgroundera.com" className="hover:text-[#F27E24] underline transition-colors">shopgroundera.com</a>
+                        {" "}and on{" "}
+                        <a href="https://www.amazon.com/dp/B0H915VTB1" rel="noopener" className="hover:text-[#F27E24] underline transition-colors" target="_blank">Amazon</a>.
+                    </p>
+                </div>
+
+                {/* BOTTOM BAR — Separate Page Router Links */}
+                <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p className="text-slate-500">© 2026 ShopGround Era. All rights reserved.</p>
                     <div className="flex items-center gap-4 text-slate-500 flex-wrap">
-                        <Link to="/warranty" className="hover:text-[#F27E24] text-[#F27E24] font-semibold">Lifetime Warranty</Link>
-                        <Link to="/refund-policy" className="hover:text-[#F27E24]">Refund Policy</Link>
-                        <Link to="/privacy-policy" className="hover:text-[#F27E24]">Privacy Policy</Link>
-                        <Link to="/terms" className="hover:text-[#F27E24]">Terms &amp; Conditions</Link>
+                        <Link
+                            to="/warranty"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
+                        >
+                            Lifetime Warranty
+                        </Link>
+                        <Link
+                            to="/refund-policy"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
+                        >
+                            Refund &amp; Return Policy
+                        </Link>
+                        <Link
+                            to="/privacy-policy"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
+                        >
+                            Privacy Policy
+                        </Link>
+                        <Link
+                            to="/terms"
+                            className="hover:text-[#F27E24] transition-colors font-medium text-slate-400"
+                        >
+                            Terms
+                        </Link>
+                        <Link
+                            to="/sample"
+                            className="hover:text-[#F27E24] transition-colors font-bold text-[#F27E24]"
+                        >
+                            Get a Sample
+                        </Link>
                     </div>
                 </div>
             </div>
