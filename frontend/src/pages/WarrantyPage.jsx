@@ -340,7 +340,7 @@ export default function WarrantyPage() {
                 Instant Lifetime Warranty Lookup
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Enter your unique Warranty Code (e.g. WRN-DFD41E0D) to verify lifetime coverage.
+                Enter your Warranty Code (WRN-...) or Claim Code (CLM-...) to track claim status (Under Review, Approved, Rejected) or lifetime warranty coverage.
               </p>
             </div>
 
@@ -348,7 +348,7 @@ export default function WarrantyPage() {
               <input
                 type="text"
                 required
-                placeholder="Enter Warranty Code (e.g. WRN-XXXXXX)"
+                placeholder="Enter Warranty Code (WRN-...) or Claim Code (CLM-...)"
                 value={verifyCode}
                 onChange={(e) => setVerifyCode(e.target.value)}
                 className="flex-1 bg-[#161622] border border-white/15 rounded-xl px-4 py-3 text-sm text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#F27E24]"
@@ -366,43 +366,125 @@ export default function WarrantyPage() {
             )}
 
             {verifyResult && (
-              <div className="p-6 rounded-2xl bg-[#161622] border border-white/15 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-[#F27E24]" />
-                    <span className="font-mono font-bold text-white text-base">{verifyResult.warranty_code}</span>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    LIFETIME ACTIVE WARRANTY
-                  </span>
-                </div>
+              <div className="p-6 rounded-2xl bg-[#161622] border border-white/15 space-y-6">
+                {/* CLAIM LOOKUP RESULT */}
+                {verifyResult.type === "claim" ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-bold uppercase">WARRANTY CLAIM RECORD</span>
+                        <span className="font-mono font-bold text-white text-base">{verifyResult.claim_code}</span>
+                      </div>
+                      <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold ${
+                        verifyResult.status.includes("Approved") ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" :
+                        verifyResult.status === "Rejected" ? "bg-rose-500/20 text-rose-400 border border-rose-500/30" :
+                        "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                      }`}>
+                        STATUS: {verifyResult.status.toUpperCase()}
+                      </span>
+                    </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">PRODUCT</span>
-                    <span className="text-white font-medium">{verifyResult.product_name}</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">CUSTOMER</span>
+                        <span className="text-white font-medium">{verifyResult.customer_name}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">REGISTERED EMAIL</span>
+                        <span className="text-white">{verifyResult.email}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">WARRANTY CODE</span>
+                        <span className="text-[#F27E24] font-mono font-bold">{verifyResult.warranty_code}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">ISSUE CATEGORY</span>
+                        <span className="text-slate-200 font-semibold">{verifyResult.issue_category}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">SUBMITTED AT</span>
+                        <span className="text-white font-mono">{verifyResult.submitted_at}</span>
+                      </div>
+                      {verifyResult.tracking_number && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">TRACKING NUMBER</span>
+                          <span className="text-emerald-400 font-mono font-bold">{verifyResult.tracking_number}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {verifyResult.admin_notes && (
+                      <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 text-xs">
+                        <span className="text-[10px] text-slate-400 block font-bold uppercase mb-1">Audit Notes from Engineering</span>
+                        <p className="text-slate-300">{verifyResult.admin_notes}</p>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">SERIAL NUMBER</span>
-                    <span className="text-white font-mono">{verifyResult.serial_number}</span>
+                ) : (
+                  /* WARRANTY LOOKUP RESULT */
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-[#F27E24]" />
+                        <span className="font-mono font-bold text-white text-base">{verifyResult.warranty_code}</span>
+                      </div>
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        LIFETIME ACTIVE WARRANTY
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">PRODUCT</span>
+                        <span className="text-white font-medium">{verifyResult.product_name}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">SERIAL NUMBER</span>
+                        <span className="text-white font-mono">{verifyResult.serial_number}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">ORDER ID</span>
+                        <span className="text-white font-mono">{verifyResult.order_id}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">CUSTOMER</span>
+                        <span className="text-white font-medium">{verifyResult.customer_name}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">PURCHASE DATE</span>
+                        <span className="text-white font-mono">{verifyResult.purchase_date}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">COVERAGE PERIOD</span>
+                        <span className="text-[#F27E24] font-mono font-bold">LIFETIME GUARANTEE</span>
+                      </div>
+                    </div>
+
+                    {/* Associated Claims List */}
+                    {verifyResult.claims && verifyResult.claims.length > 0 && (
+                      <div className="border-t border-white/10 pt-4 space-y-2">
+                        <span className="text-xs font-bold text-white block">Filed Claims History ({verifyResult.claims.length})</span>
+                        <div className="space-y-2">
+                          {verifyResult.claims.map((clm) => (
+                            <div key={clm.claim_code} className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between text-xs">
+                              <div>
+                                <span className="font-mono font-bold text-white block">{clm.claim_code}</span>
+                                <span className="text-[10px] text-slate-400">{clm.issue_category} • {clm.submitted_at}</span>
+                              </div>
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                clm.status.includes("Approved") ? "bg-emerald-500/20 text-emerald-400" :
+                                clm.status === "Rejected" ? "bg-rose-500/20 text-rose-400" :
+                                "bg-amber-500/20 text-amber-400"
+                              }`}>
+                                {clm.status}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">ORDER ID</span>
-                    <span className="text-white font-mono">{verifyResult.order_id}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">CUSTOMER</span>
-                    <span className="text-white font-medium">{verifyResult.customer_name}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">PURCHASE DATE</span>
-                    <span className="text-white font-mono">{verifyResult.purchase_date}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block text-[10px]">COVERAGE PERIOD</span>
-                    <span className="text-[#F27E24] font-mono font-bold">LIFETIME GUARANTEE</span>
-                  </div>
-                </div>
+                )}
               </div>
             )}
           </div>

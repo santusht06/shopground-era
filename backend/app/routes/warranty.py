@@ -119,15 +119,52 @@ async def register_warranty(payload: WarrantyRegisterCreate):
 @router.get("/warranty/verify/{warranty_code}")
 async def verify_warranty(warranty_code: str):
     db = get_database()
-    warranty = await db.warranties.find_one({"warranty_code": warranty_code.strip().upper()})
-    
+    code_clean = warranty_code.strip().upper()
+
+    # 1. Check if user passed a Claim Code (CLM-XXXXXX)
+    claim = await db.warranty_claims.find_one({"claim_code": code_clean})
+    if claim:
+        warranty = await db.warranties.find_one({"warranty_code": claim["warranty_code"]})
+        return {
+            "type": "claim",
+            "claim_code": claim["claim_code"],
+            "warranty_code": claim["warranty_code"],
+            "order_id": claim.get("order_id") or (warranty["order_id"] if warranty else "N/A"),
+            "customer_name": claim.get("customer_name") or (warranty["customer_name"] if warranty else "N/A"),
+            "email": claim["email"],
+            "issue_category": claim["issue_category"],
+            "description": claim["description"],
+            "status": claim["status"],
+            "submitted_at": claim["submitted_at"],
+            "admin_notes": claim.get("admin_notes"),
+            "tracking_number": claim.get("tracking_number"),
+            "product_name": warranty.get("product_name") if warranty else "ShopGround Era Anti-Vibration Pads",
+            "serial_number": claim.get("serial_number") or (warranty["serial_number"] if warranty else "N/A")
+        }
+
+    # 2. Check Warranty Code (WRN-XXXXXX)
+    warranty = await db.warranties.find_one({"warranty_code": code_clean})
     if not warranty:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Warranty record for code '{warranty_code}' not found."
+            detail=f"No record found for code '{code_clean}'. Please check your Warranty Code (WRN-...) or Claim Code (CLM-...)."
         )
 
+    # Check if there are any claims associated with this warranty code
+    claims_cursor = db.warranty_claims.find({"warranty_code": code_clean}).sort("created_timestamp", -1)
+    associated_claims = []
+    async for clm in claims_cursor:
+        associated_claims.append({
+            "claim_code": clm["claim_code"],
+            "issue_category": clm["issue_category"],
+            "status": clm["status"],
+            "submitted_at": clm["submitted_at"],
+            "admin_notes": clm.get("admin_notes"),
+            "tracking_number": clm.get("tracking_number")
+        })
+
     return {
+        "type": "warranty",
         "warranty_code": warranty["warranty_code"],
         "order_id": warranty["order_id"],
         "product_name": warranty["product_name"],
@@ -138,7 +175,8 @@ async def verify_warranty(warranty_code: str):
         "is_valid": True,
         "purchase_date": warranty["purchase_date"],
         "expires_at": "Lifetime Guarantee",
-        "registered_at": warranty["registered_at"]
+        "registered_at": warranty["registered_at"],
+        "claims": associated_claims
     }
 
 
