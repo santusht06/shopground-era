@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import HomePage from '@/pages/HomePage';
 import ProductDetailPage from '@/pages/ProductDetailPage';
 import PolicyPage from '@/pages/PolicyPage';
+import WarrantyPage from '@/pages/WarrantyPage';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/ecommerce/CartDrawer';
 import CheckoutModal from '@/components/ecommerce/CheckoutModal';
@@ -21,6 +22,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/warranty" element={<WarrantyPage />} />
             <Route path="/refund-policy" element={<PolicyPage defaultTab="refund" />} />
             <Route path="/privacy-policy" element={<PolicyPage defaultTab="privacy" />} />
             <Route path="/terms" element={<PolicyPage defaultTab="terms" />} />

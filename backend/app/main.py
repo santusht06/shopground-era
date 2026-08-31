@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
 from app.core.config import settings
 from app.core.database import connect_to_mongo, close_mongo_connection
 from app.core.redis import connect_to_redis, close_redis_connection
@@ -16,8 +15,7 @@ from app.routes.inventory import router as inventory_router
 from app.routes.analytics import router as analytics_router
 from app.routes.media import router as media_router
 from app.routes.inquiries import router as inquiries_router
-from app.routes.sse import router as sse_router
-from app.routes.indexing import router as indexing_router
+from app.routes.warranty import router as warranty_router
 from app.routes.health import router as health_router
 
 app = FastAPI(
@@ -28,10 +26,7 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Enable GZip Compression for all responses > 500 bytes
-app.add_middleware(GZipMiddleware, minimum_size=500)
-
-# Configure CORS Middleware for myapp.com and admin.myapp.com
+# Configure CORS Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -55,8 +50,6 @@ async def shutdown_event():
 app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(products_router, prefix=settings.API_V1_STR)
 app.include_router(inquiries_router, prefix=settings.API_V1_STR)
-app.include_router(sse_router, prefix=settings.API_V1_STR)
-app.include_router(indexing_router, prefix=settings.API_V1_STR)
 app.include_router(orders_router, prefix=settings.API_V1_STR)
 app.include_router(cart_router, prefix=settings.API_V1_STR)
 app.include_router(categories_router, prefix=settings.API_V1_STR)
@@ -65,6 +58,7 @@ app.include_router(logistics_router, prefix=settings.API_V1_STR)
 app.include_router(inventory_router, prefix=settings.API_V1_STR)
 app.include_router(analytics_router, prefix=settings.API_V1_STR)
 app.include_router(media_router, prefix=settings.API_V1_STR)
+app.include_router(warranty_router, prefix=settings.API_V1_STR)
 app.include_router(health_router, prefix=settings.API_V1_STR)
 
 @app.get("/")

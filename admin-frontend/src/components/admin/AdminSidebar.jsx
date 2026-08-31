@@ -8,6 +8,7 @@ import {
     Calendar,
     Truck,
     Shield,
+    ShieldCheck,
     BarChart3,
     FileText,
     Settings,
@@ -21,6 +22,7 @@ export default function AdminSidebar() {
         { id: 'dashboard', label: 'Control Center', icon: LayoutDashboard },
         { id: 'products', label: 'Inventory & Variants', icon: Package },
         { id: 'orders', label: 'Order Fulfillment', icon: ShoppingBag },
+        { id: 'warranty', label: 'Warranty & Claims', icon: ShieldCheck },
         { id: 'scheduling', label: 'Flash Sales & Campaigns', icon: Calendar },
         { id: 'logistics', label: 'Logistics & Returns', icon: Truck },
         { id: 'rbac', label: 'RBAC & Permissions', icon: Shield },
@@ -38,7 +40,7 @@ export default function AdminSidebar() {
                     </div>
                     <div>
                         <span className="text-base font-extrabold text-[#0F172A] block leading-tight">Amazon-Grade Portal</span>
-                        <span className="text-[10px] font-semibold text-[#5E6AD2] uppercase tracking-wider block">admin.myapp.com</span>
+                        <span className="text-[10px] font-semibold text-[#5E6AD2] uppercase tracking-wider block">admin.shopgroundera.com</span>
                     </div>
                 </div>
 
@@ -80,7 +82,7 @@ export default function AdminSidebar() {
                     </span>
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono truncate">
-                    CORS: admin.myapp.com
+                    CORS: admin.shopgroundera.com
                 </div>
             </div>
         </aside>

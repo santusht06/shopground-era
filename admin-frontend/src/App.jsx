@@ -5,6 +5,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import DashboardOverview from '@/components/admin/DashboardOverview';
 import ProductManagement from '@/components/admin/ProductManagement';
 import OrderManagement from '@/components/admin/OrderManagement';
+import WarrantyManagement from '@/components/admin/WarrantyManagement';
 import SchedulingView from '@/components/admin/SchedulingView';
 import LogisticsView from '@/components/admin/LogisticsView';
 import RbacView from '@/components/admin/RbacView';
@@ -28,6 +29,7 @@ export default function App() {
           {activeTab === 'dashboard' && <DashboardOverview />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'orders' && <OrderManagement />}
+          {activeTab === 'warranty' && <WarrantyManagement />}
           {activeTab === 'scheduling' && <SchedulingView />}
           {activeTab === 'logistics' && <LogisticsView />}
           {activeTab === 'rbac' && <RbacView />}
