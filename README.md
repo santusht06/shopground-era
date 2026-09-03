@@ -92,10 +92,6 @@ uvicorn app.main:app --reload --port 8000
 
 ### 3. Running the Customer Store Front
 ```bash
----
-
-### 3. Running the Customer Store Front
-```bash
 # Navigate to frontend directory
 cd frontend
 
@@ -106,8 +102,6 @@ npm install
 npm run dev
 ```
 Open `http://localhost:5173` in your browser.
-
----
 
 ### 4. Running the Admin Control Panel
 ```bash
@@ -121,6 +115,31 @@ npm install
 npm run dev
 ```
 Open `http://localhost:5174` in your browser.
+
+---
+
+## 🐳 Docker Compose
+
+The repository includes a `docker-compose.yml` file that orchestrates all services (Nginx, FastAPI backend, MongoDB, Redis, and the email worker).
+
+```bash
+# Build and start all containers in the background
+docker compose up -d --build
+
+# View running containers
+docker compose ps
+```
+
+- **API** is exposed on `http://localhost:8000`
+- **Nginx** (reverse proxy) is available on `http://localhost` (port 80)
+- **MongoDB** runs on `mongodb://localhost:27017`
+- **Redis** runs on `redis://localhost:6379`
+
+To stop and remove containers:
+
+```bash
+docker compose down
+```
 
 ---
 
