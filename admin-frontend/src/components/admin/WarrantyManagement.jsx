@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ShieldCheck, AlertTriangle, Check, X, RefreshCw, Eye, ExternalLink, Search, Clock, FileText, Image as ImageIcon, Film, Truck, Send, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function WarrantyManagement() {
+export default function WarrantyManagement({ onAuthError }) {
   const [activeTab, setActiveTab] = useState("claims"); // "claims" | "registrations"
   const [claims, setClaims] = useState([]);
   const [registrations, setRegistrations] = useState([]);
@@ -11,18 +11,32 @@ export default function WarrantyManagement() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Modal State for Deep Audit
-  const [auditItem, setAuditItem] = useState(null); // claim object
+  const [auditItem, setAuditItem] = useState(null);
   const [adminNotes, setAdminNotes] = useState("");
   const [trackingNumber, setTrackingNumber] = useState("");
   const [modalStatus, setModalStatus] = useState("Approved (Replacement)");
+
+  const getHeaders = () => {
+    const token = sessionStorage.getItem("sg_admin_token") || "";
+    return {
+      "Content-Type": "application/json",
+      "X-Admin-Secret": token
+    };
+  };
 
   const fetchWarranties = async () => {
     setLoading(true);
     try {
       const [cRes, rRes] = await Promise.all([
-        fetch("https://api.shopgroundera.com/api/v1/warranty/admin/claims"),
-        fetch("https://api.shopgroundera.com/api/v1/warranty/admin/registrations")
+        fetch("https://api.shopgroundera.com/api/v1/warranty/admin/claims", { headers: getHeaders() }),
+        fetch("https://api.shopgroundera.com/api/v1/warranty/admin/registrations", { headers: getHeaders() })
       ]);
+
+      if (cRes.status === 401 || rRes.status === 401) {
+        if (onAuthError) onAuthError();
+        return;
+      }
+
       const cData = await cRes.json();
       const rData = await rRes.json();
       setClaims(Array.isArray(cData) ? cData : []);
@@ -57,13 +71,19 @@ export default function WarrantyManagement() {
     try {
       const res = await fetch(`https://api.shopgroundera.com/api/v1/warranty/admin/claims/${auditItem.claim_code}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify({
           status: modalStatus,
           admin_notes: adminNotes,
-          tracking_number: trackingNumber
+          tracking_number: (modalStatus.includes("Replacement") || modalStatus.includes("Resolved")) ? trackingNumber : null
         })
       });
+
+      if (res.status === 401) {
+        if (onAuthError) onAuthError();
+        return;
+      }
+
       if (res.ok) {
         closeAuditModal();
         await fetchWarranties();
@@ -93,7 +113,7 @@ export default function WarrantyManagement() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Clean Clean Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E5E7EB] shadow-xs">
         <div>
           <div className="flex items-center gap-2">
@@ -210,6 +230,7 @@ export default function WarrantyManagement() {
                       <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
                           claim.status === "Approved (Replacement)" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" :
+                          claim.status === "Approved (Refund)" ? "bg-indigo-100 text-indigo-800 border border-indigo-300" :
                           claim.status === "Rejected" ? "bg-rose-100 text-rose-800 border border-rose-300" :
                           "bg-amber-100 text-amber-800 border border-amber-300"
                         }`}>
@@ -244,7 +265,7 @@ export default function WarrantyManagement() {
                 <tr>
                   <th className="p-4">Warranty Code</th>
                   <th className="p-4">Customer</th>
-                  <th className="p-4">Serial Number & Order</th>
+                  <th className="p-4">Order & Purchase Info</th>
                   <th className="p-4">Coverage Period</th>
                   <th className="p-4">Status</th>
                 </tr>
@@ -267,8 +288,12 @@ export default function WarrantyManagement() {
                         <span className="text-slate-500 text-[11px] block">{reg.email}</span>
                       </td>
                       <td className="p-4">
-                        <span className="font-mono font-semibold text-slate-800 block">S/N: {reg.serial_number}</span>
-                        <span className="font-mono text-[10px] text-slate-500">Order: {reg.order_id}</span>
+                        <span className="font-mono font-semibold text-slate-800 block">Order: {reg.order_id}</span>
+                        {reg.serial_number ? (
+                          <span className="font-mono text-[10px] text-slate-500 block">S/N: {reg.serial_number}</span>
+                        ) : (
+                          <span className="text-[10px] text-emerald-600 font-medium block">✓ Verified Purchase</span>
+                        )}
                       </td>
                       <td className="p-4">
                         <span className="text-slate-700 block font-medium">Purchased: {reg.purchase_date}</span>
@@ -288,12 +313,11 @@ export default function WarrantyManagement() {
         </div>
       )}
 
-      {/* ─── DEEP AUDIT MODAL ────────────────────────────────────────────── */}
+      {/* DEEP AUDIT MODAL */}
       {auditItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
           <div className="bg-white rounded-3xl border border-[#E5E7EB] w-full max-w-3xl shadow-2xl overflow-hidden my-8 space-y-0">
             
-            {/* Modal Header */}
             <div className="p-6 border-b border-[#E5E7EB] flex items-center justify-between bg-[#F8FAFC]">
               <div>
                 <div className="flex items-center gap-2">
@@ -313,7 +337,6 @@ export default function WarrantyManagement() {
             </div>
 
             <form onSubmit={handleModalSubmit} className="p-6 space-y-6">
-              {/* Grid Info */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-[#F8FAFC] p-4 rounded-2xl border border-[#E5E7EB] text-xs">
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold block uppercase">Customer</span>
@@ -326,13 +349,12 @@ export default function WarrantyManagement() {
                   <span className="text-[10px] text-slate-500">Order: {auditItem.order_id}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold block uppercase">Serial Number</span>
-                  <span className="font-mono font-bold text-slate-800 block">{auditItem.serial_number}</span>
+                  <span className="text-[10px] text-slate-400 font-bold block uppercase">Order ID</span>
+                  <span className="font-mono font-bold text-slate-800 block">{auditItem.order_id}</span>
                   <span className="text-[10px] text-slate-500">Submitted: {auditItem.submitted_at}</span>
                 </div>
               </div>
 
-              {/* Defect Description */}
               <div className="space-y-1.5">
                 <label className="text-xs font-extrabold text-slate-900 block">Issue Category & Description</label>
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 space-y-1">
@@ -382,47 +404,72 @@ export default function WarrantyManagement() {
                 )}
               </div>
 
-              {/* AUDIT CONTROLS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Decision / Status *</label>
-                  <select
-                    value={modalStatus}
-                    onChange={(e) => setModalStatus(e.target.value)}
-                    className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-[#5E6AD2]"
-                  >
-                    <option value="Approved (Replacement)">Approved (Replacement Dispatch)</option>
-                    <option value="Approved (Refund)">Approved (Full Refund)</option>
-                    <option value="Under Review">Under Review (Need More Proof)</option>
-                    <option value="Rejected">Rejected (Out of Scope / User Damage)</option>
-                    <option value="Resolved">Resolved & Dispatched</option>
-                  </select>
+              {/* DYNAMIC AUDIT CONTROLS BASED ON DECISION */}
+              <div className="space-y-4 pt-2 border-t border-[#E5E7EB]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Decision / Status *</label>
+                    <select
+                      value={modalStatus}
+                      onChange={(e) => setModalStatus(e.target.value)}
+                      className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-[#5E6AD2]"
+                    >
+                      <option value="Approved (Replacement)">Approved (Replacement Dispatch)</option>
+                      <option value="Approved (Refund)">Approved (Full Refund)</option>
+                      <option value="Under Review">Under Review (Need More Proof)</option>
+                      <option value="Rejected">Rejected (Out of Scope / User Damage)</option>
+                      <option value="Resolved">Resolved & Closed</option>
+                    </select>
+                  </div>
+
+                  {/* ONLY SHOW TRACKING FOR REPLACEMENT & RESOLVED */}
+                  {(modalStatus.includes("Replacement") || modalStatus.includes("Resolved")) ? (
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Carrier Tracking Number (FedEx/UPS/DHL)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. FEDEX-99824102"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#5E6AD2]"
+                      />
+                    </div>
+                  ) : modalStatus.includes("Refund") ? (
+                    <div className="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center text-xs text-indigo-800 font-semibold">
+                      <span>Full refund will be credited back to customer's payment method in 3–5 days.</span>
+                    </div>
+                  ) : modalStatus.includes("Rejected") ? (
+                    <div className="p-2.5 bg-rose-50 border border-rose-100 rounded-xl flex items-center text-xs text-rose-800 font-semibold">
+                      <span>Claim will be declined. Rationale below will be sent to the customer.</span>
+                    </div>
+                  ) : (
+                    <div className="p-2.5 bg-amber-50 border border-amber-100 rounded-xl flex items-center text-xs text-amber-800 font-semibold">
+                      <span>Request instructions below will be emailed to customer for follow-up.</span>
+                    </div>
+                  )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Tracking Number (If Dispatched)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. FEDEX-99824102"
-                    value={trackingNumber}
-                    onChange={(e) => setTrackingNumber(e.target.value)}
-                    className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#5E6AD2]"
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    {modalStatus.includes("Rejected") ? "Rejection Rationale & Explanation (Sent to Customer) *" :
+                     modalStatus.includes("Under Review") ? "Instructions & Evidence Requested from Customer *" :
+                     modalStatus.includes("Refund") ? "Refund Details / Internal Notes" :
+                     "Auditor Quality & Engineering Notes (Sent in Email)"}
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder={
+                      modalStatus.includes("Rejected") ? "Explain clearly and respectfully why this issue does not qualify under manufacturer warranty..." :
+                      modalStatus.includes("Under Review") ? "Specify what additional photos, videos, or machine specs are required from the customer..." :
+                      "Enter audit rationale or internal notes..."
+                    }
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    className="w-full bg-white border border-[#E5E7EB] rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#5E6AD2]"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Internal Engineering Audit Notes</label>
-                <textarea
-                  rows={2}
-                  placeholder="Enter audit rationale or internal notes..."
-                  value={adminNotes}
-                  onChange={(e) => setAdminNotes(e.target.value)}
-                  className="w-full bg-white border border-[#E5E7EB] rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#5E6AD2]"
-                />
-              </div>
-
-              {/* Actions */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5E7EB]">
                 <Button type="button" variant="outline" onClick={closeAuditModal} className="text-xs">
                   Cancel
@@ -432,7 +479,7 @@ export default function WarrantyManagement() {
                   disabled={actionLoading === auditItem.claim_code}
                   className="bg-[#5E6AD2] hover:bg-[#4d59be] text-white text-xs font-bold px-6 h-10 rounded-xl cursor-pointer"
                 >
-                  {actionLoading === auditItem.claim_code ? "Saving Audit..." : "Save Audit Decision"}
+                  {actionLoading === auditItem.claim_code ? "Saving Audit..." : "Save Audit Decision & Dispatch Email"}
                 </Button>
               </div>
             </form>
