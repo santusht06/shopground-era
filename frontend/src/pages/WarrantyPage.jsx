@@ -3,6 +3,18 @@ import { ShieldCheck, CheckCircle2, AlertTriangle, FileText, Search, UploadCloud
 import { Button } from "@/components/ui/button";
 import applySEO from "@/hooks/useSEO";
 
+// Helper to cleanly extract human-readable error messages from API responses
+const extractErrorMessage = (data, defaultMsg) => {
+  if (!data) return defaultMsg;
+  if (typeof data === "string") return data;
+  if (typeof data.detail === "string") return data.detail;
+  if (Array.isArray(data.detail) && data.detail.length > 0) {
+    return data.detail.map((d) => d.msg || (typeof d === "string" ? d : JSON.stringify(d))).join(", ");
+  }
+  if (data.message && typeof data.message === "string") return data.message;
+  return defaultMsg;
+};
+
 export default function WarrantyPage() {
   applySEO(
     "ShopGround Era™ Lifetime Genuine Warranty Registration & Claims",
@@ -17,7 +29,6 @@ export default function WarrantyPage() {
     customer_name: "",
     email: "",
     phone: "",
-    serial_number: "",
     purchase_date: new Date().toISOString().split("T")[0],
     invoice_url: ""
   });
@@ -58,7 +69,9 @@ export default function WarrantyPage() {
     setClaimError(null);
 
     const formData = new FormData();
-    selectedFiles.forEach(f => formData.append("files", f));
+    selectedFiles.forEach((f) => {
+      formData.append("files", f);
+    });
 
     try {
       const res = await fetch("https://api.shopgroundera.com/api/v1/warranty/upload-evidence", {
@@ -67,15 +80,17 @@ export default function WarrantyPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "File upload failed.");
+      if (!res.ok) {
+        throw new Error(extractErrorMessage(data, "File upload failed."));
+      }
 
-      const newUrls = data.urls || [data.url];
-      setClaimForm(prev => {
-        const combined = [...(prev.evidence_urls || []), ...newUrls];
+      const newUrls = data.urls || (data.evidence_url ? [data.evidence_url] : (data.url ? [data.url] : []));
+      setClaimForm((prev) => {
+        const combined = Array.from(new Set([...(prev.evidence_urls || []), ...newUrls]));
         return {
           ...prev,
           evidence_url: combined[0] || "",
-          evidence_urls: combined
+          evidence_urls: combined,
         };
       });
       setUploadSuccess(true);
@@ -100,7 +115,7 @@ export default function WarrantyPage() {
         body: JSON.stringify(regForm)
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Registration failed.");
+      if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed."));
       setRegResult(data);
     } catch (err) {
       setRegError(err.message);
@@ -119,7 +134,7 @@ export default function WarrantyPage() {
     try {
       const res = await fetch(`https://api.shopgroundera.com/api/v1/warranty/verify/${encodeURIComponent(verifyCode.trim())}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Warranty code not found.");
+      if (!res.ok) throw new Error(extractErrorMessage(data, "Warranty code not found."));
       setVerifyResult(data);
     } catch (err) {
       setVerifyError(err.message);
@@ -141,7 +156,7 @@ export default function WarrantyPage() {
         body: JSON.stringify(claimForm)
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Claim submission failed.");
+      if (!res.ok) throw new Error(extractErrorMessage(data, "Claim submission failed."));
       setClaimResult(data);
     } catch (err) {
       setClaimError(err.message);
@@ -213,7 +228,7 @@ export default function WarrantyPage() {
                 Register Product Lifetime Warranty
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Enter your Order ID and product Serial Number found on your box or manual.
+                Enter your Order ID to activate your Lifetime Warranty coverage.
               </p>
             </div>
 
@@ -265,14 +280,13 @@ export default function WarrantyPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Serial Number *</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">Purchase Date *</label>
                     <input
-                      type="text"
+                      type="date"
                       required
-                      placeholder="e.g. GE-2026-98124"
-                      value={regForm.serial_number}
-                      onChange={(e) => setRegForm({ ...regForm, serial_number: e.target.value })}
-                      className="w-full bg-[#161622] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#F27E24]"
+                      value={regForm.purchase_date}
+                      onChange={(e) => setRegForm({ ...regForm, purchase_date: e.target.value })}
+                      className="w-full bg-[#161622] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F27E24]"
                     />
                   </div>
                 </div>
@@ -303,28 +317,15 @@ export default function WarrantyPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Phone Number (Optional)</label>
-                    <input
-                      type="tel"
-                      placeholder="+1 (555) 000-0000"
-                      value={regForm.phone}
-                      onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })}
-                      className="w-full bg-[#161622] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#F27E24]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Purchase Date *</label>
-                    <input
-                      type="date"
-                      required
-                      value={regForm.purchase_date}
-                      onChange={(e) => setRegForm({ ...regForm, purchase_date: e.target.value })}
-                      className="w-full bg-[#161622] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F27E24]"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">Phone Number (Optional)</label>
+                  <input
+                    type="tel"
+                    placeholder="+1 (555) 000-0000"
+                    value={regForm.phone}
+                    onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })}
+                    className="w-full bg-[#161622] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#F27E24]"
+                  />
                 </div>
 
                 <Button
@@ -447,10 +448,12 @@ export default function WarrantyPage() {
                         <span className="text-slate-400 block text-[10px]">PRODUCT</span>
                         <span className="text-white font-medium">{verifyResult.product_name}</span>
                       </div>
-                      <div>
-                        <span className="text-slate-400 block text-[10px]">SERIAL NUMBER</span>
-                        <span className="text-white font-mono">{verifyResult.serial_number}</span>
-                      </div>
+                      {verifyResult.serial_number && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">SERIAL NUMBER</span>
+                          <span className="text-white font-mono">{verifyResult.serial_number}</span>
+                        </div>
+                      )}
                       <div>
                         <span className="text-slate-400 block text-[10px]">ORDER ID</span>
                         <span className="text-white font-mono">{verifyResult.order_id}</span>
