@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field, EmailStr
 
 class WarrantyStatus(str, Enum):
@@ -28,7 +28,6 @@ class WarrantyRegisterCreate(BaseModel):
     customer_name: str = Field(..., example="Lorem Customer")
     email: EmailStr = Field(..., example="customer@shopground.era")
     phone: Optional[str] = Field(None, example="+1 (555) 234-5678")
-    serial_number: str = Field(..., example="GE-2026-98124")
     purchase_date: str = Field(..., example="2026-08-15")
     duration_months: int = Field(1200, example=1200)  # Lifetime Guarantee (100 Years)
     invoice_url: Optional[str] = Field(None, example="https://res.cloudinary.com/demo/invoice.pdf")
@@ -39,7 +38,7 @@ class WarrantyClaimCreate(BaseModel):
     issue_category: IssueCategory = IssueCategory.VIBRATION_DAMPENING_FAIL
     description: str = Field(..., example="The pads began sliding after 2 weeks of heavy washer spin cycles.")
     evidence_url: Optional[str] = Field(None, example="https://shopgroundera.com/minio/warranty-evidence/file.jpg")
-    evidence_urls: Optional[list[str]] = Field(default_factory=list)
+    evidence_urls: Optional[List[str]] = Field(default_factory=list)
 
 class WarrantyAdminUpdate(BaseModel):
     status: WarrantyStatus
