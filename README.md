@@ -1,5 +1,7 @@
 # ShopGround Era — Enterprise E-Commerce Platform
 
+![AI Maintained](https://img.shields.io/badge/readme-AI%20maintained-blue)
+
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Redux](https://img.shields.io/badge/Redux%20Toolkit-2.12-764ABC?logo=redux&logoColor=white)](https://redux-toolkit.js.org/)
@@ -59,8 +61,6 @@ shopground-era/
 | **Database & Cache** | MongoDB (Motor async driver), Redis 7 (redis‑py) |
 
 ---
-
-## 🚀 Local Development Setup
 
 ### 1. Prerequisites
 Ensure you have the following installed locally:
