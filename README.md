@@ -62,6 +62,8 @@ shopground-era/
 
 ---
 
+## 🚀 Local Development Setup
+
 ### 1. Prerequisites
 Ensure you have the following installed locally:
 - **Node.js** (v18.0 or higher)
@@ -87,8 +89,8 @@ python seed_data.py
 # Start Uvicorn development server
 uvicorn app.main:app --reload --port 8000
 ```
-- Interactive API Documentation: `http://localhost:8000/docs`
-- Health Check Endpoint: `http://localhost:8000/api/v1/health`
+- Interactive API Documentation: `[http://localhost:8000/docs`](http://localhost:8000/docs`)
+- Health Check Endpoint: `[http://localhost:8000/api/v1/health`](http://localhost:8000/api/v1/health`)
 
 ### 3. Running the Customer Store Front
 ```bash
@@ -101,7 +103,7 @@ npm install
 # Start Vite dev server (runs on port 5173)
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
+Open `[http://localhost:5173`](http://localhost:5173`) in your browser.
 
 ### 4. Running the Admin Control Panel
 ```bash
@@ -114,7 +116,7 @@ npm install
 # Start Vite dev server (runs on port 5174)
 npm run dev
 ```
-Open `http://localhost:5174` in your browser.
+Open `[http://localhost:5174`](http://localhost:5174`) in your browser.
 
 ---
 
@@ -123,8 +125,6 @@ Open `http://localhost:5174` in your browser.
 The repository includes a `docker-compose.yml` file that orchestrates all services (Nginx, FastAPI backend, MongoDB, Redis, and the email worker).
 
 ```bash
-# Build and start all containers in the background
-docker compose up -d --build
 
 # View running containers
 docker compose ps
