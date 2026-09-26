@@ -125,13 +125,15 @@ Open `[http://localhost:5174`](http://localhost:5174`) in your browser.
 The repository includes a `docker-compose.yml` file that orchestrates all services (Nginx, FastAPI backend, MongoDB, Redis, and the email worker).
 
 ```bash
+# Build and start all containers in the background
+docker compose up -d --build
 
 # View running containers
 docker compose ps
 ```
 
-- **API** is exposed on `http://localhost:8000`
-- **Nginx** (reverse proxy) is available on `http://localhost` (port 80)
+- **API** is exposed on `[http://localhost:8000`](http://localhost:8000`)
+- **Nginx** (reverse proxy) is available on `[http://localhost`](http://localhost`) (port 80)
 - **MongoDB** runs on `mongodb://localhost:27017`
 - **Redis** runs on `redis://localhost:6379`
 
@@ -146,9 +148,9 @@ docker compose down
 ## 🌐 Production Domain & CORS Deployment
 
 In production environments:
-- **Customer Frontend** should be hosted on `https://myapp.com`.
-- **Admin Portal** should be hosted on `https://admin.myapp.com`.
-- **Backend API** should be hosted on `https://api.myapp.com`.
+- **Customer Frontend** should be hosted on `[https://myapp.com`.](https://myapp.com`.)
+- **Admin Portal** should be hosted on `[https://admin.myapp.com`.](https://admin.myapp.com`.)
+- **Backend API** should be hosted on `[https://api.myapp.com`.](https://api.myapp.com`.)
 
 ### Nginx Reverse Proxy Example (Admin Portal)
 ```nginx
@@ -161,7 +163,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://127.0.0.1:8000/api/;
+        proxy_pass [http://127.0.0.1:8000/api/;](http://127.0.0.1:8000/api/;)
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
